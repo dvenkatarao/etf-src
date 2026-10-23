@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { money, pct, dateShort } from "@/lib/format";
 import type { MacroEvent } from "@/lib/macro-events";
 import { expiryEventProximity } from "@/lib/macro-events";
@@ -26,6 +26,9 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
   const [expanded, setExpanded] = useState<string | null>(null);
   const [sort, setSort] = useState<"score" | "return" | "delta">("score");
   const [view, setView] = useState<"table" | "cards">("table");
+  useEffect(() => {
+    if (window.innerWidth < 768) setView("cards");
+  }, []);
 
   const rows = [...res.rows].sort((a, b) => {
     if (sort === "return") return b.best.annRoc - a.best.annRoc;
@@ -69,17 +72,31 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
       </div>
 
       {view === "table" ? (
-        <div className="overflow-x-auto rounded-xl border border-slate-800 bg-[#0F1A3A]">
-          <table className="min-w-full text-sm">
-            <thead className="bg-[#0D1632] text-left text-[10px] uppercase tracking-[0.12em] text-slate-400">
-              <tr>
-                {["#", "STOCK", "GRADE", "ACCT", "PRICE", "EVENTS", "PUT TO SELL", "CREDIT", "DELTA", "RETURN /YR", "CUSHION", "LIQUIDITY", "TREND", "SCORE"].map((h) => (
-                  <th key={h} className="whitespace-nowrap px-3 py-2 font-medium">
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
+        <>
+          <div className="flex items-center gap-2 text-[11px] text-slate-400 md:hidden">
+            <span>← swipe to see more</span> <span className="ml-auto">Cards recommended on phone — toggle above</span>
+          </div>
+          <div className="overflow-x-auto rounded-xl border border-slate-800 bg-[#0F1A3A] -mx-2 md:mx-0">
+            <table className="min-w-full text-sm">
+              <thead className="bg-[#0D1632] text-left text-[10px] uppercase tracking-[0.12em] text-slate-400">
+                <tr>
+                  <th className="whitespace-nowrap px-2 py-2 font-medium">#</th>
+                  <th className="whitespace-nowrap px-3 py-2 font-medium sticky left-0 bg-[#0D1632] z-10">STOCK</th>
+                  <th className="whitespace-nowrap px-3 py-2 font-medium hidden sm:table-cell">GRADE</th>
+                  <th className="whitespace-nowrap px-3 py-2 font-medium hidden lg:table-cell">ACCT</th>
+                  <th className="whitespace-nowrap px-3 py-2 font-medium hidden xl:table-cell">PRICE</th>
+                  <th className="whitespace-nowrap px-3 py-2 font-medium hidden md:table-cell">EVENTS</th>
+                  <th className="whitespace-nowrap px-3 py-2 font-medium">PUT TO SELL</th>
+                  <th className="whitespace-nowrap px-3 py-2 font-medium hidden sm:table-cell">CREDIT</th>
+                  <th className="whitespace-nowrap px-3 py-2 font-medium hidden lg:table-cell">DELTA</th>
+                  <th className="whitespace-nowrap px-3 py-2 font-medium">RETURN /YR</th>
+                  <th className="whitespace-nowrap px-3 py-2 font-medium hidden lg:table-cell">CUSHION</th>
+                  <th className="whitespace-nowrap px-3 py-2 font-medium hidden xl:table-cell">LIQUIDITY</th>
+                  <th className="whitespace-nowrap px-3 py-2 font-medium hidden xl:table-cell">TREND</th>
+                  <th className="whitespace-nowrap px-3 py-2 font-medium">SCORE</th>
+                  <th className="whitespace-nowrap px-2 py-2 font-medium" />
+                </tr>
+              </thead>
             <tbody className="divide-y divide-slate-800/60">
               {rows.map((r, idx) => {
                 const b = r.best;
@@ -89,20 +106,20 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                 return (
                   <>
                     <tr key={r.g.row.ticker} className={`align-top hover:bg-white/[0.03] ${isOpen ? "bg-white/[0.03]" : ""}`}>
-                      <td className="px-3 py-3 text-xs text-slate-400">{idx + 1}</td>
-                      <td className="px-3 py-3">
+                      <td className="px-2 py-3 text-xs text-slate-400">{idx + 1}</td>
+                      <td className="px-3 py-3 sticky left-0 bg-[#0F1A3A] md:bg-transparent z-10">
                         <Link href={`/wheel/${r.g.row.ticker}?${q}`} className="font-semibold text-white hover:text-indigo-300">
                           {r.g.row.ticker}
                         </Link>
-                        <div className="max-w-[160px] truncate text-xs text-slate-400">{r.g.row.name}</div>
+                        <div className="max-w-[150px] truncate text-xs text-slate-400">{r.g.row.name}</div>
                         <div className="text-[11px] text-slate-500">{r.g.row.sector}</div>
                       </td>
-                      <td className="px-3 py-3">
+                      <td className="px-3 py-3 hidden sm:table-cell">
                         <span className={`inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${r.g.grade === "A+" ? "bg-emerald-500/20 text-emerald-300 ring-emerald-500/30" : "bg-emerald-500/15 text-emerald-300 ring-emerald-500/20"}`}>
                           {r.g.grade}
                         </span>
                       </td>
-                      <td className="px-3 py-3">
+                      <td className="px-3 py-3 hidden lg:table-cell">
                         <span
                           title={b.account.reasons.join(" ")}
                           className={`inline-flex h-6 w-6 place-items-center justify-center rounded-full text-xs font-bold ring-1 ${
@@ -112,8 +129,8 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                           {b.account.flag}
                         </span>
                       </td>
-                      <td className="whitespace-nowrap px-3 py-3 tabular-nums text-white">{money(r.ctx.price)}</td>
-                      <td className="px-3 py-3">
+                      <td className="whitespace-nowrap px-3 py-3 tabular-nums text-white hidden xl:table-cell">{money(r.ctx.price)}</td>
+                      <td className="px-3 py-3 hidden md:table-cell">
                         <div className="flex flex-col gap-1">
                           {b.earnings === "inside" ? (
                             <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-semibold text-rose-300 ring-1 ring-rose-500/20">earnings in {b.daysToEarnings}d</span>
@@ -137,10 +154,10 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                           {r.count > 1 && <span className="text-[10px] text-slate-500">+{r.count - 1} more</span>}
                         </div>
                       </td>
-                      <td className="whitespace-nowrap px-3 py-3 tabular-nums text-white">
+                      <td className="whitespace-nowrap px-3 py-3 tabular-nums text-white hidden sm:table-cell">
                         {money(b.credit)} <div className="text-[11px] text-slate-500">{money(b.credit * 100, 0)} / contract</div>
                       </td>
-                      <td className="px-3 py-3 tabular-nums">
+                      <td className="px-3 py-3 tabular-nums hidden lg:table-cell">
                         <span className="text-white">{b.contract.delta != null ? Math.abs(b.contract.delta).toFixed(2) + (b.contract.deltaSource === "model" ? " ≈" : "") : "N/A"}</span>
                         <div className="text-[11px] text-emerald-400">{pct(b.probOtm, 0)} chance OTM</div>
                       </td>
@@ -148,18 +165,18 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                         <span className="font-semibold text-emerald-400">{pct(b.annRoc, 1)}</span>
                         <div className="text-[11px] text-slate-500">{pct(b.roc, 2)} per trade</div>
                       </td>
-                      <td className="px-3 py-3 tabular-nums">
+                      <td className="px-3 py-3 tabular-nums hidden lg:table-cell">
                         <span className="text-white">{pct(b.breakevenCushion, 1)}</span>
                         <div className="text-[11px] text-slate-500">breakeven {money(b.breakeven)}</div>
                         {r.g.row.fundamentals?.targetMean ? (
                           <div className="text-[11px] text-slate-500">{pct(1 - b.breakeven / r.g.row.fundamentals.targetMean, 0)} below target</div>
                         ) : null}
                       </td>
-                      <td className="px-3 py-3 tabular-nums">
+                      <td className="px-3 py-3 tabular-nums hidden xl:table-cell">
                         <span className="text-white">{pct(b.spreadPct, 1)} gap</span>
                         <div className="text-[11px] text-slate-500">OI {c.oi?.toLocaleString() ?? "N/A"}</div>
                       </td>
-                      <td className="px-3 py-3 text-xs">
+                      <td className="px-3 py-3 text-xs hidden xl:table-cell">
                         <div className={t.aboveSma200 ? "text-emerald-400" : "text-rose-400"}>{t.aboveSma200 ? "▲ Above" : "▼ Below"} 200-day</div>
                         <div className="text-slate-500">RSI {t.rsi14?.toFixed(0) ?? "N/A"}</div>
                         {b.supportAboveStrike && <div className="text-emerald-400">support ✓</div>}
@@ -179,7 +196,7 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                     </tr>
                     {isOpen && (
                       <tr className="bg-[#0D1632]">
-                        <td colSpan={15} className="px-4 py-4">
+                        <td colSpan={16} className="px-4 py-4">
                           <div className="grid grid-cols-2 gap-4 text-xs md:grid-cols-4">
                             <div className="space-y-1">
                               <div className="text-[10px] tracking-[0.12em] text-slate-500">52 WEEK RANGE</div>
@@ -233,6 +250,7 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
             </tbody>
           </table>
         </div>
+        </>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {rows.map((r) => {

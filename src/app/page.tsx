@@ -44,11 +44,12 @@ export default async function Dashboard() {
           Screen, compare and analyse returns, distributions, expense ratios, NAV erosion, holdings-based analyst consensus and the macro backdrop. Every figure is provider data or deterministic math on it, stamped with source and time.
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
-          <Link href="/screener" className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-indigo-900 hover:bg-indigo-50">Open screener</Link>
+          <Link href="/onboarding" className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-indigo-900 hover:bg-indigo-50">New? Start in 60s →</Link>
+          <Link href="/screener" className="rounded-lg bg-white/10 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/30 hover:bg-white/20">Open screener</Link>
           <Link href="/recommend" className="rounded-lg bg-indigo-500/40 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/30 hover:bg-indigo-500/60">Goal-based picks</Link>
-          <Link href="/wheel" className="rounded-lg bg-violet-500/40 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/30 hover:bg-violet-500/60">Options wheel screener</Link>
-          <Link href="/sources" className="rounded-lg px-4 py-2 text-sm font-semibold text-indigo-100 ring-1 ring-white/20 hover:bg-white/10">Data source catalog</Link>
+          <Link href="/wheel" className="rounded-lg bg-violet-500/40 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/30 hover:bg-violet-500/60">Options wheel</Link>
         </div>
+        <p className="mt-3 text-xs text-indigo-200">No account needed. <Link href="/onboarding" className="underline">3 questions → ranked picks + starter portfolio you can edit.</Link> No trades placed, no advice.</p>
       </section>
 
       <Hydrator remaining={stale.length} total={UNIVERSE.length} />
