@@ -4,7 +4,9 @@ import { AcctFlagDark, DeltaCellDark, EarningsBadgeDark, SourceBadgeDark } from 
 import WheelKeyLevelsDark from "@/components/wheel/WheelKeyLevelsDark";
 import WheelGradeCardDark from "@/components/wheel/WheelGradeCardDark";
 import { WheelCardDark, WheelStatDark, WheelBadgeDark } from "@/components/wheel/WheelStockHeader";
+import WheelChartWithPuts from "@/components/wheel/WheelChartWithPuts";
 import { dateShort, money, num, pct } from "@/lib/format";
+import { yahooBars } from "@/lib/yahoo";
 import { getOptionChain } from "@/lib/options-providers";
 import { getStock, gradeStock } from "@/lib/stock-service";
 import { stockGradeRank } from "@/lib/stock-quality";
@@ -44,10 +46,17 @@ export default async function WheelStockPage({ params, searchParams }: { params:
   }
   const g = gradeStock(row);
   let live: number | null = null;
+  let bars: { t: number; o: number; h: number; l: number; c: number; v: number }[] = [];
   try {
     live = (await yahooQuotes([ticker]))[0]?.price ?? null;
   } catch {
     live = null;
+  }
+  try {
+    const r = await yahooBars(ticker, "2y");
+    bars = r.bars;
+  } catch {
+    bars = [];
   }
   const ctx = stockCtx(g, live);
   const today = todayIso();
@@ -88,16 +97,16 @@ export default async function WheelStockPage({ params, searchParams }: { params:
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight text-white">{ticker}</h1>
-            <span className="text-sm font-medium text-slate-400">· {row.name ?? ""}</span>
-            {g.grade && <span className={`rounded-full px-2.5 py-1 text-xs font-bold ring-1 ${g.grade === "A+" ? "bg-emerald-500/20 text-emerald-300 ring-emerald-500/30" : g.grade === "A" ? "bg-emerald-500/15 text-emerald-300 ring-emerald-500/20" : "bg-amber-500/15 text-amber-300 ring-amber-500/20"}`}>{g.grade}</span>}
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{ticker}</h1>
+            <span className="text-sm font-medium text-slate-500 dark:text-slate-400">· {row.name ?? ""}</span>
+            {g.grade && <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold ring-1 ring-emerald-200 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 dark:ring-emerald-500/30">{g.grade}</span>}
           </div>
-          <p className="mt-1 text-sm text-slate-400">{row.sector ?? ""}{row.industry ? ` · ${row.industry}` : ""}</p>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{row.sector ?? ""}{row.industry ? ` · ${row.industry}` : ""}</p>
         </div>
-        <Link href={`/wheel?${q}`} className="rounded-lg bg-[#1B2540] px-4 py-2 text-sm font-medium text-indigo-300 ring-1 ring-indigo-500/20 hover:bg-[#24304F] hover:text-white">← Wheel Screener</Link>
+        <Link href={`/wheel?${q}`} className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100 dark:border-indigo-500/20 dark:bg-[#1B2540] dark:text-indigo-300 dark:hover:bg-[#24304F] dark:hover:text-white">← Wheel Screener</Link>
       </div>
 
-      {!isA && <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">This stock is graded {g.grade ?? "n/a"}, below the A/A+ bar of the screener. Its options are shown for reference only.</div>}
+      {!isA && <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">This stock is graded {g.grade ?? "n/a"}, below the A/A+ bar of the screener. Its options are shown for reference only.</div>}
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <WheelStatDark label="Price" value={money(ctx?.price ?? row.price)} sub={live != null ? "live (delayed)" : `last close ${row.technicals.asOf}`} />
@@ -109,49 +118,16 @@ export default async function WheelStockPage({ params, searchParams }: { params:
       <WheelGradeCardDark quality={g.quality} />
       <WheelKeyLevelsDark t={row.technicals} livePrice={ctx?.price} />
 
-      <WheelCardDark title="Step 1 · Cash-secured puts" subtitle={`Delta ${p.deltaMin}–${p.deltaMax}, ${p.dteMin}–${p.dteMax} days, best first. If assigned you buy 100 shares at the strike.`} right={puts ? <SourceBadgeDark source={puts.source} fallbackReason={puts.fallbackReason} /> : undefined}>
-        {putErr ? (
-          <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-200">Option chain unavailable: {putErr}</div>
-        ) : !puts ? (
-          <div className="rounded-lg border border-slate-700 bg-slate-800/30 p-4 text-sm text-slate-400">No price available.</div>
-        ) : puts.candidates.length === 0 ? (
-          <p className="text-sm text-slate-400">No put passes your filters.<RejectsDark rejected={puts.rejected} evaluated={puts.evaluated} />{!p.allowEarnings && (puts.rejected.earnings ?? 0) > 0 && <span className="text-xs text-amber-300"> Some were hidden because they expire after earnings; tick the earnings box on the screener to include them.</span>}</p>
-        ) : (
-          <div className="overflow-x-auto rounded-lg border border-slate-800">
-            <table className="min-w-full text-sm">
-              <thead className="bg-[#0D1632] text-left text-[10px] uppercase tracking-[0.12em] text-slate-400"><tr>{["Expiry", "Strike", "Credit", "Delta", "Return /yr", "Breakeven", "Cushion", "σ out", "Liquidity", "IV / HV", "Flags", "Acct", "Score"].map((h) => <th key={h} className={th}>{h}</th>)}</tr></thead>
-              <tbody className="divide-y divide-slate-800/60">
-                {puts.candidates.slice(0, 20).map((c) => (
-                  <tr key={c.contract.strike + c.contract.expiration} className="align-top hover:bg-white/[0.03]">
-                    <td className="whitespace-nowrap px-3 py-2 text-slate-300">{dateShort(c.contract.expiration)}<div className="text-[11px] text-slate-500">{c.dte}d</div></td>
-                    <td className="px-3 py-2 font-medium tabular-nums text-white">{money(c.contract.strike, c.contract.strike % 1 ? 2 : 0)}<div className="text-[11px] text-slate-500">{pct(c.otmPct, 1)} below</div></td>
-                    <td className="whitespace-nowrap px-3 py-2 tabular-nums text-white">{money(c.credit)}<div className="text-[11px] text-slate-500">bid {money(c.contract.bid)} · ask {money(c.contract.ask)}</div></td>
-                    <td className="px-3 py-2 tabular-nums text-slate-200"><DeltaCellDark c={c.contract} /></td>
-                    <td className="px-3 py-2 tabular-nums"><b className="text-emerald-400">{pct(c.annRoc, 1)}</b><div className="text-[11px] text-slate-500">{pct(c.roc, 2)} / trade</div></td>
-                    <td className="px-3 py-2 tabular-nums text-white">{money(c.breakeven)}{fu.targetMean ? <div className="text-[11px] text-slate-500" title="Effective cost if assigned vs the average analyst target.">{pct(1 - c.breakeven / fu.targetMean, 0)} below target</div> : null}</td>
-                    <td className="px-3 py-2 tabular-nums text-slate-300">{pct(c.breakevenCushion, 1)}</td>
-                    <td className="px-3 py-2 tabular-nums text-slate-400">{c.sigmaDistance != null ? c.sigmaDistance.toFixed(1) : "N/A"}</td>
-                    <td className="px-3 py-2 tabular-nums text-slate-300">{pct(c.spreadPct, 1)}<div className="text-[11px] text-slate-500">OI {c.contract.oi?.toLocaleString() ?? "N/A"}</div></td>
-                    <td className="px-3 py-2 tabular-nums text-slate-400">{c.contract.iv != null ? pct(c.contract.iv, 0) : "N/A"}{c.ivHv != null && <div className="text-[11px] text-slate-500">{c.ivHv.toFixed(2)}× realized</div>}</td>
-                    <td className="px-3 py-2"><div className="flex flex-col items-start gap-1">
-                      <EarningsBadgeDark status={c.earnings} days={c.daysToEarnings} date={ctx?.nextEarnings} estimated={ctx?.earningsEstimated} />
-                      {c.exDivInside && <WheelBadgeDark className="bg-sky-500/15 text-sky-300 ring-sky-500/20">ex-div inside</WheelBadgeDark>}
-                      {c.supportAboveStrike && <WheelBadgeDark className="bg-emerald-500/15 text-emerald-300 ring-emerald-500/20">support above</WheelBadgeDark>}
-                      {c.belowSma200 && <WheelBadgeDark className="bg-rose-500/15 text-rose-300 ring-rose-500/20">below 200-day</WheelBadgeDark>}
-                    </div></td>
-                    <td className="px-3 py-2"><AcctFlagDark fit={c.account} /></td>
-                    <td className="px-3 py-2 font-semibold tabular-nums text-white">{c.score.toFixed(1)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="border-t border-slate-800 bg-[#0D1632] px-3 py-2">
-              <RejectsDark rejected={puts.rejected} evaluated={puts.evaluated} />
-              <p className="mt-1 text-[11px] text-slate-500">Cash needed per contract = strike × 100. Credit is an estimated limit fill (25% of the way from bid to ask). Place a limit order, never a market order.</p>
-            </div>
-          </div>
-        )}
-      </WheelCardDark>
+      <WheelChartWithPuts
+        ticker={ticker}
+        bars={bars}
+        technicals={row.technicals}
+        puts={puts}
+        putErr={putErr}
+        events={[]}
+        fundTarget={fu.targetMean ?? null}
+        allowEarnings={p.allowEarnings}
+      />
 
       <WheelCardDark title="Step 2 · Covered calls (after assignment)" subtitle="Enter your cost per share (strike minus the premiums you collected) to see calls whose strike is at or above it, so being called away never locks in a loss.">
         <form method="GET" className="mb-3 flex flex-wrap items-end gap-3 text-sm">
