@@ -7,6 +7,7 @@ import { isLowGrade } from "@/lib/grades";
 import { getSpreadStats } from "@/lib/snapshots";
 import { GOALS, METRICS, METRIC_KEYS, resolveWeights, scoreGoal, type Goal, type Metric, type Scored } from "@/lib/recommend";
 import { UNIVERSE } from "@/lib/universe";
+import RecommendExport from "@/components/RecommendExport";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Goal-based ETF picks · ETF Research Lab" };
@@ -130,7 +131,7 @@ export default async function RecommendPage({ searchParams }: { searchParams: Pr
       </form>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <Card title={`Top ${spec.label.toLowerCase()} candidates${customActive ? " (custom weights)" : ""}`} subtitle={`${shown} shown from ${eligible.length} eligible ETFs · ranked ${byClass ? "within asset class" : "across all ETFs"}`} className="lg:col-span-2">
+        <Card title={`Top ${spec.label.toLowerCase()} candidates${customActive ? " (custom weights)" : ""}`} subtitle={`${shown} shown from ${eligible.length} eligible ETFs · ranked ${byClass ? "within asset class" : "across all ETFs"}`} className="lg:col-span-2" right={<RecommendExport scored={groups.flatMap((g) => g.rows).map((s) => ({ row: { ticker: s.row.ticker, name: s.row.name, category: s.row.category, quality: s.row.quality, expense: s.row.expense, yieldTtm: s.row.yieldTtm, r3y: s.row.r3y, vol3y: s.row.vol3y, erosion: s.row.erosion }, score: s.score, coverage: s.coverage }))} goal={goal} />}>
           {shown === 0 ? (
             <Unavailable what="Rankings" why="No ETFs passed the filters with enough real data. Loosen the filters or wait for the data load to finish." />
           ) : (

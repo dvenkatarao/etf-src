@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { Badge, GradeBadge } from "@/components/ui";
 import { gradeRank, type QualityGrade } from "@/lib/grades";
 import { erosionStyle } from "@/lib/format";
+import { downloadCsv, screenerCsvRows } from "@/lib/csv-export";
 
 export type ScreenRow = {
   ticker: string;
@@ -178,6 +179,15 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
           {filtered.length} of {rows.length} ETFs
         </span>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              const csv = screenerCsvRows(filtered.map((r) => ({ ticker: r.ticker, name: r.name, category: r.category, quality: r.quality, expense: r.expense, yieldTtm: r.yieldTtm, aum: r.aum, ytd: r.ytd, r1y: r.r1y, r3y: r.r3y, vol3y: r.vol3y, dd3y: r.dd3y, sharpe: r.sharpe, erosion: r.erosion, rateTag: r.rateTag })));
+              downloadCsv(`screener-${new Date().toISOString().slice(0, 10)}.csv`, csv);
+            }}
+            className="rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
+          >
+            Export CSV
+          </button>
           {picked.length > 0 && <span className="text-xs text-slate-500">{picked.join(", ")}</span>}
           <Link
             href={picked.length >= 2 ? `/compare?t=${picked.join(",")}` : "#"}
@@ -189,6 +199,7 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
         </div>
       </div>
 
+      <p className="mb-2 text-xs text-slate-500">Tip: start at <a href="/onboarding" className="underline text-indigo-600">Start → 3 questions</a> if unsure. Hover column headers for definitions.</p>
       <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
         <table className="min-w-full text-sm">
           <thead className="bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500">
@@ -246,14 +257,37 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={COLUMNS.length + 1} className="px-3 py-10 text-center text-slate-500">
-                  No ETFs match these filters.
+                <td colSpan={COLUMNS.length + 1} className="px-3 py-6 text-center">
+                  <p className="font-medium text-slate-700">No ETFs match these filters.</p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Active: {[q && `search "${q}"`, cat && `category ${cat}`, minYield && `yield ≥${minYield}%`, maxExp && `expense ≤${maxExp}%`, minAum && `AUM ≥$${(Number(minAum)/1e9).toFixed(0)}B`, erosion && `erosion ${erosion}`, freq && `dist ${freq}`, minGrade && `grade ≥${minGrade}`, rateFilter && `${rateFilter}`, hideLev && "hide leveraged"].filter(Boolean).join(" · ") || "none"}
+                  </p>
+                  <p className="mt-2 text-xs text-indigo-600">
+                    Try: lower <b>Min yield</b> by 0.5–1pp, widen <b>Max expense</b>, lower <b>AUM</b> to $100M, or set <b>erosion</b> to Any. <button onClick={() => { setQ(""); setCat(""); setMinYield(""); setMaxExp(""); setMinAum(""); setErosion(""); setFreq(""); setMinGrade(""); setRateFilter(""); setHideLev(true); }} className="underline">Clear all</button>
+                  </p>
                 </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
+      <Glossary />
     </div>
+  );
+}
+
+function Glossary() {
+  return (
+    <details className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+      <summary className="cursor-pointer text-sm font-medium text-slate-700">Quick glossary — hover any header for detail</summary>
+      <dl className="mt-3 grid gap-2 text-xs sm:grid-cols-2 lg:grid-cols-3">
+        <div><dt className="font-semibold text-slate-800">TTM yield</dt><dd className="text-slate-600">Last 12 mo distributions ÷ price. Not a forecast.</dd></div>
+        <div><dt className="font-semibold text-slate-800">Price vs total return</dt><dd className="text-slate-600">Price excludes payouts; total reinvests them. Persistent gap + falling price = NAV erosion.</dd></div>
+        <div><dt className="font-semibold text-slate-800">Sharpe 3Y</dt><dd className="text-slate-600">(3Y ann. total return − T-bill) ÷ vol. Risk-adjusted.</dd></div>
+        <div><dt className="font-semibold text-slate-800">NAV erosion</dt><dd className="text-slate-600">Severe ≤−6%/yr price return while paying — price funds the yield.</dd></div>
+        <div><dt className="font-semibold text-slate-800">Quality A–F</dt><dd className="text-slate-600">Cost, size, liquidity, diversification, income. Not return.</dd></div>
+        <div><dt className="font-semibold text-slate-800">Rates: Defensive / Sensitive</dt><dd className="text-slate-600">Defensive holds up when yields rise (short bonds, low-vol); sensitive falls.</dd></div>
+      </dl>
+    </details>
   );
 }

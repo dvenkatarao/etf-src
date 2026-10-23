@@ -5,7 +5,7 @@ import QualityCard from "@/components/QualityCard";
 import { DistributionBars } from "@/components/SvgCharts";
 import { Badge, Card, SourceNote, Stat, Unavailable } from "@/components/ui";
 import { getRiskFree } from "@/lib/data";
-import { REFRESH_TTL_MS, getEtf, getHistory, getHoldingsAnalystConsensus, getQuotes, refreshEtf, type EtfRow } from "@/lib/etf-service";
+import { REFRESH_TTL_MS, getAllEtfs, getEtf, getHistory, getHoldingsAnalystConsensus, getQuotes, refreshEtf, type EtfRow } from "@/lib/etf-service";
 import { NA, big, colorFor, dateShort, erosionStyle, isLeveragedOrInverse, money, num, pct } from "@/lib/format";
 import { alignedStats, iso, sharpe } from "@/lib/metrics";
 import { qualityForRow } from "@/lib/quality";
@@ -14,6 +14,10 @@ import { assetClassOf } from "@/lib/recommend";
 import { getSpreadStats } from "@/lib/snapshots";
 import { getSymbolNews } from "@/lib/news";
 import { isValidTicker } from "@/lib/universe";
+import { buildTakeaway } from "@/lib/etf-takeaway";
+import EtfTakeaway from "@/components/etf/EtfTakeaway";
+import PeerCompareCta from "@/components/etf/PeerCompareCta";
+import { toScreenRow } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -74,12 +78,13 @@ export default async function EtfPage({ params }: { params: Promise<{ ticker: st
 
   const m = row.metrics;
   const p = row.profile;
-  const [history, spy, { quotes }, rf, spreads] = await Promise.all([
+  const [history, spy, { quotes }, rf, spreads, allEtfs] = await Promise.all([
     getHistory(ticker),
     ticker === "SPY" ? Promise.resolve(null) : getHistory("SPY"),
     getQuotes([ticker]),
     getRiskFree(),
     getSpreadStats(),
+    getAllEtfs(),
   ]);
   const q = quotes.get(ticker);
   const quality = qualityForRow(row, q, spreads.get(ticker));
@@ -92,6 +97,25 @@ export default async function EtfPage({ params }: { params: Promise<{ ticker: st
   const e = m.erosion;
   const d = m.dividends;
   const lastDivs = history ? history.d.slice(-12).reverse() : [];
+  // Sprint D — takeaway
+  const sectorTop = p?.sectors?.[0] ? { sector: p.sectors[0].sector, weight: p.sectors[0].weight } : null;
+  const ac = assetClassOf(row.category, row.profile?.allocation);
+  const rt = rateTagForEtf({ ticker, category: row.category, name: row.name, assetClass: ac });
+  const takeaway = buildTakeaway({
+    ticker, name: row.name, category: row.category,
+    quality, expense: row.expenseRatio, yieldTtm: d.ttmYield, ttmAmount: d.ttmAmount, erosionLevel: e.level, priceRet3y: e.priceReturnAnn3y, capFunded: e.capitalFundedShare3y,
+    vol3y: m.vol3y, dd3y: m.maxDrawdown3y, sharpe: sh, aum: row.totalAssets, rateTag: rt.tag, rateLabel: rt.label, leveraged,
+    low52w: m.low52w, high52w: m.high52w, fromHigh: m.fromHigh52w, sectorTop, totalReturn3y: m.returns["3Y"].total,
+  });
+  // Sprint D — peers: same category or same asset class, sorted by AUM desc
+  const peers = (() => {
+    try {
+      const sameCat = allEtfs.filter((r) => r.ticker !== ticker && r.category && row.category && r.category === row.category);
+      const pool = sameCat.length >= 3 ? sameCat : allEtfs.filter((r) => r.ticker !== ticker && r.category && assetClassOf(r.category, (r.profile as any)?.allocation) === ac);
+      return pool.slice(0, 8).map((r) => ({ ticker: r.ticker, name: r.name, category: r.category, expense: r.expenseRatio, yieldTtm: (r.metrics as any)?.dividends?.ttmYield ?? null }))
+        .sort((a, b) => (b.expense != null && a.expense != null ? 0 : 0)); // keep original order (AUM in DB is approx)
+    } catch { return []; }
+  })();
 
   return (
     <div className="space-y-6">
@@ -134,6 +158,22 @@ export default async function EtfPage({ params }: { params: Promise<{ ticker: st
       </section>
 
       <QualityCard quality={quality} />
+
+      <EtfTakeaway t={takeaway} ticker={ticker} />
+
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <PeerCompareCta ticker={ticker} peers={peers} />
+        </div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 text-xs leading-relaxed text-slate-600">
+          <b className="text-slate-800">What to do next</b>
+          <ul className="mt-2 list-disc pl-5 space-y-1">
+            <li><Link className="text-indigo-700 underline" href={`/compare?t=${[ticker, ...peers.slice(0,2).map(p=>p.ticker)].join(",")}`}>Compare vs peers head-to-head</Link> — growth overlay + correlation.</li>
+            <li><Link className="text-indigo-700 underline" href={`/recommend?goal=balanced`}>See balanced picks</Link> or <Link className="text-indigo-700 underline" href="/screener">screen by yield / expense</Link>.</li>
+            <li>New? <Link className="text-indigo-700 underline" href="/onboarding">3-question starter</Link> builds a portfolio you can edit.</li>
+          </ul>
+        </div>
+      </div>
 
       <Card title="Price history" subtitle="Hover for exact values · split-adjusted close">
         {history ? (
