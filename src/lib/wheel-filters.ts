@@ -30,7 +30,14 @@ export function parseFilters(sp: SP): WheelFilters {
   };
   const acct = one(sp.acct);
   const account: AccountFilter = acct === "R" || acct === "T" ? acct : "all";
-  return { params, minGrade: one(sp.grade) === "A+" ? "A+" : "A", account, trendOnly: one(sp.trend) === "1" };
+  return {
+    params,
+    minGrade: one(sp.grade) === "A+" ? "A+" : "A",
+    account,
+    trendOnly: one(sp.trend) === "1",
+    minScore: numIn(sp.minScore, 15, 0, 100),
+    divOnly: one(sp.divOnly) === "1",
+  };
 }
 
 /** Params for the detail page links so the user's filters carry over. */
@@ -39,7 +46,12 @@ export function filtersQuery(f: WheelFilters): string {
   const q = new URLSearchParams({
     dteMin: String(p.dteMin), dteMax: String(p.dteMax), dMin: String(p.deltaMin), dMax: String(p.deltaMax),
     oi: String(p.minOi), spread: String(Math.round(p.maxSpreadPct * 100)), ret: String(Math.round(p.minAnnReturn * 100)),
+    minScore: String(f.minScore ?? 15),
   });
   if (p.allowEarnings) q.set("earn", "1");
+  if (f.trendOnly) q.set("trend", "1");
+  if (f.divOnly) q.set("divOnly", "1");
+  if (f.account !== "all") q.set("acct", f.account);
+  if (f.minGrade === "A+") q.set("grade", f.minGrade);
   return q.toString();
 }

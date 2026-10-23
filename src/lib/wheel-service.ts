@@ -94,8 +94,8 @@ export async function runScanBatch(limit: number, concurrency = 3) {
 /* ------------------------------------------------------------------ */
 
 export type AccountFilter = "all" | "R" | "T";
-export type WheelFilters = { params: WheelParams; minGrade: "A+" | "A"; account: AccountFilter; trendOnly: boolean };
-export const DEFAULT_FILTERS: WheelFilters = { params: DEFAULT_PARAMS, minGrade: "A", account: "all", trendOnly: false };
+export type WheelFilters = { params: WheelParams; minGrade: "A+" | "A"; account: AccountFilter; trendOnly: boolean; minScore: number; divOnly: boolean };
+export const DEFAULT_FILTERS: WheelFilters = { params: DEFAULT_PARAMS, minGrade: "A", account: "all", trendOnly: false, minScore: 15, divOnly: false };
 
 export type WheelRow = {
   g: GradedStock;
@@ -151,10 +151,15 @@ export async function getWheelResults(f: WheelFilters = DEFAULT_FILTERS, today =
     sources[s.source ?? "?"] = (sources[s.source ?? "?"] ?? 0) + 1;
     if (s.fallbackReason) fallbacks++;
     if (f.trendOnly && ctx.sma200 != null && ctx.price < ctx.sma200) continue;
+    // Dividend-only filter: keep only stocks with a meaningful dividend inside the expiry window
+    if (f.divOnly && !(ctx.dividendYield != null && ctx.dividendYield > 0.005)) continue;
 
     const scan = scanPuts(s.contracts as OptionContract[], ctx, f.params, today);
     for (const [k, n] of Object.entries(scan.rejected)) rejected[k as RejectReason] = (rejected[k as RejectReason] ?? 0) + (n ?? 0);
     let cands = scan.candidates;
+    if (f.minScore != null && Number.isFinite(f.minScore) && f.minScore > 0) {
+      cands = cands.filter((c) => c.score >= f.minScore);
+    }
     if (f.account !== "all") cands = cands.filter((c) => c.account.flag === f.account || c.account.flag === "R/T");
     if (cands.length === 0) {
       if (!f.params.allowEarnings && !scan.candidates.length && (scan.rejected.earnings ?? 0) > 0) {

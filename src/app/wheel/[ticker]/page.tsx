@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import KeyLevels from "@/components/KeyLevels";
-import StockGradeCard from "@/components/StockGradeCard";
-import { AcctFlag, DeltaCell, EarningsBadge, SourceBadge } from "@/components/WheelBits";
-import { Badge, Card, PageHeader, Stat, Unavailable } from "@/components/ui";
+import { AcctFlagDark, DeltaCellDark, EarningsBadgeDark, SourceBadgeDark } from "@/components/wheel/WheelBitsDark";
+import WheelKeyLevelsDark from "@/components/wheel/WheelKeyLevelsDark";
+import WheelGradeCardDark from "@/components/wheel/WheelGradeCardDark";
+import { WheelCardDark, WheelStatDark, WheelBadgeDark } from "@/components/wheel/WheelStockHeader";
 import { dateShort, money, num, pct } from "@/lib/format";
 import { getOptionChain } from "@/lib/options-providers";
 import { getStock, gradeStock } from "@/lib/stock-service";
@@ -18,9 +18,9 @@ export const dynamic = "force-dynamic";
 
 const th = "whitespace-nowrap px-3 py-2 font-medium";
 
-function Rejects({ rejected, evaluated }: { rejected: PutScan["rejected"]; evaluated: number }) {
+function RejectsDark({ rejected, evaluated }: { rejected: PutScan["rejected"]; evaluated: number }) {
   const parts = Object.entries(rejected).sort((a, b) => (b[1] ?? 0) - (a[1] ?? 0)).map(([k, n]) => `${n} ${REJECT_LABEL[k as keyof typeof REJECT_LABEL]}`);
-  return <p className="mt-2 text-[11px] text-slate-400">{evaluated} contracts checked{parts.length ? `; filtered out: ${parts.join(" · ")}` : ""}.</p>;
+  return <p className="mt-2 text-[11px] text-slate-500">{evaluated} contracts checked{parts.length ? `; filtered out: ${parts.join(" · ")}` : ""}.</p>;
 }
 
 export default async function WheelStockPage({ params, searchParams }: { params: Promise<{ ticker: string }>; searchParams: Promise<SP> }) {
@@ -32,10 +32,13 @@ export default async function WheelStockPage({ params, searchParams }: { params:
   const row = await getStock(ticker);
   if (!row || !row.fundamentals || !row.technicals) {
     return (
-      <div>
-        <PageHeader title={ticker} description="This stock has not been analysed yet." />
-        <Unavailable what="Stock data" why={row?.lastError ?? "Open the Wheel Screener first so the stock universe can load, or add the ticker with WHEEL_EXTRA_SYMBOLS."} />
-        <Link href="/wheel" className="text-sm text-indigo-700 underline">← Wheel Screener</Link>
+      <div className="space-y-4">
+        <div className="rounded-xl border border-slate-800 bg-[#0F1A3A] p-6">
+          <h1 className="text-xl font-semibold text-white">{ticker}</h1>
+          <p className="mt-1 text-sm text-slate-400">This stock has not been analysed yet.</p>
+          <p className="mt-2 text-xs text-slate-500">{row?.lastError ?? "Open the Wheel Screener first so the stock universe can load, or add the ticker with WHEEL_EXTRA_SYMBOLS."}</p>
+        </div>
+        <Link href="/wheel" className="text-sm font-medium text-indigo-300 hover:text-white">← Wheel Screener</Link>
       </div>
     );
   }
@@ -81,112 +84,124 @@ export default async function WheelStockPage({ params, searchParams }: { params:
 
   return (
     <div className="space-y-5">
-      <PageHeader
-        title={`${ticker} · ${row.name ?? ""}`}
-        description={`${row.sector ?? ""}${row.industry ? ` · ${row.industry}` : ""}`}
-        right={<Link href={`/wheel?${q}`} className="text-sm text-indigo-700 underline">← Wheel Screener</Link>}
-      />
-      {!isA && <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">This stock is graded {g.grade ?? "n/a"}, below the A/A+ bar of the screener. Its options are shown for reference only.</div>}
-
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <Stat label="Price" value={money(ctx?.price ?? row.price)} sub={live != null ? "live (delayed)" : `last close ${row.technicals.asOf}`} />
-        <Stat label="Next earnings" value={ev?.nextEarnings ? dateShort(ev.nextEarnings) : "unknown"} sub={earnDays != null ? `in ${earnDays} days${ev?.earningsEstimated ? " (estimated)" : ""}` : undefined} valueClass={earnDays != null && earnDays <= 14 ? "text-amber-700" : "text-slate-900"} />
-        <Stat label="Next ex-dividend" value={ev?.exDividend && ev.exDividend >= today ? dateShort(ev.exDividend) : "none upcoming"} sub={ev?.dividendPerShare != null ? `${money(ev.dividendPerShare)}/yr · ${pct(ev.dividendYield, 2)} yield` : "no dividend"} />
-        <Stat label="Analyst view" value={fu.recMean != null ? `${fu.recMean.toFixed(1)} / 5` : "N/A"} sub={fu.targetMean != null && fu.price ? `target ${money(fu.targetMean)} (${pct(fu.targetMean / fu.price - 1, 1, true)}) · ${fu.analystCount ?? "?"} analysts` : "1 = strong buy, 5 = sell"} />
+      {/* Header */}
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold tracking-tight text-white">{ticker}</h1>
+            <span className="text-sm font-medium text-slate-400">· {row.name ?? ""}</span>
+            {g.grade && <span className={`rounded-full px-2.5 py-1 text-xs font-bold ring-1 ${g.grade === "A+" ? "bg-emerald-500/20 text-emerald-300 ring-emerald-500/30" : g.grade === "A" ? "bg-emerald-500/15 text-emerald-300 ring-emerald-500/20" : "bg-amber-500/15 text-amber-300 ring-amber-500/20"}`}>{g.grade}</span>}
+          </div>
+          <p className="mt-1 text-sm text-slate-400">{row.sector ?? ""}{row.industry ? ` · ${row.industry}` : ""}</p>
+        </div>
+        <Link href={`/wheel?${q}`} className="rounded-lg bg-[#1B2540] px-4 py-2 text-sm font-medium text-indigo-300 ring-1 ring-indigo-500/20 hover:bg-[#24304F] hover:text-white">← Wheel Screener</Link>
       </div>
 
-      <StockGradeCard quality={g.quality} />
-      <KeyLevels t={row.technicals} livePrice={ctx?.price} />
+      {!isA && <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">This stock is graded {g.grade ?? "n/a"}, below the A/A+ bar of the screener. Its options are shown for reference only.</div>}
 
-      <Card title="Step 1 · Cash-secured puts" subtitle={`Delta ${p.deltaMin}–${p.deltaMax}, ${p.dteMin}–${p.dteMax} days, best first. If assigned you buy 100 shares at the strike.`} right={puts ? <SourceBadge source={puts.source} fallbackReason={puts.fallbackReason} /> : undefined}>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <WheelStatDark label="Price" value={money(ctx?.price ?? row.price)} sub={live != null ? "live (delayed)" : `last close ${row.technicals.asOf}`} />
+        <WheelStatDark label="Next earnings" value={ev?.nextEarnings ? dateShort(ev.nextEarnings) : "unknown"} sub={earnDays != null ? `in ${earnDays} days${ev?.earningsEstimated ? " (estimated)" : ""}` : undefined} valueClass={earnDays != null && earnDays <= 14 ? "text-amber-300" : "text-white"} />
+        <WheelStatDark label="Next ex-dividend" value={ev?.exDividend && ev.exDividend >= today ? dateShort(ev.exDividend) : "none upcoming"} sub={ev?.dividendPerShare != null ? `${money(ev.dividendPerShare)}/share · ${pct(ev.dividendYield, 2)} yield` : "no dividend"} />
+        <WheelStatDark label="Analyst view" value={fu.recMean != null ? `${fu.recMean.toFixed(1)} / 5` : "N/A"} sub={fu.targetMean != null && fu.price ? `target ${money(fu.targetMean)} (${pct(fu.targetMean / fu.price - 1, 1, true)}) · ${fu.analystCount ?? "?"} analysts` : "1 = strong buy, 5 = sell"} />
+      </div>
+
+      <WheelGradeCardDark quality={g.quality} />
+      <WheelKeyLevelsDark t={row.technicals} livePrice={ctx?.price} />
+
+      <WheelCardDark title="Step 1 · Cash-secured puts" subtitle={`Delta ${p.deltaMin}–${p.deltaMax}, ${p.dteMin}–${p.dteMax} days, best first. If assigned you buy 100 shares at the strike.`} right={puts ? <SourceBadgeDark source={puts.source} fallbackReason={puts.fallbackReason} /> : undefined}>
         {putErr ? (
-          <Unavailable what="Option chain" why={putErr} />
+          <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-200">Option chain unavailable: {putErr}</div>
         ) : !puts ? (
-          <Unavailable what="Option chain" why="No price available." />
+          <div className="rounded-lg border border-slate-700 bg-slate-800/30 p-4 text-sm text-slate-400">No price available.</div>
         ) : puts.candidates.length === 0 ? (
-          <p className="text-sm text-slate-500">No put passes your filters.<Rejects rejected={puts.rejected} evaluated={puts.evaluated} />{!p.allowEarnings && (puts.rejected.earnings ?? 0) > 0 && <span className="text-xs text-amber-700"> Some were hidden because they expire after earnings; tick the earnings box on the screener to include them.</span>}</p>
+          <p className="text-sm text-slate-400">No put passes your filters.<RejectsDark rejected={puts.rejected} evaluated={puts.evaluated} />{!p.allowEarnings && (puts.rejected.earnings ?? 0) > 0 && <span className="text-xs text-amber-300"> Some were hidden because they expire after earnings; tick the earnings box on the screener to include them.</span>}</p>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto rounded-lg border border-slate-800">
             <table className="min-w-full text-sm">
-              <thead className="text-left text-[11px] uppercase tracking-wide text-slate-500"><tr>{["Expiry", "Strike", "Credit", "Delta", "Return /yr", "Breakeven", "Cushion", "σ out", "Liquidity", "IV / HV", "Flags", "Acct", "Score"].map((h) => <th key={h} className={th}>{h}</th>)}</tr></thead>
-              <tbody className="divide-y divide-slate-100">
+              <thead className="bg-[#0D1632] text-left text-[10px] uppercase tracking-[0.12em] text-slate-400"><tr>{["Expiry", "Strike", "Credit", "Delta", "Return /yr", "Breakeven", "Cushion", "σ out", "Liquidity", "IV / HV", "Flags", "Acct", "Score"].map((h) => <th key={h} className={th}>{h}</th>)}</tr></thead>
+              <tbody className="divide-y divide-slate-800/60">
                 {puts.candidates.slice(0, 20).map((c) => (
-                  <tr key={c.contract.strike + c.contract.expiration} className="align-top">
-                    <td className="whitespace-nowrap px-3 py-2">{dateShort(c.contract.expiration)}<div className="text-[11px] text-slate-400">{c.dte}d</div></td>
-                    <td className="px-3 py-2 font-medium tabular-nums">{money(c.contract.strike, c.contract.strike % 1 ? 2 : 0)}<div className="text-[11px] text-slate-400">{pct(c.otmPct, 1)} below</div></td>
-                    <td className="whitespace-nowrap px-3 py-2 tabular-nums">{money(c.credit)}<div className="text-[11px] text-slate-400">bid {money(c.contract.bid)} · ask {money(c.contract.ask)}</div></td>
-                    <td className="px-3 py-2 tabular-nums"><DeltaCell c={c.contract} /></td>
-                    <td className="px-3 py-2 tabular-nums"><b>{pct(c.annRoc, 1)}</b><div className="text-[11px] text-slate-400">{pct(c.roc, 2)} / trade</div></td>
-                    <td className="px-3 py-2 tabular-nums">{money(c.breakeven)}{fu.targetMean ? <div className="text-[11px] text-slate-400" title="Effective cost if assigned vs the average analyst target.">{pct(1 - c.breakeven / fu.targetMean, 0)} below target</div> : null}</td>
-                    <td className="px-3 py-2 tabular-nums">{pct(c.breakevenCushion, 1)}</td>
-                    <td className="px-3 py-2 tabular-nums">{c.sigmaDistance != null ? c.sigmaDistance.toFixed(1) : "N/A"}</td>
-                    <td className="px-3 py-2 tabular-nums">{pct(c.spreadPct, 1)}<div className="text-[11px] text-slate-400">OI {c.contract.oi?.toLocaleString() ?? "N/A"}</div></td>
-                    <td className="px-3 py-2 tabular-nums">{c.contract.iv != null ? pct(c.contract.iv, 0) : "N/A"}{c.ivHv != null && <div className="text-[11px] text-slate-400">{c.ivHv.toFixed(2)}× realized</div>}</td>
+                  <tr key={c.contract.strike + c.contract.expiration} className="align-top hover:bg-white/[0.03]">
+                    <td className="whitespace-nowrap px-3 py-2 text-slate-300">{dateShort(c.contract.expiration)}<div className="text-[11px] text-slate-500">{c.dte}d</div></td>
+                    <td className="px-3 py-2 font-medium tabular-nums text-white">{money(c.contract.strike, c.contract.strike % 1 ? 2 : 0)}<div className="text-[11px] text-slate-500">{pct(c.otmPct, 1)} below</div></td>
+                    <td className="whitespace-nowrap px-3 py-2 tabular-nums text-white">{money(c.credit)}<div className="text-[11px] text-slate-500">bid {money(c.contract.bid)} · ask {money(c.contract.ask)}</div></td>
+                    <td className="px-3 py-2 tabular-nums text-slate-200"><DeltaCellDark c={c.contract} /></td>
+                    <td className="px-3 py-2 tabular-nums"><b className="text-emerald-400">{pct(c.annRoc, 1)}</b><div className="text-[11px] text-slate-500">{pct(c.roc, 2)} / trade</div></td>
+                    <td className="px-3 py-2 tabular-nums text-white">{money(c.breakeven)}{fu.targetMean ? <div className="text-[11px] text-slate-500" title="Effective cost if assigned vs the average analyst target.">{pct(1 - c.breakeven / fu.targetMean, 0)} below target</div> : null}</td>
+                    <td className="px-3 py-2 tabular-nums text-slate-300">{pct(c.breakevenCushion, 1)}</td>
+                    <td className="px-3 py-2 tabular-nums text-slate-400">{c.sigmaDistance != null ? c.sigmaDistance.toFixed(1) : "N/A"}</td>
+                    <td className="px-3 py-2 tabular-nums text-slate-300">{pct(c.spreadPct, 1)}<div className="text-[11px] text-slate-500">OI {c.contract.oi?.toLocaleString() ?? "N/A"}</div></td>
+                    <td className="px-3 py-2 tabular-nums text-slate-400">{c.contract.iv != null ? pct(c.contract.iv, 0) : "N/A"}{c.ivHv != null && <div className="text-[11px] text-slate-500">{c.ivHv.toFixed(2)}× realized</div>}</td>
                     <td className="px-3 py-2"><div className="flex flex-col items-start gap-1">
-                      <EarningsBadge status={c.earnings} days={c.daysToEarnings} date={ctx?.nextEarnings} estimated={ctx?.earningsEstimated} />
-                      {c.exDivInside && <Badge className="bg-sky-50 text-sky-800 ring-sky-200">ex-div inside</Badge>}
-                      {c.supportAboveStrike && <Badge className="bg-emerald-50 text-emerald-700 ring-emerald-200">support above</Badge>}
-                      {c.belowSma200 && <Badge className="bg-rose-50 text-rose-700 ring-rose-200">below 200-day</Badge>}
+                      <EarningsBadgeDark status={c.earnings} days={c.daysToEarnings} date={ctx?.nextEarnings} estimated={ctx?.earningsEstimated} />
+                      {c.exDivInside && <WheelBadgeDark className="bg-sky-500/15 text-sky-300 ring-sky-500/20">ex-div inside</WheelBadgeDark>}
+                      {c.supportAboveStrike && <WheelBadgeDark className="bg-emerald-500/15 text-emerald-300 ring-emerald-500/20">support above</WheelBadgeDark>}
+                      {c.belowSma200 && <WheelBadgeDark className="bg-rose-500/15 text-rose-300 ring-rose-500/20">below 200-day</WheelBadgeDark>}
                     </div></td>
-                    <td className="px-3 py-2"><AcctFlag fit={c.account} /></td>
-                    <td className="px-3 py-2 font-semibold tabular-nums">{c.score.toFixed(1)}</td>
+                    <td className="px-3 py-2"><AcctFlagDark fit={c.account} /></td>
+                    <td className="px-3 py-2 font-semibold tabular-nums text-white">{c.score.toFixed(1)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            <Rejects rejected={puts.rejected} evaluated={puts.evaluated} />
-            <p className="mt-1 text-[11px] text-slate-400">Cash needed per contract = strike × 100. Credit is an estimated limit fill (25% of the way from bid to ask). Place a limit order, never a market order.</p>
+            <div className="border-t border-slate-800 bg-[#0D1632] px-3 py-2">
+              <RejectsDark rejected={puts.rejected} evaluated={puts.evaluated} />
+              <p className="mt-1 text-[11px] text-slate-500">Cash needed per contract = strike × 100. Credit is an estimated limit fill (25% of the way from bid to ask). Place a limit order, never a market order.</p>
+            </div>
           </div>
         )}
-      </Card>
+      </WheelCardDark>
 
-      <Card title="Step 2 · Covered calls (after assignment)" subtitle="Enter your cost per share (strike minus the premiums you collected) to see calls whose strike is at or above it, so being called away never locks in a loss.">
+      <WheelCardDark title="Step 2 · Covered calls (after assignment)" subtitle="Enter your cost per share (strike minus the premiums you collected) to see calls whose strike is at or above it, so being called away never locks in a loss.">
         <form method="GET" className="mb-3 flex flex-wrap items-end gap-3 text-sm">
           {Object.entries({ dteMin: p.dteMin, dteMax: p.dteMax, dMin: p.deltaMin, dMax: p.deltaMax, oi: p.minOi, spread: Math.round(p.maxSpreadPct * 100), ret: Math.round(p.minAnnReturn * 100) }).map(([k, v]) => <input key={k} type="hidden" name={k} value={String(v)} />)}
           {p.allowEarnings && <input type="hidden" name="earn" value="1" />}
-          <label className="grid gap-1 text-xs text-slate-500">Your cost basis per share<input name="basis" defaultValue={basis ?? ""} placeholder={ctx ? num(ctx.price, 2) : ""} className="w-32 rounded-md border border-slate-300 px-2 py-1 text-sm text-slate-900" /></label>
-          <button className="rounded-md bg-slate-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-slate-700">Find calls</button>
+          <label className="grid gap-1 text-xs text-slate-400">Your cost basis per share<input name="basis" defaultValue={basis ?? ""} placeholder={ctx ? num(ctx.price, 2) : ""} className="w-32 rounded-lg border border-slate-700 bg-[#111C3E] px-2 py-1.5 text-sm text-white placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none" /></label>
+          <button className="rounded-lg bg-indigo-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-indigo-500">Find calls</button>
         </form>
         {basis == null ? (
-          <p className="text-sm text-slate-500">Enter a cost basis above. The guide explains how to work it out after an assignment.</p>
+          <p className="text-sm text-slate-400">Enter a cost basis above. The guide explains how to work it out after an assignment.</p>
         ) : callErr ? (
-          <Unavailable what="Call chain" why={callErr} />
+          <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-200">Call chain unavailable: {callErr}</div>
         ) : calls ? (
           calls.candidates.length === 0 ? (
-            <p className="text-sm text-slate-500">No call at or above {money(basis)} passes your filters.<Rejects rejected={calls.rejected} evaluated={calls.evaluated} />{ctx && basis > ctx.price * 1.1 && <span className="text-xs text-amber-700"> The stock is well below your cost; strikes at your cost may be too far out to pay much. Consider waiting or a longer expiry.</span>}</p>
+            <p className="text-sm text-slate-400">No call at or above {money(basis)} passes your filters.<RejectsDark rejected={calls.rejected} evaluated={calls.evaluated} />{ctx && basis > ctx.price * 1.1 && <span className="text-xs text-amber-300"> The stock is well below your cost; strikes at your cost may be too far out to pay much. Consider waiting or a longer expiry.</span>}</p>
           ) : (
-            <div className="overflow-x-auto">
-              <div className="mb-2"><SourceBadge source={calls.source} fallbackReason={calls.fallbackReason} /></div>
+            <div className="overflow-x-auto rounded-lg border border-slate-800">
+              <div className="border-b border-slate-800 bg-[#0D1632] px-3 py-2"><SourceBadgeDark source={calls.source} fallbackReason={calls.fallbackReason} /></div>
               <table className="min-w-full text-sm">
-                <thead className="text-left text-[11px] uppercase tracking-wide text-slate-500"><tr>{["Expiry", "Strike", "Credit", "Delta", "Yield on cost /yr", "If called", "Upside to strike", "Liquidity", "Flags", "Score"].map((h) => <th key={h} className={th}>{h}</th>)}</tr></thead>
-                <tbody className="divide-y divide-slate-100">
+                <thead className="bg-[#0D1632] text-left text-[10px] uppercase tracking-[0.12em] text-slate-400"><tr>{["Expiry", "Strike", "Credit", "Delta", "Yield on cost /yr", "If called", "Upside to strike", "Liquidity", "Flags", "Score"].map((h) => <th key={h} className={th}>{h}</th>)}</tr></thead>
+                <tbody className="divide-y divide-slate-800/60">
                   {calls.candidates.slice(0, 15).map((c) => (
-                    <tr key={c.contract.strike + c.contract.expiration} className="align-top">
-                      <td className="whitespace-nowrap px-3 py-2">{dateShort(c.contract.expiration)}<div className="text-[11px] text-slate-400">{c.dte}d</div></td>
-                      <td className="px-3 py-2 font-medium tabular-nums">{money(c.contract.strike, c.contract.strike % 1 ? 2 : 0)}</td>
-                      <td className="px-3 py-2 tabular-nums">{money(c.credit)}</td>
-                      <td className="px-3 py-2 tabular-nums"><DeltaCell c={c.contract} /></td>
-                      <td className="px-3 py-2 tabular-nums"><b>{pct(c.annYield, 1)}</b></td>
-                      <td className="px-3 py-2 tabular-nums">{pct(c.ifCalled, 1, true)}<div className="text-[11px] text-slate-400">{pct(c.annIfCalled, 0)}/yr</div></td>
-                      <td className="px-3 py-2 tabular-nums">{pct(c.upsideToStrike, 1)}</td>
-                      <td className="px-3 py-2 tabular-nums">{pct(c.spreadPct, 1)}<div className="text-[11px] text-slate-400">OI {c.contract.oi?.toLocaleString() ?? "N/A"}</div></td>
+                    <tr key={c.contract.strike + c.contract.expiration} className="align-top hover:bg-white/[0.03]">
+                      <td className="whitespace-nowrap px-3 py-2 text-slate-300">{dateShort(c.contract.expiration)}<div className="text-[11px] text-slate-500">{c.dte}d</div></td>
+                      <td className="px-3 py-2 font-medium tabular-nums text-white">{money(c.contract.strike, c.contract.strike % 1 ? 2 : 0)}</td>
+                      <td className="px-3 py-2 tabular-nums text-white">{money(c.credit)}</td>
+                      <td className="px-3 py-2 tabular-nums text-slate-200"><DeltaCellDark c={c.contract} /></td>
+                      <td className="px-3 py-2 tabular-nums text-emerald-400"><b>{pct(c.annYield, 1)}</b></td>
+                      <td className="px-3 py-2 tabular-nums text-white">{pct(c.ifCalled, 1, true)}<div className="text-[11px] text-slate-500">{pct(c.annIfCalled, 0)}/yr</div></td>
+                      <td className="px-3 py-2 tabular-nums text-slate-300">{pct(c.upsideToStrike, 1)}</td>
+                      <td className="px-3 py-2 tabular-nums text-slate-300">{pct(c.spreadPct, 1)}<div className="text-[11px] text-slate-500">OI {c.contract.oi?.toLocaleString() ?? "N/A"}</div></td>
                       <td className="px-3 py-2"><div className="flex flex-col items-start gap-1">
-                        <EarningsBadge status={c.earnings} days={c.daysToEarnings} date={ctx?.nextEarnings} estimated={ctx?.earningsEstimated} />
-                        {c.exDivInside && <Badge className="bg-sky-50 text-sky-800 ring-sky-200">ex-div {dateShort(ctx?.exDividend)}</Badge>}
-                        {c.earlyAssignmentRisk === "high" && <span title="The strike is within 2% of the price and the time value is smaller than the dividend. If the stock rises a little, the buyer may exercise the day before the ex-dividend date to collect the dividend, taking your shares early."><Badge className="bg-rose-100 text-rose-800 ring-rose-300">early assignment risk</Badge></span>}
-                        {c.earlyAssignmentRisk === "check" && <span title="An ex-dividend date falls before expiry. If the stock rallies above the strike before that date, early assignment becomes likely. Consider an expiry before the ex-date or a higher strike."><Badge className="bg-amber-50 text-amber-800 ring-amber-200">watch before ex-div</Badge></span>}
+                        <EarningsBadgeDark status={c.earnings} days={c.daysToEarnings} date={ctx?.nextEarnings} estimated={ctx?.earningsEstimated} />
+                        {c.exDivInside && <WheelBadgeDark className="bg-sky-500/15 text-sky-300 ring-sky-500/20">ex-div {dateShort(ctx?.exDividend)}</WheelBadgeDark>}
+                        {c.earlyAssignmentRisk === "high" && <span title="The strike is within 2% of the price and the time value is smaller than the dividend. If the stock rises a little, the buyer may exercise the day before the ex-dividend date to collect the dividend, taking your shares early."><WheelBadgeDark className="bg-rose-500/20 text-rose-300 ring-rose-500/30">early assignment risk</WheelBadgeDark></span>}
+                        {c.earlyAssignmentRisk === "check" && <span title="An ex-dividend date falls before expiry. If the stock rallies above the strike before that date, early assignment becomes likely. Consider an expiry before the ex-date or a higher strike."><WheelBadgeDark className="bg-amber-500/15 text-amber-300 ring-amber-500/20">watch before ex-div</WheelBadgeDark></span>}
                       </div></td>
-                      <td className="px-3 py-2 font-semibold tabular-nums">{c.score.toFixed(1)}</td>
+                      <td className="px-3 py-2 font-semibold tabular-nums text-white">{c.score.toFixed(1)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              <Rejects rejected={calls.rejected} evaluated={calls.evaluated} />
+              <div className="border-t border-slate-800 bg-[#0D1632] px-3 py-2">
+                <RejectsDark rejected={calls.rejected} evaluated={calls.evaluated} />
+              </div>
             </div>
           )
         ) : null}
-      </Card>
-      <p className="mt-2 text-[11px] text-slate-400">Selling options carries real risk: a put seller can lose most of the share price if the stock collapses, and assignment ties up the full cash amount. This tool does not place orders or give personal advice.</p>
+      </WheelCardDark>
+      <p className="text-[11px] text-slate-500">Selling options carries real risk: a put seller can lose most of the share price if the stock collapses, and assignment ties up the full cash amount. This tool does not place orders or give personal advice.</p>
     </div>
   );
 }
