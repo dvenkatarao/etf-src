@@ -90,9 +90,6 @@ html:not(.dark) .bg-\[\#111C3E\] { background-color: var(--bg-card-subtle) !impo
 html:not(.dark) .bg-\[\#16224A\] { background-color: #f1f5f9 !important; }
 html:not(.dark) .bg-\[\#1B2540\] { background-color: #eef2ff !important; color: #4338ca !important; }
 html:not(.dark) .bg-\[\#24304F\] { background-color: #e0e7ff !important; }
-html:not(.dark) .bg-slate-900 { background-color: var(--bg-card) !important; }
-html:not(.dark) .bg-slate-900\/95 { background-color: rgba(255,255,255,0.95) !important; }
-html:not(.dark) .bg-slate-800 { background-color: var(--bg-card-subtle) !important; }
 html:not(.dark) .bg-slate-800\/30 { background-color: rgba(241,245,249,0.6) !important; }
 html:not(.dark) .bg-slate-800\/40 { background-color: #f8fafc !important; }
 html:not(.dark) .bg-slate-800\/50 { background-color: #f8fafc !important; }
