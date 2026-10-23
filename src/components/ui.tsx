@@ -38,8 +38,8 @@ export function GradeBadge({ grade, title }: { grade: QualityGrade | null; title
   );
 }
 
-export function Badge({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset ${className}`}>{children}</span>;
+export function Badge({ children, className = "", title }: { children: ReactNode; className?: string; title?: string }) {
+  return <span title={title} className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset ${className}`}>{children}</span>;
 }
 
 /** Provenance footer: every data block says where it came from and when. */

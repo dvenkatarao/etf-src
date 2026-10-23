@@ -3,11 +3,15 @@
 import Link from "next/link";
 import { useState } from "react";
 import { money, pct, dateShort } from "@/lib/format";
+import type { MacroEvent } from "@/lib/macro-events";
+import { expiryEventProximity } from "@/lib/macro-events";
 import type { WheelResults } from "@/lib/wheel-service";
 
 type Props = {
   res: WheelResults;
   q: string;
+  events?: MacroEvent[];
+  today?: string;
 };
 
 const scoreTone = (s: number) => {
@@ -16,7 +20,7 @@ const scoreTone = (s: number) => {
   return "bg-amber-500/20 text-amber-300 ring-amber-500/30";
 };
 
-export default function WheelTable({ res, q }: Props) {
+export default function WheelTable({ res, q, events = [], today: _today }: Props) {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [sort, setSort] = useState<"score" | "return" | "delta">("score");
   const [view, setView] = useState<"table" | "cards">("table");
@@ -123,7 +127,7 @@ export default function WheelTable({ res, q }: Props) {
                       </td>
                       <td className="whitespace-nowrap px-3 py-3">
                         <div className="font-semibold tabular-nums text-white">{money(c.strike, c.strike % 1 ? 2 : 0)} P</div>
-                        <div className="text-xs text-slate-400">{dateShort(c.expiration)} · {b.dte}d</div>
+                        <div className="text-xs text-slate-400">{dateShort(c.expiration)} · {b.dte}d{(() => { const prox = expiryEventProximity(c.expiration, events, 3); return prox.near ? <span title={`${prox.event!.title} on ${prox.event!.date} — option expires ${prox.daysAfter}d after. Consider avoiding new puts through this event.`} className="ml-1 inline-flex items-center gap-1 rounded-full bg-rose-500/15 px-1.5 py-0.5 text-[10px] font-semibold text-rose-300 ring-1 ring-rose-500/20">● {prox.event!.kind}</span> : null; })()}</div>
                         <div className="mt-1 flex items-center gap-1">
                           <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ring-1 ${r.source === "alpaca" ? "bg-emerald-500/15 text-emerald-300 ring-emerald-500/20" : "bg-amber-500/15 text-amber-300 ring-amber-500/20"}`}>
                             {r.source === "alpaca" ? "Alpaca" : "Yahoo (backup)"}

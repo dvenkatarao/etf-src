@@ -1,5 +1,6 @@
 import type { EtfRow } from "./etf-service";
 import { cachedOrNull } from "./cache";
+import { rateTagForEtf } from "./etf-rate-sensitivity";
 import { isLeveragedOrInverse } from "./format";
 import { fredSeries } from "./macro";
 import { sharpe } from "./metrics";
@@ -24,13 +25,17 @@ export async function getRiskFree() {
 export function toScreenRow(r: EtfRow, q: YahooQuote | undefined, rf: number | null, extras: { spread?: SpreadStat | null } = {}): ScreenRow {
   const m = r.metrics!;
   const quality = qualityForRow(r, q, extras.spread);
+  const assetClass = assetClassOf(r.category, r.profile?.allocation);
+  const rate = rateTagForEtf({ ticker: r.ticker, category: r.category, name: r.name, assetClass });
   return {
     ticker: r.ticker,
     name: r.name,
     category: r.category,
     family: r.family,
     leveraged: isLeveragedOrInverse(r.category, r.name),
-    assetClass: assetClassOf(r.category, r.profile?.allocation),
+    assetClass,
+    rateTag: rate.tag,
+    rateLabel: rate.label,
     quality: quality.grade,
     qualityScore: quality.score,
     price: q?.price ?? r.lastClose,

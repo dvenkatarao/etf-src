@@ -5,7 +5,7 @@ import type { ScreenRow } from "@/components/Screener";
 let n = 0;
 function row(over: Partial<ScreenRow>): ScreenRow {
   return {
-    ticker: `T${n++}`, name: null, category: null, family: null, leveraged: false, assetClass: "Equity", quality: null, qualityScore: null, price: 1, changePct: 0,
+    ticker: `T${n++}`, name: null, category: null, family: null, leveraged: false, assetClass: "Equity", rateTag: "neutral" as const, rateLabel: "Neutral — mixed", quality: null, qualityScore: null, price: 1, changePct: 0,
     expense: 0.002, yieldTtm: 0.02, aum: 1e10, ytd: 0.1, r1y: 0.1, r3y: 0.1, r5y: 0.1, vol3y: 0.15, dd3y: -0.2, sharpe: 0.5,
     erosion: "None", priceRet3y: 0.05, capFunded: 0, divCagr3y: 0.05, freq: "Quarterly", ...over,
   };

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Regime } from "@/lib/macro-regime";
 import type { WheelFilters } from "@/lib/wheel-service";
 
 const labelCls = "text-[10px] font-semibold tracking-[0.12em] text-slate-400";
@@ -7,7 +8,7 @@ const inputCls =
 const selectCls =
   "w-full rounded-lg border border-slate-700 bg-[#111C3E] px-2.5 py-2 text-sm text-white focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30";
 
-export default function WheelFilters({ f }: { f: WheelFilters }) {
+export default function WheelFilters({ f, regime, guardrails }: { f: WheelFilters; regime?: Regime | null; guardrails?: { deltaMax: number; minOi: number; maxSpreadPct: number; note: string } | null }) {
   const p = f.params;
   return (
     <form method="GET" className="rounded-xl border border-slate-800 bg-[#0F1A3A] p-4 shadow-sm">
@@ -87,6 +88,14 @@ export default function WheelFilters({ f }: { f: WheelFilters }) {
           </div>
         </div>
       </div>
+      {regime && guardrails && (
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-slate-400">
+          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 ring-1 ${regime.label === "stress" ? "bg-rose-500/10 text-rose-300 ring-rose-500/20" : regime.label === "tightening" ? "bg-amber-500/10 text-amber-300 ring-amber-500/20" : regime.label === "easing" ? "bg-emerald-500/10 text-emerald-300 ring-emerald-500/20" : "bg-slate-800 text-slate-300 ring-slate-700"}`}>
+            <span className={`h-1.5 w-1.5 rounded-full ${regime.palette.dot}`} /> {regime.title} · {guardrails.note}
+          </span>
+          <span className="text-slate-500">Suggested: Δ ≤{guardrails.deltaMax.toFixed(2)} · OI ≥{guardrails.minOi} · gap ≤{Math.round(guardrails.maxSpreadPct * 100)}%</span>
+        </div>
+      )}
     </form>
   );
 }

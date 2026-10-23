@@ -1,18 +1,21 @@
 import Link from "next/link";
+import { MacroRegimeBannerDark } from "@/components/MacroRegimeBanner";
 import WheelKpis from "@/components/wheel/WheelKpis";
 import WheelFilters from "@/components/wheel/WheelFilters";
 import WheelEarningsWatch from "@/components/wheel/WheelEarningsWatch";
 import WheelTable from "@/components/wheel/WheelTable";
 import WheelHydratorDark from "@/components/wheel/WheelHydratorDark";
 import { ago, dateShort } from "@/lib/format";
-import { alpacaConfigured } from "@/lib/options-providers";
 import { getEnv } from "@/lib/env";
+import { getBlsSchedule, getFomcCalendar, getMacroSnapshot, getPolicyRates, getYieldCurve } from "@/lib/macro";
+import { combineEvents } from "@/lib/macro-events";
+import { deriveRegime, regimeGuardrails } from "@/lib/macro-regime";
 import { stockUniverse } from "@/lib/stock-universe";
 import { staleStocks } from "@/lib/stock-service";
 import { REJECT_LABEL } from "@/lib/wheel";
 import { filtersQuery, parseFilters, type SP } from "@/lib/wheel-filters";
 import { getWheelResults, staleScanTickers, todayIso } from "@/lib/wheel-service";
-import { Badge } from "@/components/ui";
+import { alpacaConfigured } from "@/lib/options-providers";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Wheel Screener · ETF Research Lab" };
@@ -20,10 +23,22 @@ export const metadata = { title: "Wheel Screener · ETF Research Lab" };
 export default async function WheelPage({ searchParams }: { searchParams: Promise<SP> }) {
   const sp = await searchParams;
   const f = parseFilters(sp);
-  const [res, staleS, staleScans] = await Promise.all([getWheelResults(f), staleStocks(), staleScanTickers()]);
+  const [res, staleS, staleScans, snap, curve, policy, fomc, bls] = await Promise.all([
+    getWheelResults(f),
+    staleStocks(),
+    staleScanTickers(),
+    getMacroSnapshot(),
+    getYieldCurve(),
+    getPolicyRates(),
+    getFomcCalendar(),
+    getBlsSchedule(),
+  ]);
   const today = todayIso();
   const env = getEnv();
   const q = filtersQuery(f);
+  const regime = deriveRegime({ snap: snap?.data ?? null, curve: curve?.data ?? null, policy: policy?.data ?? null });
+  const events = combineEvents(fomc?.data ?? null, bls?.data ?? null);
+  const guardrails = regimeGuardrails(regime);
 
   return (
     <div className="space-y-5">
@@ -45,6 +60,8 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
         </Link>
       </div>
 
+      <MacroRegimeBannerDark regime={regime} />
+
       <WheelHydratorDark staleStocks={staleS.length} staleScans={staleScans.length} total={stockUniverse().length} />
 
       {res.info.failed.length > 0 && (
@@ -54,7 +71,7 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
         </div>
       )}
 
-      <WheelFilters f={f} />
+      <WheelFilters f={f} regime={regime} guardrails={guardrails} />
 
       <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
         <span className="text-slate-300">{res.info.eligible} stocks graded {f.minGrade === "A+" ? "A+" : "A or A+"} of {res.info.hydrated} analysed</span>
@@ -80,6 +97,15 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
 
       <WheelKpis res={res} fMinGrade={f.minGrade} />
 
+      {/* Guardrail callout when stress and current filters are loose */}
+      {regime?.label === "stress" && (f.params.deltaMax > 0.25 || f.params.minOi < 300) && guardrails && (
+        <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+          <div className="font-semibold">Market stress — consider tightening</div>
+          <p className="mt-1 text-xs leading-relaxed text-rose-200/90">{guardrails.note} High VIX/HY stress means richer premiums but real gap risk. Reduce size and keep 30%+ cash reserve.</p>
+          {events.slice(0, 2).length > 0 && <p className="mt-1 text-xs text-rose-300">Next events: {events.slice(0, 2).map((e) => `${e.title} ${e.date}`).join(" · ")}</p>}
+        </div>
+      )}
+
       {res.rows.length === 0 ? (
         <div className="rounded-xl border border-slate-800 bg-[#0F1A3A] p-8 text-center">
           <div className="mx-auto max-w-lg text-sm text-slate-400">
@@ -94,7 +120,7 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
           </div>
         </div>
       ) : (
-        <WheelTable res={res} q={q} />
+        <WheelTable res={res} q={q} events={events} today={today} />
       )}
 
       {res.heldBackByEarnings.length > 0 && (

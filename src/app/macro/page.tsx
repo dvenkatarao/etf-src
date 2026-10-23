@@ -1,7 +1,9 @@
 import { Card, PageHeader, SourceNote, Sparkline, Unavailable } from "@/components/ui";
+import { MacroRegimeBannerLight } from "@/components/MacroRegimeBanner";
 import { YieldCurveChart } from "@/components/SvgCharts";
 import { colorFor, dateShort, macroValue } from "@/lib/format";
 import { MACRO_SERIES, getBlsSchedule, getFomcCalendar, getMacroSnapshot, getPolicyRates, getYieldCurve } from "@/lib/macro";
+import { deriveRegime } from "@/lib/macro-regime";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Macro dashboard · ETF Research Lab" };
@@ -13,9 +15,11 @@ export default async function MacroPage() {
   const today = new Date().toISOString().slice(0, 10);
   const spread = curve?.data.points.find((p) => p.label === "10Y")?.now != null && curve?.data.points.find((p) => p.label === "2Y")?.now != null ? curve.data.points.find((p) => p.label === "10Y")!.now! - curve.data.points.find((p) => p.label === "2Y")!.now! : null;
 
+  const regime = deriveRegime({ snap: snap?.data ?? null, curve: curve?.data ?? null, policy: policy?.data ?? null });
   return (
     <div className="space-y-6">
       <PageHeader title="Macro dashboard" description="The backdrop that drives ETF returns: policy rates, the Treasury curve, inflation, labour, growth and market stress. Every value is the latest published observation from the named official series." />
+      <MacroRegimeBannerLight regime={regime} />
 
       <div className="grid gap-6 lg:grid-cols-3">
         <Card title="US Treasury yield curve" subtitle={curve ? `As of ${dateShort(curve.data.asOf)} vs ${dateShort(curve.data.yearAgoDate)}` : undefined} className="lg:col-span-2">
