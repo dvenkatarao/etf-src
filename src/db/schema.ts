@@ -267,3 +267,35 @@ export const wheelScans = pgTable("wheel_scans", {
   contracts: jsonb("contracts").$type<OptionContract[]>(),
   error: text("error"),
 });
+
+/** IV snapshot history for percentile rank (Sprint C). One row per contract per scan. */
+export const wheelIvHistory = pgTable(
+  "wheel_iv_history",
+  {
+    id: text("id").primaryKey(),
+    ticker: text("ticker").notNull(),
+    capturedAt: timestamp("captured_at", { withTimezone: true }).notNull(),
+    expiration: text("expiration").notNull(),
+    strike: doublePrecision("strike").notNull(),
+    iv: doublePrecision("iv"),
+    hv30: doublePrecision("hv30"),
+    dte: doublePrecision("dte"),
+  },
+  (t) => [index("wheel_iv_history_ticker_idx").on(t.ticker), index("wheel_iv_history_captured_idx").on(t.capturedAt)],
+);
+
+/** Local wheel positions tracker (optional server persistence; UI also uses localStorage). */
+export const wheelPositions = pgTable("wheel_positions", {
+  id: text("id").primaryKey(),
+  ticker: text("ticker").notNull(),
+  side: text("side").notNull(), // put_sold | assigned | call_sold | closed
+  strike: doublePrecision("strike").notNull(),
+  expiration: text("expiration").notNull(),
+  premium: doublePrecision("premium").notNull(),
+  quantity: doublePrecision("quantity").notNull().default(1),
+  openedAt: text("opened_at").notNull(),
+  closedAt: text("closed_at"),
+  costBasis: doublePrecision("cost_basis"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});

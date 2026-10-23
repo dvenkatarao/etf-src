@@ -5,6 +5,7 @@ import { useState } from "react";
 import { money, pct, dateShort } from "@/lib/format";
 import type { MacroEvent } from "@/lib/macro-events";
 import { expiryEventProximity } from "@/lib/macro-events";
+import { ivRankLabel } from "@/lib/wheel-iv";
 import type { WheelResults } from "@/lib/wheel-service";
 
 type Props = {
@@ -12,6 +13,7 @@ type Props = {
   q: string;
   events?: MacroEvent[];
   today?: string;
+  ivRanks?: Record<string, number | null>;
 };
 
 const scoreTone = (s: number) => {
@@ -20,7 +22,7 @@ const scoreTone = (s: number) => {
   return "bg-amber-500/20 text-amber-300 ring-amber-500/30";
 };
 
-export default function WheelTable({ res, q, events = [], today: _today }: Props) {
+export default function WheelTable({ res, q, events = [], today: _today, ivRanks = {} }: Props) {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [sort, setSort] = useState<"score" | "return" | "delta">("score");
   const [view, setView] = useState<"table" | "cards">("table");
@@ -192,10 +194,24 @@ export default function WheelTable({ res, q, events = [], today: _today }: Props
                               <div className="text-sm text-slate-300">{r.g.row.fundamentals?.targetMean ? money(r.g.row.fundamentals.targetMean) : "N/A"}</div>
                             </div>
                             <div className="space-y-1">
-                              <div className="text-[10px] tracking-[0.12em] text-slate-500">IV RANK</div>
-                              <div className="text-sm font-semibold text-white">—</div>
-                              <div className="mt-2 text-[10px] tracking-[0.12em] text-slate-500">IV PERCENTILE</div>
-                              <div className="text-sm text-slate-300">{b.contract.iv != null ? `${(b.contract.iv * 100).toFixed(0)}% IV` : "N/A"}</div>
+                              <div className="text-[10px] tracking-[0.12em] text-slate-500">IV RANK (1Y)</div>
+                              {(() => {
+                                const pctl = ivRanks[r.g.row.ticker] ?? null;
+                                const info = ivRankLabel(pctl);
+                                return (
+                                  <>
+                                    <div className={`text-sm font-semibold ${info.tone}`}>
+                                      {info.label}
+                                      {pctl == null ? <span className="ml-1 text-xs font-normal text-slate-500">needs 20 scans</span> : ""}
+                                    </div>
+                                    <div className="mt-2 text-[10px] tracking-[0.12em] text-slate-500">CURRENT IV</div>
+                                    <div className="text-sm text-slate-300">
+                                      {b.contract.iv != null ? `${(b.contract.iv * 100).toFixed(1)}% IV` : "N/A"}
+                                      {pctl != null && pctl >= 75 ? " \u00B7 rich" : pctl != null && pctl < 25 ? " \u00B7 thin" : ""}
+                                    </div>
+                                  </>
+                                );
+                              })()}
                             </div>
                             <div className="space-y-1">
                               <div className="text-[10px] tracking-[0.12em] text-slate-500">NEXT DIVIDEND</div>
