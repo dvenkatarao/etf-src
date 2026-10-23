@@ -130,12 +130,54 @@ export default function TransactionLedgerModal({
             </select>
           </div>
 
-          <button
-            onClick={() => setShowAddForm(!showAddForm)}
-            className="rounded-xl bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-100"
-          >
-            {showAddForm ? "Hide Form" : "+ Log Transaction"}
-          </button>
+          <div className="flex items-center gap-2">
+            <label className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50">
+              <input
+                type="file"
+                accept=".csv"
+                className="hidden"
+                onChange={async (e) => {
+                  const f = e.target.files?.[0];
+                  if (!f) return;
+                  const text = await f.text();
+                  const lines = text.split(/\r?\n/).filter((l) => l.trim());
+                  if (lines.length < 2) { alert("CSV needs header + rows"); return; }
+                  const headers = lines[0].split(",").map((h) => h.trim().toLowerCase());
+                  const idx = (k: string) => headers.indexOf(k);
+                  const need = ["date", "type", "amount"];
+                  if (need.some((k) => idx(k) === -1)) { alert("CSV needs date,type,amount columns (ticker,quantity,price,fee,notes optional)"); return; }
+                  const rows: any[] = [];
+                  for (let i = 1; i < lines.length; i++) {
+                    const cols = lines[i].split(",").map((c) => c.trim().replace(/^\"|\"$/g, ""));
+                    const type = (cols[idx("type")] ?? "").toUpperCase();
+                    if (!["BUY","SELL","DIVIDEND","DEPOSIT","WITHDRAWAL"].includes(type)) continue;
+                    rows.push({
+                      transactionDate: cols[idx("date")],
+                      type,
+                      ticker: cols[idx("ticker")] || null,
+                      quantity: cols[idx("quantity")] ? Number(cols[idx("quantity")]) : null,
+                      price: cols[idx("price")] ? Number(cols[idx("price")]) : null,
+                      amount: Number(cols[idx("amount")]),
+                      fee: cols[idx("fee")] ? Number(cols[idx("fee")]) : 0,
+                      notes: cols[idx("notes")] || null,
+                    });
+                  }
+                  if (!rows.length) { alert("No valid rows"); return; }
+                  const res = await fetch(`/api/portfolios/${activePortId}/transactions/batch`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ rows }) });
+                  if (res.ok) { alert(`Imported ${rows.length} transactions`); loadTransactions(activePortId); } else { const j = await res.json().catch(()=>({error:"failed"})); alert(j.error ?? "Import failed"); }
+                  e.target.value = "";
+                }}
+              />
+              <span>⬆ Import CSV</span>
+            </label>
+            <a href={`data:text/csv;charset=utf-8,${encodeURIComponent("date,type,ticker,quantity,price,amount,fee,notes\n2024-01-15,DEPOSIT,, , ,10000,0,Initial funding\n2024-02-10,BUY,VOO,10,500,5000,1,DCA\n2024-03-20,SELL,VOO,5,520,2600,1,Trim\n")}`} download="transactions-sample.csv" className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50">Sample CSV</a>
+            <button
+              onClick={() => setShowAddForm(!showAddForm)}
+              className="rounded-xl bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-100"
+            >
+              {showAddForm ? "Hide Form" : "+ Log Transaction"}
+            </button>
+          </div>
         </div>
 
         {showAddForm && (

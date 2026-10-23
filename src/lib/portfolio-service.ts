@@ -16,6 +16,8 @@ import { getEnv } from "./env";
 import { getRiskFree } from "./data";
 import { generateId, maskAccountNumber } from "./security";
 import { BrokerType, SUPPORTED_BROKERS, ParsedPositionImport } from "./brokers/types";
+import { computeCashFlowSummary, depositAwarePerformance, xirr } from "./portfolio-cashflows";
+import { overlapMatrixForPortfolio } from "./portfolio-overlap";
 
 export interface PositionWithAnalytics extends PositionRecord {
   name?: string;
@@ -88,6 +90,24 @@ export interface PortfolioAnalyticsSummary {
     marketValue: number;
     weight: number;
   }[];
+  // Sprint B — cashflow & overlap
+  cashFlow?: {
+    totalDeposits: number;
+    totalWithdrawals: number;
+    netDeposits: number;
+    totalDividends: number;
+    totalFees: number;
+    realizedGain: number;
+    realizedGainPct: number | null;
+    tradeCount: { buys: number; sells: number; dividends: number; deposits: number; withdrawals: number };
+  };
+  depositAware?: {
+    gainVsDeposits: number;
+    gainVsDepositsPct: number | null;
+    mwr: number | null; // XIRR annualized
+    mwrLabel: string;
+  };
+  overlap?: { tickers: string[]; cells: { a: string; b: string; overlap: number; overlapPct: number; common: { symbol: string; wa: number; wb: number }[] }[] };
   positions: PositionWithAnalytics[];
   portfolios: PortfolioRecord[];
 }
@@ -487,6 +507,66 @@ export async function getPortfolioAnalytics(
       weight: p.weight,
     }));
 
+  // 12. Sprint B — Cashflow & realized P&L from ledger (deposit-aware)
+  let cashFlow: PortfolioAnalyticsSummary["cashFlow"] | undefined;
+  let depositAware: PortfolioAnalyticsSummary["depositAware"] | undefined;
+  let overlap: PortfolioAnalyticsSummary["overlap"] | undefined;
+  try {
+    const txRows = await db.select().from(transactions).where(inArray(transactions.portfolioId, portfolioIds));
+    if (txRows.length) {
+      const cf = computeCashFlowSummary(txRows as TransactionRecord[]);
+      cashFlow = {
+        totalDeposits: cf.totalDeposits,
+        totalWithdrawals: cf.totalWithdrawals,
+        netDeposits: cf.netDeposits,
+        totalDividends: cf.totalDividends,
+        totalFees: cf.totalFees,
+        realizedGain: cf.realizedGain,
+        realizedGainPct: cf.realizedGainPct,
+        tradeCount: cf.tradeCount,
+      };
+      const perf = depositAwarePerformance(totalMarketValue, cf);
+      // Build XIRR cashflows: deposits outflows negative, withdrawals/dividends positive, final value positive today
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const flows: { date: string; amount: number }[] = txRows
+        .filter((t) => t.type === "DEPOSIT" || t.type === "WITHDRAWAL")
+        .map((t) => ({ date: t.transactionDate, amount: t.type === "DEPOSIT" ? -Math.abs(t.amount) : Math.abs(t.amount) }));
+      // Add initial deposit if no deposits but we have positions (use cost basis as proxy)
+      if (!flows.length && totalCostBasis > 0) {
+        // Use earliest purchase date as initial outflow
+        const earliest = positionsWithAnalytics.reduce((min, p) => (p.purchaseDate && p.purchaseDate < min ? p.purchaseDate : min), todayStr);
+        flows.push({ date: earliest, amount: -totalCostBasis });
+      }
+      // Terminal value as positive inflow today
+      if (totalMarketValue > 0) flows.push({ date: todayStr, amount: totalMarketValue });
+      // Dividends as positive flows on their dates
+      for (const t of txRows.filter((x) => x.type === "DIVIDEND")) flows.push({ date: t.transactionDate, amount: Math.abs(t.amount) });
+      flows.sort((a, b) => a.date.localeCompare(b.date));
+      const irr = flows.length >= 2 ? xirr(flows) : null;
+      depositAware = {
+        gainVsDeposits: perf.GainVsDeposits,
+        gainVsDepositsPct: perf.GainVsDepositsPct,
+        mwr: irr,
+        mwrLabel: irr == null ? "Not enough dated cashflows for IRR" : `Money-weighted (IRR): ${(irr * 100).toFixed(2)}% annualized`,
+      };
+    } else if (totalCostBasis > 0) {
+      // Fallback when ledger empty: use cost basis as net deposits proxy
+      cashFlow = { totalDeposits: totalCostBasis, totalWithdrawals: 0, netDeposits: totalCostBasis, totalDividends: 0, totalFees: 0, realizedGain: 0, realizedGainPct: null, tradeCount: { buys: 0, sells: 0, dividends: 0, deposits: 0, withdrawals: 0 } };
+      const g = totalMarketValue - totalCostBasis;
+      depositAware = { gainVsDeposits: g, gainVsDepositsPct: totalCostBasis ? g / totalCostBasis : null, mwr: null, mwrLabel: "Add DEPOSIT transactions to compute IRR" };
+    }
+
+    // Overlap matrix from holdings (lower-bound via top-10)
+    if (posList.length >= 2) {
+      const etfProfiles = new Map<string, { symbol: string | null; weight: number | null }[]>();
+      for (const e of etfRows) etfProfiles.set(e.ticker, e.profile?.holdings ?? null as any);
+      const matrix = overlapMatrixForPortfolio(posList, etfProfiles as any);
+      if (matrix.tickers.length >= 2) overlap = { tickers: matrix.tickers, cells: matrix.cells as any };
+    }
+  } catch {
+    // analytics extensions must never break the main summary
+  }
+
   return {
     portfolioCount: portfolioList.length,
     positionCount: posList.length,
@@ -505,6 +585,9 @@ export async function getPortfolioAnalytics(
     monthlyDividends,
     benchmark,
     erosionAlerts,
+    cashFlow,
+    depositAware,
+    overlap,
     positions: positionsWithAnalytics,
     portfolios: portfolioList,
   };

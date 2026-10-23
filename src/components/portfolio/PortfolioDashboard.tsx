@@ -13,6 +13,9 @@ import CsvImportModal from "./CsvImportModal";
 import AddPositionModal from "./AddPositionModal";
 import TransactionLedgerModal from "./TransactionLedgerModal";
 import { SUPPORTED_BROKERS, BrokerType } from "@/lib/brokers/types";
+import CashFlowSummary from "./CashFlowSummary";
+import OverlapMatrix from "./OverlapMatrix";
+import RebalancePanel from "./RebalancePanel";
 import { ago, dateTime } from "@/lib/format";
 
 export default function PortfolioDashboard({
@@ -123,6 +126,14 @@ export default function PortfolioDashboard({
             <span>{syncing ? "🔄 Syncing…" : "🔄 Refresh Prices"}</span>
           </button>
 
+          <a
+            href={`/api/portfolios/export?id=${selectedPortfolioId}`}
+            className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50"
+            title="Download current positions as CSV"
+          >
+            <span>⬇ Export CSV</span>
+          </a>
+
           <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50 px-3.5 py-2 text-xs font-semibold text-indigo-700 hover:bg-indigo-100"
@@ -156,8 +167,15 @@ export default function PortfolioDashboard({
       {/* 1. Summary Cards */}
       <PortfolioSummaryCards analytics={analytics} />
 
+      {/* 1b. Sprint B — Cashflow & Realized P&L (deposit-aware, IRR) */}
+      <CashFlowSummary analytics={analytics} />
+
       {/* 2. Allocation Charts */}
       <PortfolioAllocationCharts analytics={analytics} />
+
+      {/* 2b. Sprint B — Overlap + Rebalance */}
+      <OverlapMatrix analytics={analytics} />
+      <RebalancePanel analytics={analytics} />
 
       {/* 3. Benchmark Attribution & NAV Erosion Diagnostics */}
       <BenchmarkAttribution analytics={analytics} />

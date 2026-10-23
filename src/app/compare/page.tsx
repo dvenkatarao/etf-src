@@ -1,3 +1,4 @@
+import CompareOverlap from "@/components/CompareOverlap";
 import LineChart from "@/components/LineChart";
 import TickerPicker from "@/components/TickerPicker";
 import { Badge, Card, PageHeader, SourceNote, TickerLink, Unavailable } from "@/components/ui";
@@ -127,6 +128,8 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
               </div>
               <SourceNote source="Yahoo Finance (profile, prices, distributions) · computed metrics · FRED DGS3MO" asOf={dateShort(ok.map((x) => x.row.metrics!.asOf).sort().slice(-1)[0])} />
             </Card>
+
+            <CompareOverlap rows={ok.map((x) => x.row)} />
 
             {ok.length > 1 && (
               <Card title="Correlation of daily returns (3Y)" subtitle="Low correlation between holdings = more diversification. Computed on date-aligned daily total returns.">
