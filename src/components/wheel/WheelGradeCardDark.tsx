@@ -1,18 +1,5 @@
-import { STOCK_GRADE_WORD, stockGradeStyle } from "@/lib/stock-quality";
 import type { StockQuality } from "@/lib/stock-quality";
-
-const gradeDarkStyle = (g: string | null) => {
-  const map: Record<string, string> = {
-    "A+": "bg-emerald-500/20 text-emerald-300 ring-emerald-500/30",
-    A: "bg-emerald-500/15 text-emerald-300 ring-emerald-500/20",
-    B: "bg-lime-500/15 text-lime-300 ring-lime-500/20",
-    C: "bg-amber-500/15 text-amber-300 ring-amber-500/20",
-    D: "bg-orange-500/15 text-orange-300 ring-orange-500/20",
-    F: "bg-rose-500/15 text-rose-300 ring-rose-500/20",
-    none: "bg-slate-700 text-slate-400 ring-slate-600",
-  };
-  return map[g ?? "none"] ?? map.none;
-};
+import { gradeBadgeClasses } from "@/components/GradePill";
 
 export default function WheelGradeCardDark({ quality }: { quality: StockQuality }) {
   const g = quality.grade;
@@ -23,8 +10,8 @@ export default function WheelGradeCardDark({ quality }: { quality: StockQuality 
           <h2 className="text-sm font-semibold text-white">Stock Quality Grade</h2>
           <p className="mt-0.5 text-xs text-slate-400">Business quality, balance sheet, valuation, analysts, size — fixed bands, not ranked vs peers</p>
         </div>
-        <span className={`rounded-full px-3 py-1 text-sm font-bold ring-1 ${gradeDarkStyle(g)}`}>
-          {g ?? "n/a"} {g ? `· ${STOCK_GRADE_WORD[g]}` : ""}
+        <span className={gradeBadgeClasses(g as any)}>
+          {g ?? "n/a"}
         </span>
       </div>
       {quality.score != null && (
@@ -43,7 +30,7 @@ export default function WheelGradeCardDark({ quality }: { quality: StockQuality 
           <div key={p.key} className="rounded-lg border border-slate-800 bg-[#0D1632] p-3">
             <div className="flex items-center justify-between">
               <div className="text-xs font-semibold text-white">{p.label}</div>
-              <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ring-1 ${p.letter ? gradeDarkStyle(p.letter) : "bg-slate-800 text-slate-400 ring-slate-700"}`}>{p.letter ?? "—"}</span>
+              <span className={gradeBadgeClasses(p.letter as any)}>{p.letter ?? "—"}</span>
             </div>
             <div className="mt-1 text-xs leading-relaxed text-slate-400">{p.detail}</div>
             {p.score != null && <div className="mt-1 text-[11px] text-slate-500">Score {p.score.toFixed(0)} · Weight {Math.round(p.weight * 100)}%</div>}
