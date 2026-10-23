@@ -94,31 +94,32 @@ html:not(.dark) .bg-slate-900 { background-color: var(--bg-card) !important; }
 html:not(.dark) .bg-slate-900\/95 { background-color: rgba(255,255,255,0.95) !important; }
 html:not(.dark) .bg-slate-800 { background-color: var(--bg-card-subtle) !important; }
 html:not(.dark) .bg-slate-800\/30 { background-color: rgba(241,245,249,0.6) !important; }
+html:not(.dark) .bg-slate-800\/40 { background-color: #f8fafc !important; }
 html:not(.dark) .bg-slate-800\/50 { background-color: #f8fafc !important; }
 html:not(.dark) .border-slate-800 { border-color: var(--border) !important; }
 html:not(.dark) .border-slate-700 { border-color: #e2e8f0 !important; }
-html:not(.dark) .text-white { color: #0f172a !important; }
-html:not(.dark) .text-slate-100 { color: #0f172a !important; }
-html:not(.dark) .text-slate-200 { color: #1e293b !important; }
-html:not(.dark) .text-slate-300 { color: #334155 !important; }
-html:not(.dark) .text-slate-400 { color: #64748b !important; }
-html:not(.dark) .text-indigo-300 { color: #4f46e5 !important; }
-html:not(.dark) .text-indigo-200 { color: #4338ca !important; }
+/* Text overrides — scoped to wheel dark cards only (not global, so colored CTAs stay white on blue) */
+html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#080E28\], .bg-\[\#0D1632\], .bg-\[\#111C3E\]) .text-white,
+html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#080E28\], .bg-\[\#0D1632\]) .text-slate-100 { color: #0f172a !important; }
+html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#080E28\], .bg-\[\#0D1632\]) .text-slate-200 { color: #1e293b !important; }
+html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#080E28\], .bg-\[\#0D1632\]) .text-slate-300 { color: #334155 !important; }
+html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#080E28\]) .text-slate-400,
+html:not(.dark) .bg-\[\#0D1632\] .text-slate-400 { color: #64748b !important; }
+html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#080E28\], .bg-\[\#111C3E\]) .text-indigo-300 { color: #4f46e5 !important; }
+html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#111C3E\]) .text-indigo-200 { color: #4338ca !important; }
+/* Colored CTAs must keep white text in light — exception to scoped rules */
+html:not(.dark) .bg-indigo-500.text-white,
+html:not(.dark) .bg-indigo-600.text-white,
+html:not(.dark) .bg-\[\#4F6BFF\].text-white,
+html:not(.dark) .bg-\[\#4F6BFF\] .text-white,
+html:not(.dark) .bg-violet-500\/40.text-white,
+html:not(.dark) .bg-white\/10.text-white { color: white !important; }
 html:not(.dark) .hover\:bg-white\/\[0\.03\]:hover { background-color: rgba(15,23,42,0.03) !important; }
 html:not(.dark) .hover\:bg-white\/5:hover { background-color: rgba(15,23,42,0.05) !important; }
 html:not(.dark) .hover\:bg-\[\#16224A\]:hover { background-color: #f1f5f9 !important; }
 html:not(.dark) .hover\:bg-\[\#24304F\]:hover { background-color: #e0e7ff !important; }
 
-/* Nav & inputs light overrides */
-html:not(.dark) header { background-color: rgba(255,255,255,0.95) !important; border-color: #e2e8f0 !important; }
-html:not(.dark) header .bg-slate-900\/95 { background-color: rgba(255,255,255,0.95) !important; }
-html:not(.dark) header .text-slate-300 { color: #475569 !important; }
-html:not(.dark) header .hover\:bg-slate-800:hover { background-color: #f1f5f9 !important; }
-html:not(.dark) header .hover\:text-white:hover { color: #0f172a !important; }
-html:not(.dark) header .bg-slate-800 { background-color: #f1f5f9 !important; }
-html:not(.dark) header .bg-slate-800\/50 { background-color: #f8fafc !important; }
-html:not(.dark) header .border-slate-700 { border-color: #e2e8f0 !important; }
-html:not(.dark) header .border-slate-800 { border-color: #e2e8f0 !important; }
+/* Inputs light overrides — wheel filters use dark bg, must stay readable when light */
 html:not(.dark) input.bg-\[\#111C3E\] { background-color: #ffffff !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
 html:not(.dark) select.bg-\[\#111C3E\] { background-color: #ffffff !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
 html:not(.dark) .bg-\[\#111C3E\].border-slate-700 { background-color: #ffffff !important; }

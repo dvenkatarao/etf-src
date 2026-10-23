@@ -48,21 +48,16 @@ function SmartTickerSearch({ onNavigate }: { onNavigate?: () => void }) {
     e?.preventDefault();
     const t = q.trim().toUpperCase().replace(/\s+/g, "");
     if (!t) return;
-    // Basic ticker validation: 1-10 alphanum + .-
     if (!/^[A-Z0-9.\-]{1,10}$/.test(t)) {
-      // Still try ETF page — it will show unavailable with guidance
       router.push(`/etf/${encodeURIComponent(t)}`);
       onNavigate?.();
       return;
     }
-    // Prefer ETF universe first (no overlap for most, but clean priority)
     if (etfSet.has(t)) {
       router.push(`/etf/${encodeURIComponent(t)}`);
     } else if (stockSet.has(t)) {
       router.push(`/wheel/${encodeURIComponent(t)}`);
     } else {
-      // Unknown: try stock prefix heuristic — $AAPL or leading $?
-      // Fall back to ETF page which shows helpful “not an ETF” and links to wheel/screener
       router.push(`/etf/${encodeURIComponent(t)}`);
     }
     setQ("");
@@ -76,7 +71,7 @@ function SmartTickerSearch({ onNavigate }: { onNavigate?: () => void }) {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="SCHD or AAPL…"
-          className="w-[170px] rounded-md border border-slate-700 bg-slate-800 px-3 py-1.5 pr-8 text-sm uppercase tracking-wide text-white placeholder:normal-case placeholder:text-slate-500 placeholder:tracking-normal focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 sm:w-[200px]"
+          className="w-[170px] rounded-md border border-slate-300 bg-white px-3 py-1.5 pr-8 text-sm uppercase tracking-wide text-slate-900 placeholder:normal-case placeholder:text-slate-500 placeholder:tracking-normal focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 dark:border-slate-700 dark:bg-slate-800 dark:text-white sm:w-[200px]"
           maxLength={10}
           aria-label="Search ETF or stock ticker"
           autoCapitalize="characters"
@@ -133,7 +128,6 @@ function LabDropdown({
   const ref = useRef<HTMLDivElement>(null);
   const active = labActive(pathname, links);
 
-  // Close on outside click / ESC / route change
   useEffect(() => {
     function onClick(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
@@ -148,7 +142,6 @@ function LabDropdown({
       document.removeEventListener("keydown", onKey);
     };
   }, []);
-  // close when path changes
   useEffect(() => setOpen(false), [pathname]);
 
   return (
@@ -157,7 +150,9 @@ function LabDropdown({
         onClick={() => setOpen((o) => !o)}
         onMouseEnter={() => setOpen(true)}
         className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[13px] font-medium transition ${
-          active ? "bg-slate-800 text-white" : "text-slate-300 hover:bg-slate-800 hover:text-white"
+          active
+            ? "bg-slate-900 text-white dark:bg-slate-800 dark:text-white"
+            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
         }`}
         aria-expanded={open}
         aria-haspopup="true"
@@ -169,7 +164,7 @@ function LabDropdown({
       {open && (
         <div
           onMouseLeave={() => setOpen(false)}
-          className="absolute left-0 top-full z-40 mt-2 min-w-[300px] rounded-xl border border-slate-800 bg-slate-900 p-1.5 shadow-2xl shadow-black/30"
+          className="absolute left-0 top-full z-40 mt-2 min-w-[300px] rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-black/10 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/30"
         >
           <div className="px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-slate-500">{label}</div>
           <div className="grid gap-1">
@@ -183,10 +178,10 @@ function LabDropdown({
                     setOpen(false);
                     onCloseMobile?.();
                   }}
-                  className={`rounded-lg px-3 py-2 transition ${a ? "bg-indigo-600 text-white" : "text-slate-200 hover:bg-slate-800 hover:text-white"}`}
+                  className={`rounded-lg px-3 py-2 transition ${a ? "bg-indigo-600 text-white" : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white"}`}
                 >
                   <div className="text-sm font-medium leading-none">{l.label}</div>
-                  <div className={`mt-1 text-xs leading-none ${a ? "text-indigo-100" : "text-slate-400"}`}>{l.desc}</div>
+                  <div className={`mt-1 text-xs leading-none ${a ? "text-indigo-100" : "text-slate-500 dark:text-slate-400"}`}>{l.desc}</div>
                 </Link>
               );
             })}
@@ -203,15 +198,14 @@ export default function Nav() {
   const [mobileLabOpen, setMobileLabOpen] = useState<string | null>(null);
   const pathname = usePathname();
 
-  // close mobile when route changes (pathname effect)
   useEffect(() => setMobileOpen(false), [pathname]);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-800 bg-slate-900/95 backdrop-blur supports-[backdrop-filter]:bg-slate-900/90">
+    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/90 dark:border-slate-800 dark:bg-slate-900/95 dark:supports-[backdrop-filter]:bg-slate-900/90">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-2 gap-y-2 px-4 py-2.5">
         {/* Brand */}
-        <Link href="/" className="flex items-center gap-2 text-white shrink-0">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-indigo-500 text-sm font-bold tracking-tight">E</span>
+        <Link href="/" className="flex items-center gap-2 text-slate-900 dark:text-white shrink-0">
+          <span className="grid h-8 w-8 place-items-center rounded-lg bg-indigo-500 text-sm font-bold tracking-tight text-white">E</span>
           <span className="hidden text-[15px] font-semibold tracking-tight sm:inline">ETF Research Lab</span>
         </Link>
 
@@ -219,7 +213,7 @@ export default function Nav() {
         <nav className="hidden items-center gap-1 text-[13px] font-medium lg:flex">
           <Link
             href="/"
-            className={`rounded-md px-2.5 py-1.5 transition ${isActive(pathname, "/") && pathname === "/" ? "bg-slate-800 text-white" : "text-slate-300 hover:bg-slate-800 hover:text-white"}`}
+            className={`rounded-md px-2.5 py-1.5 transition ${isActive(pathname, "/") && pathname === "/" ? "bg-slate-900 text-white dark:bg-slate-800 dark:text-white" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"}`}
           >
             Dashboard
           </Link>
@@ -227,7 +221,7 @@ export default function Nav() {
           {/* Start CTA */}
           <Link
             href="/onboarding"
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${isActive(pathname, "/onboarding") ? "bg-white text-indigo-700" : "bg-indigo-600 text-white hover:bg-indigo-500"}`}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${isActive(pathname, "/onboarding") ? "bg-slate-900 text-white dark:bg-white dark:text-indigo-700" : "bg-indigo-600 text-white hover:bg-indigo-500"}`}
           >
             Start →
           </Link>
@@ -237,7 +231,7 @@ export default function Nav() {
 
           <Link
             href="/portfolio"
-            className={`rounded-md px-2.5 py-1.5 transition ${isActive(pathname, "/portfolio") ? "bg-slate-800 text-white" : "text-slate-300 hover:bg-slate-800 hover:text-white"}`}
+            className={`rounded-md px-2.5 py-1.5 transition ${isActive(pathname, "/portfolio") ? "bg-slate-900 text-white dark:bg-slate-800 dark:text-white" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"}`}
           >
             Portfolio
           </Link>
@@ -247,7 +241,7 @@ export default function Nav() {
 
         {/* Search + Theme — desktop */}
         <div className="ml-auto hidden lg:flex items-center gap-3">
-          <div className="hidden xl:flex items-center gap-2 text-[11px] text-slate-400">
+          <div className="hidden xl:flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
             <span className="hidden 2xl:inline">Search works on both — ETFs & wheel stocks</span>
           </div>
           <SmartTickerSearch />
@@ -259,7 +253,7 @@ export default function Nav() {
           <ThemeToggle compact />
           <button
             onClick={() => setMobileOpen((o) => !o)}
-            className="grid h-9 w-9 place-items-center rounded-md border border-slate-700 bg-slate-800 text-slate-300"
+            className="grid h-9 w-9 place-items-center rounded-md border border-slate-200 bg-slate-100 text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
             aria-label="Toggle navigation"
             aria-expanded={mobileOpen}
           >
@@ -269,7 +263,7 @@ export default function Nav() {
 
         {/* Mobile panel */}
         {mobileOpen && (
-          <div className="w-full lg:hidden border-t border-slate-800 pt-3 pb-2 space-y-3">
+          <div className="w-full lg:hidden border-t border-slate-200 pt-3 pb-2 space-y-3 dark:border-slate-800">
             {/* Quick actions */}
             <Link
               href="/onboarding"
@@ -282,8 +276,8 @@ export default function Nav() {
             <div className="grid gap-2">
               {/* Dashboard + Portfolio standalone */}
               <div className="grid grid-cols-2 gap-1">
-                <Link href="/" onClick={() => setMobileOpen(false)} className={`rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/") && pathname === "/" ? "bg-white text-slate-900" : "bg-slate-800 text-slate-200"}`}>Dashboard</Link>
-                <Link href="/portfolio" onClick={() => setMobileOpen(false)} className={`rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/portfolio") ? "bg-white text-slate-900" : "bg-slate-800 text-slate-200"}`}>Portfolio</Link>
+                <Link href="/" onClick={() => setMobileOpen(false)} className={`rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/") && pathname === "/" ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900" : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"}`}>Dashboard</Link>
+                <Link href="/portfolio" onClick={() => setMobileOpen(false)} className={`rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/portfolio") ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900" : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"}`}>Portfolio</Link>
               </div>
 
               {/* Labs - accordion */}
@@ -295,7 +289,7 @@ export default function Nav() {
                 const active = labActive(pathname, sec.links);
                 const expanded = mobileLabOpen === sec.id;
                 return (
-                  <div key={sec.id} className={`overflow-hidden rounded-lg border ${active ? "border-indigo-500/30 bg-indigo-500/10" : "border-slate-800 bg-slate-800/50"}`}>
+                  <div key={sec.id} className={`overflow-hidden rounded-lg border ${active ? "border-indigo-500/30 bg-indigo-50 dark:border-indigo-500/30 dark:bg-indigo-500/10" : "border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/50"}`}>
                     <button
                       onClick={() => setMobileLabOpen(expanded ? null : sec.id)}
                       className="flex w-full items-center justify-between px-3 py-2.5 text-left"
@@ -303,23 +297,23 @@ export default function Nav() {
                     >
                       <div className="flex items-center gap-2">
                         <span className="text-sm">{sec.icon}</span>
-                        <span className={`text-sm font-semibold ${active ? "text-white" : "text-slate-200"}`}>{sec.title}</span>
-                        <span className="text-xs text-slate-400 hidden sm:inline">· {sec.desc}</span>
+                        <span className={`text-sm font-semibold ${active ? "text-slate-900 dark:text-white" : "text-slate-700 dark:text-slate-200"}`}>{sec.title}</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 hidden sm:inline">· {sec.desc}</span>
                       </div>
                       <span className={`text-xs text-slate-400 transition ${expanded ? "rotate-180" : ""}`}>▾</span>
                     </button>
                     {expanded && (
-                      <div className="border-t border-slate-700 bg-slate-900 px-1.5 py-1.5 space-y-1">
+                      <div className="border-t border-slate-200 bg-white px-1.5 py-1.5 space-y-1 dark:border-slate-700 dark:bg-slate-900">
                         {sec.links.map((l) => (
                           <Link
                             key={l.href}
                             href={l.href}
                             onClick={() => setMobileOpen(false)}
-                            className={`flex items-center justify-between rounded-md px-3 py-2.5 ${isActive(pathname, l.href) ? "bg-white text-slate-900" : "text-slate-300 hover:bg-slate-800 hover:text-white"}`}
+                            className={`flex items-center justify-between rounded-md px-3 py-2.5 ${isActive(pathname, l.href) ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"}`}
                           >
                             <span className="text-sm font-medium">{l.label}</span>
                             <span className="text-xs text-slate-500 ml-2 truncate max-w-[160px] text-right hidden sm:block">{l.desc}</span>
-                            <span className={`ml-auto text-xs ${isActive(pathname, l.href) ? "text-slate-600" : "text-slate-500"}`}>→</span>
+                            <span className={`ml-auto text-xs ${isActive(pathname, l.href) ? "text-white/70 dark:text-slate-600" : "text-slate-400 dark:text-slate-500"}`}>→</span>
                           </Link>
                         ))}
                       </div>
@@ -330,11 +324,11 @@ export default function Nav() {
             </div>
 
             {/* Mobile search — always visible in panel */}
-            <div className="rounded-lg border border-slate-700 bg-slate-800 p-3">
-              <div className="mb-2 text-xs font-medium text-slate-300">Search any ticker — ETF or stock</div>
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800">
+              <div className="mb-2 text-xs font-medium text-slate-700 dark:text-slate-300">Search any ticker — ETF or stock</div>
               <SmartTickerSearch onNavigate={() => setMobileOpen(false)} />
-              <p className="mt-2 text-[11px] leading-relaxed text-slate-400">
-                <span className="text-slate-300 font-medium">SCHD, VOO, BND</span> → ETF page &nbsp;·&nbsp; <span className="text-slate-300 font-medium">AAPL, NVDA, BRK-B</span> → Wheel page
+              <p className="mt-2 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+                <span className="text-slate-700 dark:text-slate-300 font-medium">SCHD, VOO, BND</span> → ETF page &nbsp;·&nbsp; <span className="text-slate-700 dark:text-slate-300 font-medium">AAPL, NVDA, BRK-B</span> → Wheel page
               </p>
             </div>
           </div>

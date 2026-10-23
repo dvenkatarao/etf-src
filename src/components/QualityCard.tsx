@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui";
-import { GRADE_WORD, gradeStyle } from "@/lib/grades";
+import { GRADE_WORD } from "@/lib/grades";
+import { GradeIcon } from "@/components/GradePill";
 import type { Pillar, QualityResult } from "@/lib/quality";
 
 const barColor = (s: number) => (s >= 85 ? "bg-emerald-500" : s >= 70 ? "bg-lime-500" : s >= 55 ? "bg-amber-500" : s >= 40 ? "bg-orange-500" : "bg-rose-500");
@@ -8,15 +9,15 @@ function PillarRow({ p }: { p: Pillar }) {
   return (
     <li className="py-2">
       <div className="flex items-center justify-between gap-3 text-sm">
-        <span className="font-medium text-slate-800">
+        <span className="font-medium text-slate-800 dark:text-slate-200">
           {p.label} <span className="text-xs font-normal text-slate-400">· {Math.round(p.weight * 100)}% of grade</span>
         </span>
-        <span className="tabular-nums text-slate-600">{p.score != null ? Math.round(p.score) : p.status === "not applicable" ? "n/a" : "no data"}</span>
+        <span className="tabular-nums text-slate-600 dark:text-slate-400">{p.score != null ? Math.round(p.score) : p.status === "not applicable" ? "n/a" : "no data"}</span>
       </div>
-      <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-100">
+      <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
         {p.score != null && <div className={`h-full ${barColor(p.score)}`} style={{ width: `${Math.round(p.score)}%` }} />}
       </div>
-      <p className="mt-1 text-xs text-slate-500">{p.detail}</p>
+      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{p.detail}</p>
     </li>
   );
 }
@@ -25,7 +26,7 @@ export default function QualityCard({ quality: q }: { quality: QualityResult }) 
   return (
     <Card title="Fund quality grade" subtitle="How well built is this product? Cost, size, trading ease, diversification and income sustainability. This is not a forecast of returns.">
       <div className="flex flex-wrap items-center gap-4">
-        <div className={`grid h-16 w-16 place-items-center rounded-2xl text-3xl font-bold ring-1 ring-inset ${gradeStyle[q.grade ?? "none"]}`}>{q.grade ?? "–"}</div>
+        <GradeIcon grade={q.grade} />
         <div className="min-w-[200px] flex-1">
           <div className="text-lg font-semibold text-slate-900">
             {q.grade ? GRADE_WORD[q.grade] : "Not graded"}

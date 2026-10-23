@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui";
-import { STOCK_GRADE_WORD, stockGradeStyle, type StockPillar, type StockQuality } from "@/lib/stock-quality";
+import { STOCK_GRADE_WORD, type StockPillar, type StockQuality } from "@/lib/stock-quality";
+import { GradeIcon } from "@/components/GradePill";
 
 const barColor = (s: number) => (s >= 85 ? "bg-emerald-500" : s >= 70 ? "bg-lime-500" : s >= 55 ? "bg-amber-500" : s >= 40 ? "bg-orange-500" : "bg-rose-500");
 
@@ -22,7 +23,7 @@ export default function StockGradeCard({ quality: q }: { quality: StockQuality }
   return (
     <Card title="Stock quality grade" subtitle="Would you be happy to own this company if a put is assigned? Business quality, balance sheet, valuation, analysts and size. Not a forecast.">
       <div className="flex flex-wrap items-center gap-4">
-        <div className={`grid h-16 w-16 place-items-center rounded-2xl text-3xl font-bold ring-1 ring-inset ${stockGradeStyle[q.grade ?? "none"]}`}>{q.grade ?? "–"}</div>
+        <GradeIcon grade={q.grade} />
         <div className="min-w-[200px] flex-1">
           <div className="text-lg font-semibold text-slate-900">
             {q.grade ? STOCK_GRADE_WORD[q.grade] : "Not graded"}

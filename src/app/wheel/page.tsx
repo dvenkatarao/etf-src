@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MacroRegimeBannerDark } from "@/components/MacroRegimeBanner";
+import { MacroRegimeBanner } from "@/components/MacroRegimeBanner";
 import WheelKpis from "@/components/wheel/WheelKpis";
 import WheelFilters from "@/components/wheel/WheelFilters";
 import WheelEarningsWatch from "@/components/wheel/WheelEarningsWatch";
@@ -56,20 +56,20 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
         <div>
           <div className="flex items-center gap-3">
             <div className="grid h-8 w-8 place-items-center rounded-lg bg-[#4F6BFF] text-sm font-bold text-white">◉</div>
-            <h1 className="text-xl font-semibold tracking-tight text-white">Wheel Strategy Screener</h1>
-            <span className="rounded-full border border-indigo-500/30 bg-indigo-500/10 px-2.5 py-1 text-[11px] font-medium text-indigo-300">A & A+ only</span>
+            <h1 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-white">Wheel Strategy Screener</h1>
+            <span className="rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-[11px] font-medium text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-300">A & A+ only</span>
           </div>
-          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-400">
-            Cash-secured puts on <span className="font-semibold text-slate-200">A and A+</span> rated large-cap stocks, ranked by return, safety and liquidity.
-            Earnings, ex-dividend dates, key price levels and the optimal account type (<span className="text-violet-300">R</span> = retirement, <span className="text-sky-300">T</span> = taxable) are shown for every pick.
+          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+            Cash-secured puts on <span className="font-semibold text-slate-700 dark:text-slate-200">A and A+</span> rated large-cap stocks, ranked by return, safety and liquidity.
+            Earnings, ex-dividend dates, key price levels and the optimal account type (<span className="text-violet-600 dark:text-violet-300">R</span> = retirement, <span className="text-sky-600 dark:text-sky-300">T</span> = taxable) are shown for every pick.
           </p>
         </div>
-        <Link href="/wheel/guide" className="rounded-lg bg-[#1B2540] px-4 py-2 text-sm font-medium text-indigo-300 ring-1 ring-indigo-500/20 hover:bg-[#24304F] hover:text-white">
+        <Link href="/wheel/guide" className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100 dark:border-indigo-500/20 dark:bg-[#1B2540] dark:text-indigo-300 dark:hover:bg-[#24304F] dark:hover:text-white">
           How to use this tool →
         </Link>
       </div>
 
-      <MacroRegimeBannerDark regime={regime} />
+      <MacroRegimeBanner regime={regime} />
 
       <WheelHydratorDark staleStocks={staleS.length} staleScans={staleScans.length} total={stockUniverse().length} />
 
@@ -82,23 +82,23 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
 
       <WheelFilters f={f} regime={regime} guardrails={guardrails} />
 
-      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
-        <span className="text-slate-300">{res.info.eligible} stocks graded {f.minGrade === "A+" ? "A+" : "A or A+"} of {res.info.hydrated} analysed</span>
-        <span className="text-slate-600">•</span>
+      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+        <span className="text-slate-700 dark:text-slate-300">{res.info.eligible} stocks graded {f.minGrade === "A+" ? "A+" : "A or A+"} of {res.info.hydrated} analysed</span>
+        <span className="text-slate-400 dark:text-slate-600">•</span>
         <span>{res.info.scanned} option chains scanned</span>
-        <span className="text-slate-600">•</span>
+        <span className="text-slate-400 dark:text-slate-600">•</span>
         <span>option data: {Object.entries(res.info.sources).map(([k, n]) => `${k} ${n}`).join(", ") || "none yet"}</span>
         {res.info.oldest && (
           <>
-            <span className="text-slate-600">•</span>
+            <span className="text-slate-400 dark:text-slate-600">•</span>
             <span>oldest scan {ago(res.info.oldest.toISOString())}</span>
           </>
         )}
         {res.info.fallbacks > 0 && (
-          <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[11px] font-medium text-amber-300 ring-1 ring-amber-500/20">{res.info.fallbacks} chain(s) from backup provider</span>
+          <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-800 ring-1 ring-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:ring-amber-500/20">{res.info.fallbacks} chain(s) from backup provider</span>
         )}
         {!alpacaConfigured() && env.OPTIONS_PROVIDER === "auto" && (
-          <span className="rounded-full bg-amber-500/15 px-2.5 py-1 text-[11px] font-medium text-amber-300 ring-1 ring-amber-500/20">Alpaca keys not set: using Yahoo (deltas modelled ≈)</span>
+          <span className="rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-medium text-amber-800 ring-1 ring-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:ring-amber-500/20">Alpaca keys not set: using Yahoo (deltas modelled ≈)</span>
         )}
       </div>
 
@@ -108,21 +108,21 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
 
       {/* Guardrail callout when stress and current filters are loose */}
       {regime?.label === "stress" && (f.params.deltaMax > 0.25 || f.params.minOi < 300) && guardrails && (
-        <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+        <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200">
           <div className="font-semibold">Market stress — consider tightening</div>
-          <p className="mt-1 text-xs leading-relaxed text-rose-200/90">{guardrails.note} High VIX/HY stress means richer premiums but real gap risk. Reduce size and keep 30%+ cash reserve.</p>
-          {events.slice(0, 2).length > 0 && <p className="mt-1 text-xs text-rose-300">Next events: {events.slice(0, 2).map((e) => `${e.title} ${e.date}`).join(" · ")}</p>}
+          <p className="mt-1 text-xs leading-relaxed text-rose-700 dark:text-rose-200/90">{guardrails.note} High VIX/HY stress means richer premiums but real gap risk. Reduce size and keep 30%+ cash reserve.</p>
+          {events.slice(0, 2).length > 0 && <p className="mt-1 text-xs text-rose-600 dark:text-rose-300">Next events: {events.slice(0, 2).map((e) => `${e.title} ${e.date}`).join(" · ")}</p>}
         </div>
       )}
 
       {res.rows.length === 0 ? (
-        <div className="rounded-xl border border-slate-800 bg-[#0F1A3A] p-8 text-center">
-          <div className="mx-auto max-w-lg text-sm text-slate-400">
+        <div className="rounded-xl border border-slate-200 bg-white p-8 text-center dark:border-slate-800 dark:bg-[#0F1A3A]">
+          <div className="mx-auto max-w-lg text-sm text-slate-500 dark:text-slate-400">
             {res.info.scanned === 0
               ? "No option chains have been scanned yet. If the progress bar above has finished, check the Data Sources page and your Alpaca keys; failed scans are listed above."
               : "No puts pass these filters right now. Try widening the delta or expiry range, lowering the minimum return, or relaxing the bid/ask limit."}
             {Object.keys(res.rejected).length > 0 && (
-              <p className="mt-3 text-xs text-slate-500">
+              <p className="mt-3 text-xs text-slate-500 dark:text-slate-500">
                 Contracts rejected: {Object.entries(res.rejected).sort((a, b) => (b[1] ?? 0) - (a[1] ?? 0)).map(([k, n]) => `${n} ${REJECT_LABEL[k as keyof typeof REJECT_LABEL]}`).join(" · ")}
               </p>
             )}
@@ -138,27 +138,27 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
       )}
 
       {res.heldBackByEarnings.length > 0 && (
-        <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-xs leading-relaxed text-amber-200">
+        <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
           {res.heldBackByEarnings.length} more stock(s) have good puts only after earnings and are hidden: {res.heldBackByEarnings.map((h) => h.ticker).join(", ")}. Tick &quot;Include options that expire after earnings&quot; to see them (flagged in red).
         </p>
       )}
 
       {res.info.failed.length > 0 && (
-        <details className="rounded-lg border border-slate-800 bg-[#0F1A3A] px-4 py-3 text-xs text-slate-400">
-          <summary className="cursor-pointer font-medium text-slate-300">{res.info.failed.length} option scan(s) failed (left out, not guessed)</summary>
+        <details className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-xs text-slate-500 dark:border-slate-800 dark:bg-[#0F1A3A] dark:text-slate-400">
+          <summary className="cursor-pointer font-medium text-slate-700 dark:text-slate-300">{res.info.failed.length} option scan(s) failed (left out, not guessed)</summary>
           <ul className="mt-2 list-disc space-y-1 pl-5">
             {res.info.failed.slice(0, 20).map((x) => (
-              <li key={x.ticker}><b className="text-slate-200">{x.ticker}</b>: {x.error}</li>
+              <li key={x.ticker}><b className="text-slate-900 dark:text-slate-200">{x.ticker}</b>: {x.error}</li>
             ))}
           </ul>
-          <p className="mt-2 text-[11px] text-slate-500">These are retried automatically after the TTL expires.</p>
+          <p className="mt-2 text-[11px] text-slate-500 dark:text-slate-500">These are retried automatically after the TTL expires.</p>
         </details>
       )}
 
-      <div className="space-y-1 border-t border-slate-800 pt-4 text-[11px] text-slate-500">
-        <p>Source: <span className="text-slate-400">Stock data: Yahoo Finance (unofficial) · Options: Alpaca (primary) with Yahoo as backup</span> · as of {dateShort(today)}</p>
+      <div className="space-y-1 border-t border-slate-200 pt-4 text-[11px] text-slate-500 dark:border-slate-800">
+        <p>Source: <span className="text-slate-500 dark:text-slate-400">Stock data: Yahoo Finance (unofficial) · Options: Alpaca (primary) with Yahoo as backup</span> · as of {dateShort(today)}</p>
         <p>Scores = return per year × chance the put expires worthless × liquidity × structure bonus/penalties. Stock and option data may be delayed. Fills usually land between the bid and the mid price.</p>
-        <p className="text-amber-300/70">Selling options carries real risk: a put seller can lose most of the share price if the stock collapses, and assignment ties up the full cash amount. This tool does not place orders or give personal advice.</p>
+        <p className="text-amber-700 dark:text-amber-300/70">Selling options carries real risk: a put seller can lose most of the share price if the stock collapses, and assignment ties up the full cash amount. This tool does not place orders or give personal advice.</p>
       </div>
     </div>
   );
