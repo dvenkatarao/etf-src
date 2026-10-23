@@ -13,6 +13,8 @@ export type ScreenRow = {
   family: string | null;
   leveraged: boolean;
   assetClass: string;
+  rateTag: "defensive" | "neutral" | "sensitive";
+  rateLabel: string;
   quality: QualityGrade | null;
   qualityScore: number | null;
   price: number | null;
@@ -50,6 +52,7 @@ const COLUMNS: { key: SortKey; label: string; align?: "right"; hint?: string }[]
   { key: "ticker", label: "ETF" },
   { key: "category", label: "Category" },
   { key: "qualityScore", label: "Quality", hint: "Fund quality grade A-F: cost, size, trading ease, diversification, income sustainability. Not a performance forecast." },
+  { key: "rateTag", label: "Rates", hint: "Rate sensitivity: Defensive holds up when rates rise, Sensitive falls. Derived from category & asset class." },
   { key: "price", label: "Price", align: "right" },
   { key: "changePct", label: "Day", align: "right", hint: "Delayed quote, % change" },
   { key: "expense", label: "Expense", align: "right", hint: "Annual report expense ratio" },
@@ -74,6 +77,7 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
   const [erosion, setErosion] = useState("");
   const [freq, setFreq] = useState("");
   const [minGrade, setMinGrade] = useState("");
+  const [rateFilter, setRateFilter] = useState("");
   const [hideLev, setHideLev] = useState(true);
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "aum", dir: -1 });
   const [picked, setPicked] = useState<string[]>([]);
@@ -96,6 +100,7 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
       if (erosion && r.erosion !== erosion) return false;
       if (freq && r.freq !== freq) return false;
       if (minGrade && (r.quality == null || gradeRank(r.quality) > gradeRank(minGrade as QualityGrade))) return false;
+      if (rateFilter && r.rateTag !== rateFilter) return false;
       return true;
     });
     const { key, dir } = sort;
@@ -108,7 +113,7 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
       if (typeof av === "string" && typeof bv === "string") return av.localeCompare(bv) * dir;
       return ((av as number) - (bv as number)) * dir;
     });
-  }, [rows, q, cat, minYield, maxExp, minAum, erosion, freq, minGrade, hideLev, sort]);
+  }, [rows, q, cat, minYield, maxExp, minAum, erosion, freq, minGrade, rateFilter, hideLev, sort]);
 
   const toggle = (t: string) => setPicked((p) => (p.includes(t) ? p.filter((x) => x !== t) : p.length >= 5 ? p : [...p, t]));
   const field = "rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none";
@@ -155,6 +160,12 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
           <option value="A">Quality A only</option>
           <option value="B">Quality B or better</option>
           <option value="C">Quality C or better</option>
+        </select>
+        <select className={field} value={rateFilter} onChange={(e) => setRateFilter(e.target.value)} aria-label="Rate sensitivity">
+          <option value="">Any rate fit</option>
+          <option value="defensive">Defensive — rates help</option>
+          <option value="neutral">Neutral</option>
+          <option value="sensitive">Sensitive — rates hurt</option>
         </select>
         <label className="flex items-center gap-2 text-sm text-slate-700">
           <input type="checkbox" checked={hideLev} onChange={(e) => setHideLev(e.target.checked)} className="h-4 w-4 accent-indigo-600" />
@@ -210,6 +221,11 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
                 </td>
                 <td className="px-3 py-2">
                   <GradeBadge grade={r.quality} />
+                </td>
+                <td className="px-3 py-2">
+                  <Badge className={r.rateTag === "defensive" ? "bg-emerald-50 text-emerald-700 ring-emerald-200" : r.rateTag === "sensitive" ? "bg-rose-50 text-rose-700 ring-rose-200" : "bg-slate-100 text-slate-600 ring-slate-200"} title={r.rateLabel}>
+                    {r.rateTag === "defensive" ? "Defensive" : r.rateTag === "sensitive" ? "Sensitive" : "Neutral"}
+                  </Badge>
                 </td>
                 <td className="px-3 py-2 text-right tabular-nums">{r.price == null ? "N/A" : `$${r.price.toFixed(2)}`}</td>
                 <td className={`px-3 py-2 text-right tabular-nums ${colorOf(r.changePct)}`}>{r.changePct == null ? "N/A" : `${r.changePct > 0 ? "+" : ""}${r.changePct.toFixed(2)}%`}</td>

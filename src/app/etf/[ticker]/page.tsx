@@ -9,6 +9,8 @@ import { REFRESH_TTL_MS, getEtf, getHistory, getHoldingsAnalystConsensus, getQuo
 import { NA, big, colorFor, dateShort, erosionStyle, isLeveragedOrInverse, money, num, pct } from "@/lib/format";
 import { alignedStats, iso, sharpe } from "@/lib/metrics";
 import { qualityForRow } from "@/lib/quality";
+import { rateTagForEtf } from "@/lib/etf-rate-sensitivity";
+import { assetClassOf } from "@/lib/recommend";
 import { getSpreadStats } from "@/lib/snapshots";
 import { getSymbolNews } from "@/lib/news";
 import { isValidTicker } from "@/lib/universe";
@@ -103,6 +105,7 @@ export default async function EtfPage({ params }: { params: Promise<{ ticker: st
               {row.category && <Badge className="bg-indigo-50 text-indigo-700 ring-indigo-200">{row.category}</Badge>}
               {row.exchange && <Badge className="bg-slate-50 text-slate-600 ring-slate-200">{row.exchange}</Badge>}
               {leveraged && <Badge className="bg-rose-50 text-rose-700 ring-rose-200">Leveraged / inverse - not for buy-and-hold</Badge>}
+              {(() => { const ac = assetClassOf(row.category, row.profile?.allocation); const rt = rateTagForEtf({ ticker, category: row.category, name: row.name, assetClass: ac }); return <Badge className={rt.color} title={rt.hint}>{rt.label}</Badge>; })()}
             </div>
             <p className="mt-1 text-slate-600">{row.name ?? NA}</p>
             <p className="text-xs text-slate-500">Issuer: {row.family ?? NA} · Inception {row.inceptionDate ?? NA}</p>
