@@ -1,1 +1,23 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Light theme polish: subtle canvas, smoother type, card elevation */
+html { scrollbar-gutter: stable; }
+body {
+  font-feature-settings: "cv02","cv03","cv04","cv11";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+a { text-underline-offset: 2px; }
+::selection { background: rgb(99 102 241 / 0.2); }
+
+/* Subtle focus ring for accessibility */
+:focus-visible { outline: 2px solid rgb(99 102 241); outline-offset: 2px; }
+
+/* Scrollbar styling for light theme (non-wheel) */
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: rgb(203 213 225); border-radius: 999px; }
+*::-webkit-scrollbar-thumb:hover { background: rgb(148 163 184); }
