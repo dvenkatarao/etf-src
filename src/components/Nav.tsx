@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { UNIVERSE } from "@/lib/universe";
 import { BASE_STOCK_UNIVERSE } from "@/lib/stock-universe";
+import { useTheme } from "@/components/ThemeProvider";
 
 // ---------- Dropdown data ----------
 const ETF_LAB = [
@@ -91,6 +92,26 @@ function SmartTickerSearch({ onNavigate }: { onNavigate?: () => void }) {
         Go
       </button>
     </form>
+  );
+}
+
+function ThemeToggle({ compact }: { compact?: boolean }) {
+  const { theme, toggle } = useTheme();
+  const isDark = theme === "dark";
+  return (
+    <button
+      onClick={toggle}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-medium transition focus:outline-none focus:ring-2 focus:ring-indigo-400 ${
+        isDark
+          ? "border-slate-700 bg-slate-800 text-amber-300 hover:bg-slate-700"
+          : "border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100"
+      } ${compact ? "px-2 py-1.5" : ""}`}
+      aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
+      title={`Currently ${isDark ? "dark" : "light"} — click to switch to ${isDark ? "light" : "dark"}`}
+    >
+      <span className="text-sm leading-none">{isDark ? "☀️" : "🌙"}</span>
+      <span className={compact ? "hidden sm:inline" : ""}>{isDark ? "Light" : "Dark"}</span>
+    </button>
   );
 }
 
@@ -224,23 +245,27 @@ export default function Nav() {
           <LabDropdown label="Insights" links={INSIGHTS} pathname={pathname} />
         </nav>
 
-        {/* Search — desktop */}
+        {/* Search + Theme — desktop */}
         <div className="ml-auto hidden lg:flex items-center gap-3">
           <div className="hidden xl:flex items-center gap-2 text-[11px] text-slate-400">
             <span className="hidden 2xl:inline">Search works on both — ETFs & wheel stocks</span>
           </div>
           <SmartTickerSearch />
+          <ThemeToggle />
         </div>
 
-        {/* Mobile hamburger */}
-        <button
-          onClick={() => setMobileOpen((o) => !o)}
-          className="ml-auto grid h-9 w-9 place-items-center rounded-md border border-slate-700 bg-slate-800 text-slate-300 lg:hidden"
-          aria-label="Toggle navigation"
-          aria-expanded={mobileOpen}
-        >
-          {mobileOpen ? "✕" : "☰"}
-        </button>
+        {/* Actions — mobile: theme + hamburger */}
+        <div className="ml-auto flex items-center gap-2 lg:hidden">
+          <ThemeToggle compact />
+          <button
+            onClick={() => setMobileOpen((o) => !o)}
+            className="grid h-9 w-9 place-items-center rounded-md border border-slate-700 bg-slate-800 text-slate-300"
+            aria-label="Toggle navigation"
+            aria-expanded={mobileOpen}
+          >
+            {mobileOpen ? "✕" : "☰"}
+          </button>
+        </div>
 
         {/* Mobile panel */}
         {mobileOpen && (

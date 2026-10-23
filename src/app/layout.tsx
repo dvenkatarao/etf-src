@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Nav from "@/components/Nav";
 import { Disclaimer } from "@/components/ui";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -12,15 +13,24 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-[#F8FAFC] text-slate-900 antialiased">
-        <Nav />
-        <main className="mx-auto max-w-7xl px-4 py-8">{children}</main>
-        <footer className="mx-auto max-w-7xl px-4 pb-10">
-          <div className="border-t border-slate-200 pt-4">
-            <Disclaimer />
-          </div>
-        </footer>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var k='theme';var s=localStorage.getItem(k);var m=window.matchMedia('(prefers-color-scheme: dark)').matches;var t=s|| (m?'dark':'light'); if(!s) t='dark'; document.documentElement.classList.toggle('dark', t==='dark'); document.documentElement.classList.toggle('light', t!=='dark');}catch(e){}})();`,
+          }}
+        />
+      </head>
+      <body className="min-h-screen bg-[var(--bg-canvas)] text-[var(--text-primary)] antialiased transition-colors">
+        <ThemeProvider>
+          <Nav />
+          <main className="mx-auto max-w-7xl px-4 py-8">{children}</main>
+          <footer className="mx-auto max-w-7xl px-4 pb-10">
+            <div className="border-t border-[var(--border)] pt-4">
+              <Disclaimer />
+            </div>
+          </footer>
+        </ThemeProvider>
       </body>
     </html>
   );
