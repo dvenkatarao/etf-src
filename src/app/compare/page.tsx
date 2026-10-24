@@ -2,6 +2,7 @@ import CompareOverlap from "@/components/CompareOverlap";
 import LineChart from "@/components/LineChart";
 import TickerPicker from "@/components/TickerPicker";
 import { Badge, Card, PageHeader, SourceNote, TickerLink, Unavailable } from "@/components/ui";
+import { CompareIcon, PageIcon } from "@/components/icons/AppIcons";
 import { getRiskFree } from "@/lib/data";
 import { getEtf, getHistories, refreshEtf, type EtfRow } from "@/lib/etf-service";
 import { NA, big, dateShort, erosionStyle, num, pct } from "@/lib/format";
@@ -70,7 +71,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
 
   return (
     <div>
-      <PageHeader title="Compare ETFs" description="Overlay growth of $10,000 (total return) and compare cost, income, return, risk and NAV-erosion side by side. The best value in each row is highlighted when 'better' is unambiguous." />
+      <PageHeader icon={<PageIcon label="Compare"><CompareIcon size={22} /></PageIcon>} title="Compare ETFs" description="Overlay growth of $10,000 (total return) and compare cost, income, return, risk and NAV-erosion side by side. The best value in each row is highlighted when 'better' is unambiguous." />
       <div className="space-y-6">
         <TickerPicker current={tickers} suggestions={UNIVERSE} />
         {failed.length > 0 && (

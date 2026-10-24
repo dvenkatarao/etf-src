@@ -6,7 +6,7 @@ import WheelStockFilter from "@/components/wheel/WheelStockFilter";
 import WheelEarningsWatch from "@/components/wheel/WheelEarningsWatch";
 import WheelTable from "@/components/wheel/WheelTable";
 import WheelHydratorDark from "@/components/wheel/WheelHydratorDark";
-import { WheelIcon } from "@/components/icons/EarningsIcons";
+import { IconTile, WheelLabIcon } from "@/components/icons/AppIcons";
 import { ago, dateShort } from "@/lib/format";
 import { getEnv } from "@/lib/env";
 import { getBlsSchedule, getFomcCalendar, getMacroSnapshot, getPolicyRates, getYieldCurve } from "@/lib/macro";
@@ -57,7 +57,7 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <div className="grid h-8 w-8 place-items-center rounded-lg bg-[#4F6BFF] text-white"><WheelIcon size={18} /></div>
+            <IconTile size={40}><WheelLabIcon size={22} /></IconTile>
             <h1 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-white">Wheel Strategy Screener</h1>
             <span className="rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-[11px] font-medium text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-300">Two-step filter · Grade always computed</span>
           </div>

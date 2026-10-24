@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { SUPPORTED_BROKERS, BrokerType } from "@/lib/brokers/types";
 import { PortfolioRecord } from "@/db/schema";
+import { ImportExportIcon } from "@/components/icons/AppIcons";
 
 export default function CsvImportModal({
   isOpen,
@@ -98,11 +99,14 @@ export default function CsvImportModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
       <div className="w-full max-w-2xl rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-          <div>
+          <div className="flex items-start gap-3">
+            <ImportExportIcon size={22} />
+            <div>
             <h2 className="text-lg font-bold text-slate-900">Import Positions from CSV</h2>
             <p className="text-xs text-slate-500">
               Supports exports from Charles Schwab, Fidelity, Vanguard, NinjaTrader, MooMoo, &amp; Generic CSV
             </p>
+            </div>
           </div>
           <button
             onClick={onClose}

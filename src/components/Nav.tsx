@@ -2,29 +2,50 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import { UNIVERSE } from "@/lib/universe";
 import { BASE_STOCK_UNIVERSE } from "@/lib/stock-universe";
 import { useTheme } from "@/components/ThemeProvider";
+import {
+  CompareIcon,
+  DashboardIcon,
+  EtfLabIcon,
+  HelpIcon,
+  IconTile,
+  InsightsIcon,
+  NotificationsIcon,
+  OptionsIcon,
+  type IconProps,
+  PortfolioIcon,
+  ResearchIcon,
+  ScreenerIcon,
+  SearchIcon,
+  SettingsIcon,
+  StartIcon,
+  ThemeIcon,
+  WheelLabIcon,
+} from "@/components/icons/AppIcons";
+
+type NavLink = { href: string; label: string; desc: string; Icon: ComponentType<IconProps> };
 
 // ---------- Dropdown data ----------
-const ETF_LAB = [
-  { href: "/screener", label: "Screener", desc: "Filter 115 ETFs by cost, yield, return" },
-  { href: "/compare", label: "Compare", desc: "Up to 5 ETFs head-to-head" },
-  { href: "/recommend", label: "Recommend", desc: "Goal-based ranked picks" },
-  { href: "/coverage", label: "Coverage", desc: "How complete is the data?" },
-  { href: "/sources", label: "Data Sources", desc: "Catalog & live health" },
-] as const;
+const ETF_LAB: readonly NavLink[] = [
+  { href: "/screener", label: "Screener", desc: "Filter 115 ETFs by cost, yield, return", Icon: ScreenerIcon },
+  { href: "/compare", label: "Compare", desc: "Up to 5 ETFs head-to-head", Icon: CompareIcon },
+  { href: "/recommend", label: "Recommend", desc: "Goal-based ranked picks", Icon: ResearchIcon },
+  { href: "/coverage", label: "Coverage", desc: "How complete is the data?", Icon: SettingsIcon },
+  { href: "/sources", label: "Data Sources", desc: "Catalog & live health", Icon: HelpIcon },
+];
 
-const WHEEL_LAB = [
-  { href: "/wheel", label: "Wheel Screener", desc: "Cash-secured puts on A/A+ stocks" },
-  { href: "/wheel/guide", label: "Guide", desc: "15-step wheel manual" },
-] as const;
+const WHEEL_LAB: readonly NavLink[] = [
+  { href: "/wheel", label: "Wheel Screener", desc: "Cash-secured puts on A/A+ stocks", Icon: OptionsIcon },
+  { href: "/wheel/guide", label: "Guide", desc: "15-step wheel manual", Icon: HelpIcon },
+];
 
-const INSIGHTS = [
-  { href: "/macro", label: "Macro", desc: "Rates, curve, regime & FOMC/BLS" },
-  { href: "/news", label: "News & Events", desc: "Fed, SEC 8-K, headline feeds" },
-] as const;
+const INSIGHTS: readonly NavLink[] = [
+  { href: "/macro", label: "Macro", desc: "Rates, curve, regime & FOMC/BLS", Icon: InsightsIcon },
+  { href: "/news", label: "News & Events", desc: "Fed, SEC 8-K, headline feeds", Icon: NotificationsIcon },
+];
 
 // ---------- Helpers ----------
 function isActive(pathname: string | null, href: string) {
@@ -67,11 +88,14 @@ function SmartTickerSearch({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <form onSubmit={go} className="flex items-center gap-1.5" role="search" aria-label="Search ticker">
       <div className="relative">
+        <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 opacity-80">
+          <SearchIcon size={14} />
+        </span>
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="SCHD or AAPL…"
-          className="w-[170px] rounded-md border border-slate-300 bg-white px-3 py-1.5 pr-8 text-sm uppercase tracking-wide text-slate-900 placeholder:normal-case placeholder:text-slate-500 placeholder:tracking-normal focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 dark:border-slate-700 dark:bg-slate-800 dark:text-white sm:w-[200px]"
+          className="w-[170px] rounded-md border border-slate-300 bg-white py-1.5 pl-8 pr-8 text-sm uppercase tracking-wide text-slate-900 placeholder:normal-case placeholder:text-slate-500 placeholder:tracking-normal focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 dark:border-slate-700 dark:bg-slate-800 dark:text-white sm:w-[200px]"
           maxLength={10}
           aria-label="Search ETF or stock ticker"
           autoCapitalize="characters"
@@ -104,7 +128,7 @@ function ThemeToggle({ compact }: { compact?: boolean }) {
       aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
       title={`Currently ${isDark ? "dark" : "light"} — click to switch to ${isDark ? "light" : "dark"}`}
     >
-      <span className="text-sm leading-none">{isDark ? "☀️" : "🌙"}</span>
+      <ThemeIcon size={14} />
       <span className={compact ? "hidden sm:inline" : ""}>{isDark ? "Light" : "Dark"}</span>
     </button>
   );
@@ -113,14 +137,14 @@ function ThemeToggle({ compact }: { compact?: boolean }) {
 // ---------- Desktop dropdown ----------
 function LabDropdown({
   label,
-  icon,
+  Icon,
   links,
   pathname,
   onCloseMobile,
 }: {
   label: string;
-  icon?: string;
-  links: readonly { href: string; label: string; desc: string }[];
+  Icon?: ComponentType<IconProps>;
+  links: readonly NavLink[];
   pathname: string | null;
   onCloseMobile?: () => void;
 }) {
@@ -157,7 +181,11 @@ function LabDropdown({
         aria-expanded={open}
         aria-haspopup="true"
       >
-        {icon && <span className="text-xs opacity-70">{icon}</span>}
+        {Icon && (
+          <IconTile size={20}>
+            <Icon size={12} />
+          </IconTile>
+        )}
         {label}
         <span className={`ml-0.5 text-[10px] transition ${open ? "rotate-180" : ""}`}>▾</span>
       </button>
@@ -178,10 +206,15 @@ function LabDropdown({
                     setOpen(false);
                     onCloseMobile?.();
                   }}
-                  className={`rounded-lg px-3 py-2 transition ${a ? "bg-indigo-600 text-white" : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white"}`}
+                  className={`flex items-start gap-2.5 rounded-lg px-2.5 py-2 transition ${a ? "bg-indigo-600 text-white" : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white"}`}
                 >
-                  <div className="text-sm font-medium leading-none">{l.label}</div>
-                  <div className={`mt-1 text-xs leading-none ${a ? "text-indigo-100" : "text-slate-500 dark:text-slate-400"}`}>{l.desc}</div>
+                  <IconTile size={28} className={a ? "ring-white/20 dark:bg-white/10" : ""}>
+                    <l.Icon size={16} />
+                  </IconTile>
+                  <div className="min-w-0 pt-0.5">
+                    <div className="text-sm font-medium leading-none">{l.label}</div>
+                    <div className={`mt-1 text-xs leading-none ${a ? "text-indigo-100" : "text-slate-500 dark:text-slate-400"}`}>{l.desc}</div>
+                  </div>
                 </Link>
               );
             })}
@@ -205,7 +238,9 @@ export default function Nav() {
       <div className="mx-auto flex max-w-[1600px] flex-wrap items-center gap-x-2 gap-y-2 px-4 py-2.5 sm:px-6 lg:px-8">
         {/* Brand */}
         <Link href="/" className="flex items-center gap-2 text-slate-900 dark:text-white shrink-0">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-indigo-500 text-sm font-bold tracking-tight text-white">E</span>
+          <IconTile size={32}>
+            <EtfLabIcon size={18} />
+          </IconTile>
           <span className="hidden text-[15px] font-semibold tracking-tight sm:inline">ETF Research Lab</span>
         </Link>
 
@@ -213,30 +248,37 @@ export default function Nav() {
         <nav className="hidden items-center gap-1 text-[13px] font-medium lg:flex">
           <Link
             href="/"
-            className={`rounded-md px-2.5 py-1.5 transition ${isActive(pathname, "/") && pathname === "/" ? "bg-slate-900 text-white dark:bg-slate-800 dark:text-white" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"}`}
+            className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 transition ${isActive(pathname, "/") && pathname === "/" ? "bg-slate-900 text-white dark:bg-slate-800 dark:text-white" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"}`}
           >
+            <IconTile size={20}>
+              <DashboardIcon size={12} />
+            </IconTile>
             Dashboard
           </Link>
 
           {/* Start CTA */}
           <Link
             href="/onboarding"
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${isActive(pathname, "/onboarding") ? "bg-slate-900 text-white dark:bg-white dark:text-indigo-700" : "bg-indigo-600 text-white hover:bg-indigo-500"}`}
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition ${isActive(pathname, "/onboarding") ? "bg-slate-900 text-white dark:bg-white dark:text-indigo-700" : "bg-indigo-600 text-white hover:bg-indigo-500"}`}
           >
+            <StartIcon size={12} />
             Start →
           </Link>
 
-          <LabDropdown label="ETF Lab" icon="📊" links={ETF_LAB} pathname={pathname} />
-          <LabDropdown label="Wheel Lab" icon="◎" links={WHEEL_LAB} pathname={pathname} />
+          <LabDropdown label="ETF Lab" Icon={EtfLabIcon} links={ETF_LAB} pathname={pathname} />
+          <LabDropdown label="Wheel Lab" Icon={WheelLabIcon} links={WHEEL_LAB} pathname={pathname} />
 
           <Link
             href="/portfolio"
-            className={`rounded-md px-2.5 py-1.5 transition ${isActive(pathname, "/portfolio") ? "bg-slate-900 text-white dark:bg-slate-800 dark:text-white" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"}`}
+            className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 transition ${isActive(pathname, "/portfolio") ? "bg-slate-900 text-white dark:bg-slate-800 dark:text-white" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"}`}
           >
+            <IconTile size={20}>
+              <PortfolioIcon size={12} />
+            </IconTile>
             Portfolio
           </Link>
 
-          <LabDropdown label="Insights" links={INSIGHTS} pathname={pathname} />
+          <LabDropdown label="Insights" Icon={InsightsIcon} links={INSIGHTS} pathname={pathname} />
         </nav>
 
         {/* Search + Theme — desktop */}
@@ -268,23 +310,28 @@ export default function Nav() {
             <Link
               href="/onboarding"
               onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white"
+              className="flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white"
             >
+              <StartIcon size={14} />
               Start in 60s — 3 questions →
             </Link>
 
             <div className="grid gap-2">
               {/* Dashboard + Portfolio standalone */}
               <div className="grid grid-cols-2 gap-1">
-                <Link href="/" onClick={() => setMobileOpen(false)} className={`rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/") && pathname === "/" ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900" : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"}`}>Dashboard</Link>
-                <Link href="/portfolio" onClick={() => setMobileOpen(false)} className={`rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/portfolio") ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900" : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"}`}>Portfolio</Link>
+                <Link href="/" onClick={() => setMobileOpen(false)} className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/") && pathname === "/" ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900" : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"}`}>
+                  <DashboardIcon size={14} /> Dashboard
+                </Link>
+                <Link href="/portfolio" onClick={() => setMobileOpen(false)} className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/portfolio") ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900" : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"}`}>
+                  <PortfolioIcon size={14} /> Portfolio
+                </Link>
               </div>
 
               {/* Labs - accordion */}
               {[
-                { id: "etf", title: "ETF Lab", icon: "📊", links: ETF_LAB, desc: "Funds research" },
-                { id: "wheel", title: "Wheel Lab", icon: "◎", links: WHEEL_LAB, desc: "Options strategy" },
-                { id: "insights", title: "Insights", icon: "◈", links: INSIGHTS, desc: "Context & health" },
+                { id: "etf", title: "ETF Lab", Icon: EtfLabIcon, links: ETF_LAB, desc: "Funds research" },
+                { id: "wheel", title: "Wheel Lab", Icon: WheelLabIcon, links: WHEEL_LAB, desc: "Options strategy" },
+                { id: "insights", title: "Insights", Icon: InsightsIcon, links: INSIGHTS, desc: "Context & health" },
               ].map((sec) => {
                 const active = labActive(pathname, sec.links);
                 const expanded = mobileLabOpen === sec.id;
@@ -296,7 +343,9 @@ export default function Nav() {
                       aria-expanded={expanded}
                     >
                       <div className="flex items-center gap-2">
-                        <span className="text-sm">{sec.icon}</span>
+                        <IconTile size={28}>
+                          <sec.Icon size={16} />
+                        </IconTile>
                         <span className={`text-sm font-semibold ${active ? "text-slate-900 dark:text-white" : "text-slate-700 dark:text-slate-200"}`}>{sec.title}</span>
                         <span className="text-xs text-slate-500 dark:text-slate-400 hidden sm:inline">· {sec.desc}</span>
                       </div>
@@ -311,7 +360,10 @@ export default function Nav() {
                             onClick={() => setMobileOpen(false)}
                             className={`flex items-center justify-between rounded-md px-3 py-2.5 ${isActive(pathname, l.href) ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"}`}
                           >
-                            <span className="text-sm font-medium">{l.label}</span>
+                            <span className="inline-flex items-center gap-2 text-sm font-medium">
+                              <l.Icon size={14} />
+                              {l.label}
+                            </span>
                             <span className="text-xs text-slate-500 ml-2 truncate max-w-[160px] text-right hidden sm:block">{l.desc}</span>
                             <span className={`ml-auto text-xs ${isActive(pathname, l.href) ? "text-white/70 dark:text-slate-600" : "text-slate-400 dark:text-slate-500"}`}>→</span>
                           </Link>
@@ -325,7 +377,10 @@ export default function Nav() {
 
             {/* Mobile search — always visible in panel */}
             <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800">
-              <div className="mb-2 text-xs font-medium text-slate-700 dark:text-slate-300">Search any ticker — ETF or stock</div>
+              <div className="mb-2 inline-flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300">
+                <SearchIcon size={14} />
+                Search any ticker — ETF or stock
+              </div>
               <SmartTickerSearch onNavigate={() => setMobileOpen(false)} />
               <p className="mt-2 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
                 <span className="text-slate-700 dark:text-slate-300 font-medium">SCHD, VOO, BND</span> → ETF page &nbsp;·&nbsp; <span className="text-slate-700 dark:text-slate-300 font-medium">AAPL, NVDA, BRK-B</span> → Wheel page

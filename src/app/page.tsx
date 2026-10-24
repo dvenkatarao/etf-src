@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Hydrator from "@/components/Hydrator";
+import { DashboardIcon, IconTile, OptionsIcon, ResearchIcon, ScreenerIcon, StartIcon } from "@/components/icons/AppIcons";
 import { Card, SourceNote, Sparkline, Unavailable } from "@/components/ui";
 import { getAllEtfs, getQuotes, staleTickers } from "@/lib/etf-service";
 import { colorFor, dateShort, isLeveragedOrInverse, macroValue, num } from "@/lib/format";
@@ -38,16 +39,21 @@ export default async function Dashboard() {
   return (
     <div className="space-y-6">
       <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-indigo-800 p-8 text-white shadow-lg">
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-indigo-200">Live · source-verified · no estimates</p>
+        <div className="flex items-center gap-3">
+          <IconTile size={44} className="dark:bg-white/10">
+            <DashboardIcon size={24} />
+          </IconTile>
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-indigo-200">Live · source-verified · no estimates</p>
+        </div>
         <h1 className="mt-2 max-w-3xl text-3xl font-semibold leading-tight sm:text-4xl">Research US ETFs with data you can trace to its source.</h1>
         <p className="mt-3 max-w-2xl text-sm text-indigo-100">
           Screen, compare and analyse returns, distributions, expense ratios, NAV erosion, holdings-based analyst consensus and the macro backdrop. Every figure is provider data or deterministic math on it, stamped with source and time.
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
-          <Link href="/onboarding" className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-indigo-900 hover:bg-indigo-50">New? Start in 60s →</Link>
-          <Link href="/screener" className="rounded-lg bg-white/10 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/30 hover:bg-white/20">Open screener</Link>
-          <Link href="/recommend" className="rounded-lg bg-indigo-500/40 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/30 hover:bg-indigo-500/60">Goal-based picks</Link>
-          <Link href="/wheel" className="rounded-lg bg-violet-500/40 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/30 hover:bg-violet-500/60">Options wheel</Link>
+          <Link href="/onboarding" className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-indigo-900 hover:bg-indigo-50"><StartIcon size={14} /> New? Start in 60s →</Link>
+          <Link href="/screener" className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/30 hover:bg-white/20"><ScreenerIcon size={14} /> Open screener</Link>
+          <Link href="/recommend" className="inline-flex items-center gap-2 rounded-lg bg-indigo-500/40 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/30 hover:bg-indigo-500/60"><ResearchIcon size={14} /> Goal-based picks</Link>
+          <Link href="/wheel" className="inline-flex items-center gap-2 rounded-lg bg-violet-500/40 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/30 hover:bg-violet-500/60"><OptionsIcon size={14} /> Options wheel</Link>
         </div>
         <p className="mt-3 text-xs text-indigo-200">No account needed. <Link href="/onboarding" className="underline">3 questions → ranked picks + starter portfolio you can edit.</Link> No trades placed, no advice.</p>
       </section>

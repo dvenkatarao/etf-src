@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { PortfolioRecord, TransactionRecord } from "@/db/schema";
 import { money, dateShort } from "@/lib/format";
+import { AccountIcon, ImportExportIcon, TransactionsIcon } from "@/components/icons/AppIcons";
 
 export default function TransactionLedgerModal({
   isOpen,
@@ -100,11 +101,14 @@ export default function TransactionLedgerModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
       <div className="flex h-[90vh] max-h-[700px] w-full max-w-3xl flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-          <div>
-            <h2 className="text-lg font-bold text-slate-900">Transaction History &amp; Ledger</h2>
-            <p className="text-xs text-slate-500">
-              Audited log of buys, sells, dividends, and cashflow
-            </p>
+          <div className="flex items-start gap-3">
+            <TransactionsIcon size={22} />
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Transaction History &amp; Ledger</h2>
+              <p className="text-xs text-slate-500">
+                Audited log of buys, sells, dividends, and cashflow
+              </p>
+            </div>
           </div>
           <button
             onClick={onClose}
@@ -116,7 +120,10 @@ export default function TransactionLedgerModal({
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <label className="text-xs font-semibold text-slate-700">Account:</label>
+            <label className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700">
+              <AccountIcon size={12} />
+              Account:
+            </label>
             <select
               value={activePortId}
               onChange={(e) => setActivePortId(e.target.value)}
@@ -168,7 +175,7 @@ export default function TransactionLedgerModal({
                   e.target.value = "";
                 }}
               />
-              <span>⬆ Import CSV</span>
+              <span className="inline-flex items-center gap-1.5"><ImportExportIcon size={12} /> Import CSV</span>
             </label>
             <a href={`data:text/csv;charset=utf-8,${encodeURIComponent("date,type,ticker,quantity,price,amount,fee,notes\n2024-01-15,DEPOSIT,, , ,10000,0,Initial funding\n2024-02-10,BUY,VOO,10,500,5000,1,DCA\n2024-03-20,SELL,VOO,5,520,2600,1,Trim\n")}`} download="transactions-sample.csv" className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50">Sample CSV</a>
             <button

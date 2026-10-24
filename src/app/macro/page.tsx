@@ -1,4 +1,5 @@
 import { Card, PageHeader, SourceNote, Sparkline, Unavailable } from "@/components/ui";
+import { InsightsIcon, PageIcon } from "@/components/icons/AppIcons";
 import { MacroRegimeBannerLight } from "@/components/MacroRegimeBanner";
 import { YieldCurveChart } from "@/components/SvgCharts";
 import { colorFor, dateShort, macroValue } from "@/lib/format";
@@ -18,7 +19,7 @@ export default async function MacroPage() {
   const regime = deriveRegime({ snap: snap?.data ?? null, curve: curve?.data ?? null, policy: policy?.data ?? null });
   return (
     <div className="space-y-6">
-      <PageHeader title="Macro dashboard" description="The backdrop that drives ETF returns: policy rates, the Treasury curve, inflation, labour, growth and market stress. Every value is the latest published observation from the named official series." />
+      <PageHeader icon={<PageIcon label="Insights"><InsightsIcon size={22} /></PageIcon>} title="Macro dashboard" description="The backdrop that drives ETF returns: policy rates, the Treasury curve, inflation, labour, growth and market stress. Every value is the latest published observation from the named official series." />
       <MacroRegimeBannerLight regime={regime} />
 
       <div className="grid gap-6 lg:grid-cols-3">

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Badge, GradeBadge } from "@/components/ui";
+import { CompareIcon, FiltersIcon, IconTile, ImportExportIcon, SearchIcon } from "@/components/icons/AppIcons";
 import { gradeRank, type QualityGrade } from "@/lib/grades";
 import { erosionStyle } from "@/lib/format";
 import { downloadCsv, screenerCsvRows } from "@/lib/csv-export";
@@ -121,8 +122,18 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
 
   return (
     <div>
-      <div className="mb-4 grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-4">
-        <input className={field} placeholder="Search ticker, name or issuer" value={q} onChange={(e) => setQ(e.target.value)} />
+      <div className="mb-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="mb-3 flex items-center gap-2">
+          <IconTile size={28}><FiltersIcon size={16} /></IconTile>
+          <span className="text-sm font-semibold text-slate-800">Filters</span>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="relative">
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 opacity-80">
+            <SearchIcon size={14} />
+          </span>
+          <input className={`${field} w-full pl-9`} placeholder="Search ticker, name or issuer" value={q} onChange={(e) => setQ(e.target.value)} />
+        </div>
         <select className={field} value={cat} onChange={(e) => setCat(e.target.value)}>
           <option value="">All categories</option>
           {categories.map((c) => (
@@ -172,6 +183,7 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
           <input type="checkbox" checked={hideLev} onChange={(e) => setHideLev(e.target.checked)} className="h-4 w-4 accent-indigo-600" />
           Hide leveraged / inverse
         </label>
+        </div>
       </div>
 
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-sm text-slate-600">
@@ -184,16 +196,18 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
               const csv = screenerCsvRows(filtered.map((r) => ({ ticker: r.ticker, name: r.name, category: r.category, quality: r.quality, expense: r.expense, yieldTtm: r.yieldTtm, aum: r.aum, ytd: r.ytd, r1y: r.r1y, r3y: r.r3y, vol3y: r.vol3y, dd3y: r.dd3y, sharpe: r.sharpe, erosion: r.erosion, rateTag: r.rateTag })));
               downloadCsv(`screener-${new Date().toISOString().slice(0, 10)}.csv`, csv);
             }}
-            className="rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
           >
+            <ImportExportIcon size={14} />
             Export CSV
           </button>
           {picked.length > 0 && <span className="text-xs text-slate-500">{picked.join(", ")}</span>}
           <Link
             href={picked.length >= 2 ? `/compare?t=${picked.join(",")}` : "#"}
             aria-disabled={picked.length < 2}
-            className={`rounded-lg px-3 py-1.5 text-sm font-medium ${picked.length >= 2 ? "bg-indigo-600 text-white hover:bg-indigo-500" : "cursor-not-allowed bg-slate-200 text-slate-500"}`}
+            className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium ${picked.length >= 2 ? "bg-indigo-600 text-white hover:bg-indigo-500" : "cursor-not-allowed bg-slate-200 text-slate-500"}`}
           >
+            <CompareIcon size={14} />
             Compare selected ({picked.length}/5)
           </Link>
         </div>

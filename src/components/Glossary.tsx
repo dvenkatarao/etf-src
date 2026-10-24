@@ -1,7 +1,12 @@
+import { HelpIcon } from "@/components/icons/AppIcons";
+
 export default function Glossary() {
   return (
     <details className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <summary className="cursor-pointer text-sm font-medium text-slate-700">Quick glossary — hover the column header for more</summary>
+      <summary className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-slate-700">
+        <HelpIcon size={16} />
+        Quick glossary — hover the column header for more
+      </summary>
       <dl className="mt-3 grid gap-2 text-xs sm:grid-cols-2 lg:grid-cols-3">
         <div><dt className="font-semibold text-slate-800">TTM yield</dt><dd className="text-slate-600">Sum of last 12 months distributions ÷ current price. Not a forecast.</dd></div>
         <div><dt className="font-semibold text-slate-800">Price return vs total return</dt><dd className="text-slate-600">Price excludes distributions; total reinvests them. Gap is income; long gap without price growth = NAV erosion.</dd></div>

@@ -1,4 +1,5 @@
 import { Badge, Card, PageHeader, Stat } from "@/components/ui";
+import { PageIcon, SettingsIcon } from "@/components/icons/AppIcons";
 import { computeCoverage, type Field, type Readiness } from "@/lib/coverage";
 
 export const dynamic = "force-dynamic";
@@ -48,6 +49,7 @@ export default async function CoveragePage() {
   return (
     <div className="space-y-6">
       <PageHeader
+        icon={<PageIcon label="Coverage"><SettingsIcon size={22} /></PageIcon>}
         title="Data coverage audit"
         description="How many ETFs actually have each field populated in this database right now, and which planned features that supports. Nothing here is estimated. Percentages are of ETFs with stored metrics (or of live quotes received)."
         right={

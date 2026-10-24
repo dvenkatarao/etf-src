@@ -1,4 +1,5 @@
 import { Badge, Card, PageHeader, SourceNote, Unavailable } from "@/components/ui";
+import { NotificationsIcon, PageIcon } from "@/components/icons/AppIcons";
 import { dateShort } from "@/lib/format";
 import { getBlsSchedule, getFomcCalendar } from "@/lib/macro";
 import { getLatest8Ks, getMacroNews, getRecentEarningsReleases, getSymbolNews, getUpcomingEarnings } from "@/lib/news";
@@ -22,7 +23,7 @@ export default async function NewsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="News & events" description="Official, primary-source feeds: Federal Reserve (FOMC), SEC filings (earnings releases and company announcements), BEA/BLS releases, plus market headlines. Headlines link out to the publisher; nothing is summarised or altered." />
+      <PageHeader icon={<PageIcon label="News"><NotificationsIcon size={22} /></PageIcon>} title="News & events" description="Official, primary-source feeds: Federal Reserve (FOMC), SEC filings (earnings releases and company announcements), BEA/BLS releases, plus market headlines. Headlines link out to the publisher; nothing is summarised or altered." />
 
       <div className="grid gap-6 lg:grid-cols-3">
         <Card title="Federal Reserve, SEC & BEA announcements" subtitle="FOMC statements and minutes, press releases, speeches, regulation" className="lg:col-span-2">

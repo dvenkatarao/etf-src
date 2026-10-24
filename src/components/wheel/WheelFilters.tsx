@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Regime } from "@/lib/macro-regime";
 import type { WheelFilters } from "@/lib/wheel-service";
+import { FiltersIcon, IconTile, OptionsIcon } from "@/components/icons/AppIcons";
 
 const labelCls = "text-[10px] font-semibold tracking-[0.12em] text-slate-500 dark:text-slate-400";
 const inputCls =
@@ -39,7 +40,10 @@ export default function WheelFilters({ f, regime, guardrails }: { f: WheelFilter
       )}
 
       <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Step 2 · Options Filter — options list populates only after Step 1 + Step 2 are set</h3>
+        <h3 className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+          <IconTile size={24}><OptionsIcon size={13} /></IconTile>
+          Step 2 · Options Filter — options list populates only after Step 1 + Step 2 are set
+        </h3>
         <span className="text-xs text-slate-500">Grade in table always computed (weighted + caps) — see tooltips</span>
       </div>
 
@@ -100,7 +104,8 @@ export default function WheelFilters({ f, regime, guardrails }: { f: WheelFilter
             </label>
           </div>
           <div className="flex items-center gap-2">
-            <button className="rounded-lg bg-[#4F6BFF] px-5 py-2 text-sm font-semibold text-white shadow hover:bg-[#5B78FF] focus:outline-none focus:ring-2 focus:ring-indigo-400/40">
+            <button className="inline-flex items-center gap-2 rounded-lg bg-[#4F6BFF] px-5 py-2 text-sm font-semibold text-white shadow hover:bg-[#5B78FF] focus:outline-none focus:ring-2 focus:ring-indigo-400/40">
+              <FiltersIcon size={14} />
               Apply Filters
             </button>
             <Link href="/wheel" className="rounded-lg px-3 py-2 text-xs font-medium text-slate-500 hover:text-slate-700 hover:underline dark:text-slate-400 dark:hover:text-white">

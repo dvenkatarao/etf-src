@@ -4,6 +4,7 @@ import LineChart from "@/components/LineChart";
 import QualityCard from "@/components/QualityCard";
 import { DistributionBars } from "@/components/SvgCharts";
 import { Badge, Card, SourceNote, Stat, Unavailable } from "@/components/ui";
+import { EtfLabIcon, IconTile } from "@/components/icons/AppIcons";
 import { getRiskFree } from "@/lib/data";
 import { REFRESH_TTL_MS, getAllEtfs, getEtf, getHistory, getHoldingsAnalystConsensus, getQuotes, refreshEtf, type EtfRow } from "@/lib/etf-service";
 import { NA, big, colorFor, dateShort, erosionStyle, isLeveragedOrInverse, money, num, pct } from "@/lib/format";
@@ -125,6 +126,7 @@ export default async function EtfPage({ params }: { params: Promise<{ ticker: st
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <div className="flex flex-wrap items-center gap-2">
+              <IconTile size={40}><EtfLabIcon size={22} /></IconTile>
               <h1 className="text-3xl font-semibold tracking-tight">{ticker}</h1>
               {row.category && <Badge className="bg-indigo-50 text-indigo-700 ring-indigo-200">{row.category}</Badge>}
               {row.exchange && <Badge className="bg-slate-50 text-slate-600 ring-slate-200">{row.exchange}</Badge>}

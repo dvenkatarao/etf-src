@@ -2,6 +2,7 @@ import Hydrator from "@/components/Hydrator";
 import { MacroRegimeBannerLight } from "@/components/MacroRegimeBanner";
 import Screener from "@/components/Screener";
 import { PageHeader, SourceNote } from "@/components/ui";
+import { PageIcon, ScreenerIcon } from "@/components/icons/AppIcons";
 import { getRiskFree, toScreenRow } from "@/lib/data";
 import { getAllEtfs, getQuotes, staleTickers } from "@/lib/etf-service";
 import { getMacroSnapshot, getPolicyRates, getYieldCurve } from "@/lib/macro";
@@ -22,6 +23,7 @@ export default async function ScreenerPage() {
   return (
     <div>
       <PageHeader
+        icon={<PageIcon label="Screener"><ScreenerIcon size={22} /></PageIcon>}
         title="ETF Screener"
         description="Filter and rank US-listed ETFs on cost, income, return, risk and NAV-erosion. Every column is either a provider value or computed from provider price and distribution history - hover column headers for definitions. Missing values show N/A and sort last."
       />
