@@ -5,6 +5,7 @@ import { useState, useMemo } from "react";
 import { PositionWithAnalytics } from "@/lib/portfolio-service";
 import { money, pct, colorFor, erosionStyle } from "@/lib/format";
 import { Badge } from "@/components/ui";
+import { SearchIcon } from "@/components/icons/AppIcons";
 import { SUPPORTED_BROKERS, BrokerType } from "@/lib/brokers/types";
 
 export default function PositionsTable({
@@ -83,12 +84,15 @@ export default function PositionsTable({
             {positions.length} holdings across connected accounts · Live pricing updated
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="relative flex items-center">
+          <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 opacity-80">
+            <SearchIcon size={14} />
+          </span>
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search positions, tickers or brokers…"
-            className="w-64 rounded-lg border border-slate-300 px-3 py-1.5 text-xs focus:border-indigo-500 focus:outline-none"
+            className="w-64 rounded-lg border border-slate-300 py-1.5 pl-8 pr-3 text-xs focus:border-indigo-500 focus:outline-none"
           />
         </div>
       </div>

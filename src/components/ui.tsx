@@ -77,12 +77,15 @@ export function Unavailable({ what, why }: { what: string; why?: string }) {
   );
 }
 
-export function PageHeader({ title, description, right }: { title: string; description?: ReactNode; right?: ReactNode }) {
+export function PageHeader({ title, description, right, icon }: { title: string; description?: ReactNode; right?: ReactNode; icon?: ReactNode }) {
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
       <div>
-        <h1 className="text-[22px] font-semibold tracking-tight text-slate-900 sm:text-2xl">{title}</h1>
-        {description && <p className="mt-1.5 max-w-3xl text-[13px] leading-5 text-slate-500">{description}</p>}
+        <div className="flex items-center gap-3">
+          {icon}
+          <h1 className="text-[22px] font-semibold tracking-tight text-slate-900 sm:text-2xl">{title}</h1>
+        </div>
+        {description && <p className={`mt-1.5 max-w-3xl text-[13px] leading-5 text-slate-500 ${icon ? "sm:pl-[52px]" : ""}`}>{description}</p>}
       </div>
       {right}
     </div>

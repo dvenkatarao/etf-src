@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { HelpIcon, IconTile, OptionsIcon } from "@/components/icons/AppIcons";
 
 export const metadata = { title: "Wheel User Guide · ETF Research Lab" };
 
@@ -57,10 +58,16 @@ export default function WheelGuide() {
     <div className="mx-auto max-w-4xl">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-3xl">Wheel User Guide</h1>
-          <p className="mt-1 max-w-3xl text-sm text-slate-500 dark:text-slate-400">A step-by-step guide to finding, placing and managing wheel trades with this tool, including what happens on assignment, around ex-dividend dates and around earnings.</p>
+          <div className="flex items-center gap-3">
+            <IconTile size={40}><HelpIcon size={22} /></IconTile>
+            <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-3xl">Wheel User Guide</h1>
+          </div>
+          <p className="mt-1 max-w-3xl text-sm text-slate-500 dark:text-slate-400 sm:pl-[52px]">A step-by-step guide to finding, placing and managing wheel trades with this tool, including what happens on assignment, around ex-dividend dates and around earnings.</p>
         </div>
-        <Link href="/wheel" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500">Open the Wheel Screener →</Link>
+        <Link href="/wheel" className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500">
+          <OptionsIcon size={16} />
+          Open the Wheel Screener →
+        </Link>
       </div>
 
       <nav className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-[#0F1A3A]">

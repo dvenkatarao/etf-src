@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/ui";
+import { PageIcon, StartIcon } from "@/components/icons/AppIcons";
 import OnboardingWizard from "@/components/onboarding/OnboardingWizard";
 import { getAllEtfs, getQuotes } from "@/lib/etf-service";
 import { STARTER_PORTFOLIOS } from "@/lib/starter-portfolios";
@@ -21,6 +22,7 @@ export default async function OnboardingPage() {
   return (
     <div>
       <PageHeader
+        icon={<PageIcon label="Start"><StartIcon size={22} /></PageIcon>}
         title="New here? 3 questions → a starting point"
         description="Answer goal, horizon and risk — we map you to a ranked goal + a starter portfolio you can build in one click and then edit. No advice, no account, no trade placed."
       />

@@ -1,5 +1,6 @@
 import Hydrator from "@/components/Hydrator";
 import { Badge, Card, GradeBadge, PageHeader, SourceNote, TickerLink, Unavailable } from "@/components/ui";
+import { PageIcon, ResearchIcon } from "@/components/icons/AppIcons";
 import { getRiskFree, toScreenRow } from "@/lib/data";
 import { getAllEtfs, getQuotes, staleTickers } from "@/lib/etf-service";
 import { NA, erosionStyle, pct } from "@/lib/format";
@@ -75,7 +76,7 @@ export default async function RecommendPage({ searchParams }: { searchParams: Pr
 
   return (
     <div>
-      <PageHeader title="Goal-based ETF picks" description="A transparent, rule-based ranking - not personalised advice. Funds graded D or F on quality are hidden by default. Each metric is percentile-ranked against its peers (by default ETFs in the same asset class), then combined with the published weights below. ETFs missing too much data are excluded rather than imputed." />
+      <PageHeader icon={<PageIcon label="Research"><ResearchIcon size={22} /></PageIcon>} title="Goal-based ETF picks" description="A transparent, rule-based ranking - not personalised advice. Funds graded D or F on quality are hidden by default. Each metric is percentile-ranked against its peers (by default ETFs in the same asset class), then combined with the published weights below. ETFs missing too much data are excluded rather than imputed." />
       <Hydrator remaining={stale.length} total={UNIVERSE.length} />
 
       <form method="GET" className="mb-6 grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-6">

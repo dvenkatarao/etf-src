@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { WheelFilters } from "@/lib/wheel-service";
+import { FiltersIcon, IconTile } from "@/components/icons/AppIcons";
 import { PRESET_DESC, PRESET_LABEL, PRESET_ORDER, STOCK_PRESETS } from "@/lib/stock-presets";
 import type { PresetKey } from "@/lib/stock-presets";
 
@@ -12,7 +13,8 @@ export default function WheelStockFilter({ f, eligibleCount, hydrated }: { f: Wh
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-[#0F1A3A]">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+        <h3 className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+          <IconTile size={24}><FiltersIcon size={13} /></IconTile>
           Step 1 · Stock Filter
         </h3>
         <span className="text-xs text-slate-500 dark:text-slate-400">
@@ -160,7 +162,8 @@ export default function WheelStockFilter({ f, eligibleCount, hydrated }: { f: Wh
               Custom mode filters on fundamentals directly; grade still computed and shown in options list for context. Empty = no filter on that field. Hard caps (e.g. mktCap&gt;$10B → max B) still apply to displayed grade.
             </p>
             <div className="flex gap-2">
-              <button type="submit" className="rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white hover:bg-indigo-500">
+              <button type="submit" className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white hover:bg-indigo-500">
+                <FiltersIcon size={14} />
                 Apply Stock Filter
               </button>
               <Link href="/wheel" className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
