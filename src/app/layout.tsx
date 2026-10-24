@@ -24,8 +24,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="min-h-screen bg-[var(--bg-canvas)] text-[var(--text-primary)] antialiased transition-colors">
         <ThemeProvider>
           <Nav />
-          <main className="mx-auto max-w-7xl px-4 py-8">{children}</main>
-          <footer className="mx-auto max-w-7xl px-4 pb-10">
+          <main className="mx-auto max-w-[1600px] px-4 py-8 sm:px-6 lg:px-8">{children}</main>
+          <footer className="mx-auto max-w-[1600px] px-4 pb-10 sm:px-6 lg:px-8">
             <div className="border-t border-[var(--border)] pt-4">
               <Disclaimer />
             </div>
