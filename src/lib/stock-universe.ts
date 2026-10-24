@@ -3,6 +3,8 @@
  * by market cap, which is where optionable A/A+ quality names live). It is NOT an official index feed.
  * Tickers that no longer exist simply fail to hydrate and are skipped. Add your own with WHEEL_EXTRA_SYMBOLS
  * (comma-separated) in .env. Yahoo spells share classes with a dash (BRK-B).
+ *
+ * Quarterly refresh spec: see docs/wheel-methodology.md §1 and scripts/universe-refresh.ts
  */
 import { isValidTicker } from "./universe";
 
@@ -27,6 +29,10 @@ LIN SHW APD ECL FCX NEM DOW DD CTVA NUE VMC MLM PPG IFF ALB STLD LYB MOS CF BALL
 `;
 
 export const BASE_STOCK_UNIVERSE: string[] = [...new Set(LIST.split(/\s+/).filter(Boolean))];
+
+// Version stamped when the bundled list was last reviewed. Updated by scripts/universe-refresh.ts
+export const UNIVERSE_VERSION = "2026-Q1";
+export const UNIVERSE_AS_OF = "2026-03-15";
 
 export function stockUniverse(extraCsv: string | undefined | null = process.env.WHEEL_EXTRA_SYMBOLS): string[] {
   const extra = (extraCsv ?? "")

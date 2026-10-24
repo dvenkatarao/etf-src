@@ -116,7 +116,10 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                         <div className="text-[11px] text-slate-500 dark:text-slate-500">{r.g.row.sector}</div>
                       </td>
                       <td className="px-3 py-3 hidden sm:table-cell">
-                        <span className={gradeBadgeClasses(r.g.grade as any)}>
+                        <span
+                          className={gradeBadgeClasses(r.g.grade as any)}
+                          title={`${r.g.quality.summary} Score ${r.g.quality.score?.toFixed(0) ?? "N/A"}/100 · Coverage ${Math.round(r.g.quality.coverage * 100)}%${r.g.quality.caps.length ? ` · Caps: ${r.g.quality.caps.join("; ")}` : ""} — Grade always computed (weighted 5-pillar). High return ≠ high grade; premium pays for risk — you decide if you want to own it.`}
+                        >
                           {r.g.grade}
                         </span>
                       </td>
@@ -265,7 +268,10 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                     </Link>
                     <div className="max-w-[180px] truncate text-xs text-slate-500 dark:text-slate-400">{r.g.row.name}</div>
                   </div>
-                  <span className={gradeBadgeClasses(r.g.grade as any)}>
+                  <span
+                    className={gradeBadgeClasses(r.g.grade as any)}
+                    title={`${r.g.quality.summary} Score ${r.g.quality.score?.toFixed(0) ?? "N/A"}/100${r.g.quality.caps.length ? ` · Caps: ${r.g.quality.caps.join("; ")}` : ""}`}
+                  >
                     {r.g.grade}
                   </span>
                 </div>

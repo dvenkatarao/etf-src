@@ -2,6 +2,7 @@ import Link from "next/link";
 import { MacroRegimeBanner } from "@/components/MacroRegimeBanner";
 import WheelKpis from "@/components/wheel/WheelKpis";
 import WheelFilters from "@/components/wheel/WheelFilters";
+import WheelStockFilter from "@/components/wheel/WheelStockFilter";
 import WheelEarningsWatch from "@/components/wheel/WheelEarningsWatch";
 import WheelTable from "@/components/wheel/WheelTable";
 import WheelHydratorDark from "@/components/wheel/WheelHydratorDark";
@@ -57,10 +58,10 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
           <div className="flex items-center gap-3">
             <div className="grid h-8 w-8 place-items-center rounded-lg bg-[#4F6BFF] text-sm font-bold text-white">◉</div>
             <h1 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-white">Wheel Strategy Screener</h1>
-            <span className="rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-[11px] font-medium text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-300">A & A+ only</span>
+            <span className="rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-[11px] font-medium text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-300">Two-step filter · Grade always computed</span>
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-500 dark:text-slate-400">
-            Cash-secured puts on <span className="font-semibold text-slate-700 dark:text-slate-200">A and A+</span> rated large-cap stocks, ranked by return, safety and liquidity.
+            <b className="text-slate-700 dark:text-slate-200">Step 1: stocks (preset B = B and better)</b> then <b className="text-slate-700 dark:text-slate-200">Step 2: options</b> — grade is always computed (5-pillar weighted + caps), tooltips explain why even when return is high.
             Earnings, ex-dividend dates, key price levels and the optimal account type (<span className="text-violet-600 dark:text-violet-300">R</span> = retirement, <span className="text-sky-600 dark:text-sky-300">T</span> = taxable) are shown for every pick.
           </p>
         </div>
@@ -73,6 +74,9 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
 
       <WheelHydratorDark staleStocks={staleS.length} staleScans={staleScans.length} total={stockUniverse().length} />
 
+      {/* Step 1: Stock Filter — presets inclusive, optionable only default */}
+      <WheelStockFilter f={f} eligibleCount={res.info.eligible} hydrated={res.info.hydrated} />
+
       {res.info.failed.length > 0 && (
         <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-xs text-amber-200">
           <span className="font-semibold">⚠ {res.info.failed.length} item(s) could not be fetched and are left out rather than guessed:</span> {res.info.failed.slice(0, 8).map((x) => x.ticker).join(", ")}
@@ -83,7 +87,20 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
       <WheelFilters f={f} regime={regime} guardrails={guardrails} />
 
       <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-        <span className="text-slate-700 dark:text-slate-300">{res.info.eligible} stocks graded {f.minGrade === "A+" ? "A+" : "A or A+"} of {res.info.hydrated} analysed</span>
+        <span className="text-slate-700 dark:text-slate-300">
+          {f.stockMode === "custom"
+            ? `${res.info.eligible} stocks pass custom filter of ${res.info.hydrated} analysed`
+            : f.stockPreset === "A+"
+              ? `${res.info.eligible} stocks graded A+ of ${res.info.hydrated} analysed`
+              : f.stockPreset === "A"
+                ? `${res.info.eligible} stocks graded A or better (A, A+) of ${res.info.hydrated} analysed`
+                : f.stockPreset === "B"
+                  ? `${res.info.eligible} stocks graded B or better (A+, A, B) of ${res.info.hydrated} analysed`
+                  : f.stockPreset === "C"
+                    ? `${res.info.eligible} stocks graded C or better of ${res.info.hydrated} analysed`
+                    : `${res.info.eligible} stocks of ${res.info.hydrated} analysed`}
+          {f.optionableOnly ? "" : " (incl. non-optionable)"}
+        </span>
         <span className="text-slate-400 dark:text-slate-600">•</span>
         <span>{res.info.scanned} option chains scanned</span>
         <span className="text-slate-400 dark:text-slate-600">•</span>
