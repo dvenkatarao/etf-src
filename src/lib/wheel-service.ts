@@ -10,9 +10,11 @@ import { yahooQuotes } from "./yahoo";
 import { DEFAULT_PARAMS, daysBetween, scanPuts, type OptionContract, type PutCandidate, type RejectReason, type StockCtx, type WheelParams } from "./wheel";
 import { generateId } from "./security";
 import { ivPercentile } from "./wheel-iv";
+import { passesStockThresholds, STOCK_PRESETS } from "./stock-presets";
+import type { PresetKey, StockThresholds } from "./stock-presets";
 
-/** Chains are scanned only for stocks graded at least this well. */
-export const SCAN_MIN_GRADE: StockGrade = "A";
+/** Chains are scanned only for stocks graded at least this well. Broadened to C for transparent presets. */
+export const SCAN_MIN_GRADE: StockGrade = "C";
 const SCAN_TTL_MARKET_MS = 20 * 60 * 1000;
 const SCAN_TTL_CLOSED_MS = 4 * 60 * 60 * 1000;
 /** Loose window stored per stock; the page applies the user's own (tighter) filters on top. */
@@ -140,8 +142,30 @@ export async function runScanBatch(limit: number, concurrency = 3) {
 /* ------------------------------------------------------------------ */
 
 export type AccountFilter = "all" | "R" | "T";
-export type WheelFilters = { params: WheelParams; minGrade: "A+" | "A"; account: AccountFilter; trendOnly: boolean; minScore: number; divOnly: boolean };
-export const DEFAULT_FILTERS: WheelFilters = { params: DEFAULT_PARAMS, minGrade: "A", account: "all", trendOnly: false, minScore: 15, divOnly: false };
+export type WheelFilters = {
+  params: WheelParams;
+  minGrade: "A+" | "A" | "B" | "C" | "all";
+  stockMode: "preset" | "custom";
+  stockPreset: PresetKey;
+  stockThresholds: StockThresholds;
+  optionableOnly: boolean;
+  account: AccountFilter;
+  trendOnly: boolean;
+  minScore: number;
+  divOnly: boolean;
+};
+export const DEFAULT_FILTERS: WheelFilters = {
+  params: DEFAULT_PARAMS,
+  minGrade: "A",
+  stockMode: "preset",
+  stockPreset: "A",
+  stockThresholds: STOCK_PRESETS["A"],
+  optionableOnly: true,
+  account: "all",
+  trendOnly: false,
+  minScore: 15,
+  divOnly: false,
+};
 
 export type WheelRow = {
   g: GradedStock;
@@ -166,8 +190,28 @@ export type WheelResults = {
 export async function getWheelResults(f: WheelFilters = DEFAULT_FILTERS, today = todayIso()): Promise<WheelResults> {
   const [all, scans, stale] = await Promise.all([getAllStocks(), db.select().from(wheelScans), staleStocks()]);
   const graded = all.map(gradeStock);
-  const minRank = stockGradeRank(f.minGrade);
-  const eligible = graded.filter((g) => g.grade != null && stockGradeRank(g.grade) <= minRank);
+  let eligible: typeof graded;
+  if (f.stockMode === "custom") {
+    // Custom: filter directly on fundamentals via thresholds; grade still computed for display
+    eligible = graded.filter((g) => {
+      // Optionable toggle — currently universe is all optionable, keep for future non-optionable expansion
+      if (f.optionableOnly === false) return true;
+      // Passes explicit thresholds
+      return passesStockThresholds(g.row.fundamentals as any, f.stockThresholds);
+    });
+  } else {
+    // Preset: inclusive grade filtering (B includes B,A,A+ etc)
+    if (f.minGrade === "all") {
+      eligible = graded.filter((g) => g.grade != null);
+    } else {
+      const minRank = stockGradeRank(f.minGrade as StockGrade);
+      eligible = graded.filter((g) => g.grade != null && stockGradeRank(g.grade as StockGrade) <= minRank);
+    }
+    // optionableOnly also applies in preset mode
+    if (f.optionableOnly === false) {
+      // no-op today, reserved
+    }
+  }
   const scanBy = new Map(scans.map((s) => [s.ticker, s]));
 
   const rows: WheelRow[] = [];

@@ -7,6 +7,7 @@ const TOC: [string, string][] = [
   ["what", "What this tool is (and is not)"],
   ["wheel", "The wheel in one minute"],
   ["setup", "Before you start"],
+  ["filter", "Transparent stock filter — A+, A, B inclusive"],
   ["steps", "Step-by-step: from screen to trade"],
   ["assigned", "If you are assigned"],
   ["called", "If your shares are called away"],
@@ -15,6 +16,7 @@ const TOC: [string, string][] = [
   ["accounts", "R vs T: which account"],
   ["levels", "Reading the key levels"],
   ["scoring", "How grades and scores work"],
+  ["verify", "Verify on finviz & Schwab"],
   ["manage", "Managing open trades"],
   ["limits", "Data sources and limits"],
   ["trouble", "Troubleshooting"],
@@ -95,13 +97,28 @@ export default function WheelGuide() {
         <li><b className="text-slate-900 dark:text-white">Capital:</b> there is no cap in the screener. Check the <i>Cash needed</i> yourself: it is strike × 100 per contract (a $400 strike needs $40,000).</li>
       </UL>
 
-      <H id="steps">4. Step-by-step: from screen to trade</H>
+      <H id="filter">4. Transparent stock filter — A+, A, B inclusive</H>
+      <P>
+        The screener is <b className="text-slate-900 dark:text-white">two-step</b>: Step 1 picks stocks, Step 2 scans options. Options only populate after both steps are set. This keeps results reproducible on finviz &amp; Schwab.
+      </P>
+      <UL>
+        <li><b className="text-slate-900 dark:text-white">Presets inclusive:</b> <code className="rounded bg-slate-100 px-1 text-xs">A+</code> = ≥90 (Outstanding only), <code className="rounded bg-slate-100 px-1 text-xs">A</code> = ≥80 (A and better, includes A+), <code className="rounded bg-slate-100 px-1 text-xs">B</code> = ≥65 (B and better — B, A, A+), <code className="rounded bg-slate-100 px-1 text-xs">C</code> = ≥50. This is by design — B pulls B and better.</li>
+        <li><b className="text-slate-900 dark:text-white">Presets use grade engine:</b> 5 pillars (Business quality 30%, Strength 20%, Valuation 20%, Analysts 15%, Size 15%) on fixed bands, coverage ≥70%, plus 6 hard caps (e.g. mktCap &lt;$10B → max B, dd≥40% → max B, opMargin&lt;0 → max C). Same result as old Grade dropdown.</li>
+        <li><b className="text-slate-900 dark:text-white">Custom mode:</b> click <i>Custom</i> to edit thresholds directly (OpMargin ≥15%, ROE ≥15%, Debt/Eq ≤1, FwdPE ≤20, PEG ≤2, FCF Yield ≥4%, Beta ≤1.3, DD ≤25%, MktCap ≥$10B). Empty = no filter. Grade column still shows underlying quality for context — even when return is high, you see why grade is B/C.</li>
+        <li><b className="text-slate-900 dark:text-white">Optionable only (ON default):</b> universe is ~330 large US optionable names (S&amp;P 500 proxy, see <code className="rounded bg-slate-100 px-1 text-xs">src/lib/stock-universe.ts</code>, version 2026-Q1). Quarterly refresh compares SPY holdings and opens a PR — you can verify count.</li>
+        <li><b className="text-slate-900 dark:text-white">Reset</b> clears to all graded. Preset→Custom is reversible — Custom values pre-fill from preset so you can tweak incrementally.</li>
+      </UL>
+      <Callout title="Confidence tip — grade always computed">
+        In the options chain, <b>Grade is always the weighted grade + caps</b>, even in Custom mode. Hover the grade badge: score 87/100, coverage 85%, caps “MktCap under $10B → B”. High return with B/C grade means premium is paying you for that risk — you decide if you want to own it.
+      </Callout>
+
+      <H id="steps">5. Step-by-step: from screen to trade</H>
       <Step n={1} title="Check the status line">
-        Under the filters you see how many stocks qualified, how many chains were scanned, and which data provider supplied them (<b className="text-slate-900 dark:text-white">Alpaca</b>, <b className="text-slate-900 dark:text-white">Yahoo (backup)</b>). If the oldest scan is hours old during market hours, wait for the background refresh or reload.
+        Under the filters you see how many stocks passed Step 1, how many chains were scanned in Step 2, and provider (Alpaca / Yahoo backup). If oldest scan is hours old in market hours, wait for refresh.
       </Step>
       <Step n={2} title="Choose your filters (or keep the defaults)">
         <UL>
-          <li><b className="text-slate-900 dark:text-white">Stock grade:</b> A and A+ (default) or A+ only.</li>
+          <li><b className="text-slate-900 dark:text-white">Stock preset:</b> A and better (default), or A+, B and better, etc. Or Custom.</li>
           <li><b className="text-slate-900 dark:text-white">Days to expiry 21–50:</b> time decay works best in this range; very short expiries carry more sudden-move risk.</li>
           <li><b className="text-slate-900 dark:text-white">Delta 0.15–0.30:</b> roughly a 70–85% chance the put expires worthless. Higher delta = more premium, more assignment risk.</li>
           <li><b className="text-slate-900 dark:text-white">Open interest ≥ 100 and bid/ask gap ≤ 10%:</b> avoids contracts that are expensive to trade.</li>
@@ -216,7 +233,20 @@ export default function WheelGuide() {
         <li><b className="text-slate-900 dark:text-white">Delta:</b> the feed&apos;s delta where available; otherwise modelled with Black-Scholes from implied volatility (shown with ≈). Delta is only a rough guide to the chance of assignment.</li>
       </UL>
 
-      <H id="manage">12. Managing open trades</H>
+      <H id="verify">12. Verify on finviz & Schwab</H>
+      <P>
+        You can reproduce our lists: <b className="text-slate-900 dark:text-white">finviz screener</b> for stocks, <b className="text-slate-900 dark:text-white">Schwab options chain</b> for puts. Expect ±15% differences — Yahoo vs finviz feeds differ, and Schwab deltas are broker-calculated.
+      </P>
+      <UL>
+        <li><b className="text-slate-900 dark:text-white">Finviz:</b> Screener → Market Cap &gt;$10B, Forward P/E &lt;25, PEG &lt;2, Debt/Eq &lt;1, Current Ratio &gt;1.2, Operating Margin &gt;15%, ROE &gt;15%, Beta &lt;1.3. Manually check FCFYield (=FCF/MktCap) and drawdown = (52W High-Current)/52W High &lt;40% — caps we apply.</li>
+        <li><b className="text-slate-900 dark:text-white">Schwab:</b> Options Chain → Puts OTM → DTE 21-50 → Delta -0.15 to -0.30 → OI ≥100 → compute <code className="rounded bg-slate-100 px-1 text-xs">(Ask-Bid)/Mid ≤10%</code> and <code className="rounded bg-slate-100 px-1 text-xs">credit=Bid+0.25*(Ask-Bid)</code> → <code className="rounded bg-slate-100 px-1 text-xs">ann=credit/(Strike-credit)*365/DTE ≥8%</code> → skip expiries ≥ next earnings (check Research → Events). Remaining rows = our <code className="rounded bg-slate-100 px-1 text-xs">candidates</code>, top score first.</li>
+        <li><b className="text-slate-900 dark:text-white">Stock universe:</b> bundled ~330 large US optionable names (<code className="rounded bg-slate-100 px-1 text-xs">src/lib/stock-universe.ts</code>, v2026-Q1). Quarterly refresh diffs SPY holdings and opens a PR — not live. Add <code className="rounded bg-slate-100 px-1 text-xs">WHEEL_EXTRA_SYMBOLS</code> for your own.</li>
+      </UL>
+      <Callout title="Why grade ≠ return">
+        A 18%/yr put on a C stock is not a bug — premium is payment for risk. Hover Grade in the table: <i>Score 62 (C) · Caps: Market cap &lt;$10B → max B · dd 42% → B</i>. You can still sell — grade tells you owning risk, return tells you pay. We provide both; you decide.
+      </Callout>
+
+      <H id="manage">13. Managing open trades</H>
       <UL>
         <li><b className="text-slate-900 dark:text-white">Take profits early:</b> many traders buy back the option once about 50% of the premium is captured, and redeploy the cash. It lowers risk and speeds up the wheel.</li>
         <li><b className="text-slate-900 dark:text-white">Watch the last week:</b> near expiry a stock sitting right at your strike is hard to predict (&quot;pin risk&quot;). If you do not want shares, close or roll before the last day.</li>
@@ -225,7 +255,7 @@ export default function WheelGuide() {
         <li><b className="text-slate-900 dark:text-white">Diversify:</b> spread positions across sectors and keep cash in reserve. Markets fall together.</li>
       </UL>
 
-      <H id="limits">13. Data sources and limits</H>
+      <H id="limits">14. Data sources and limits</H>
       <UL>
         <li><b className="text-slate-900 dark:text-white">Option data:</b> Alpaca first; if it errors or returns no usable quotes, Yahoo Finance is used and the row shows a &quot;Yahoo (backup)&quot; badge. Alpaca&apos;s free (&quot;indicative&quot;) feed is not the full exchange feed and can lag or differ slightly; set <code className="rounded bg-slate-100 px-1 py-0.5 text-indigo-700 dark:bg-slate-800 dark:text-indigo-300">ALPACA_OPTIONS_FEED=opra</code> if you have the paid subscription. Yahoo quotes are delayed and its implied volatility can be noisy for thinly traded contracts.</li>
         <li><b className="text-slate-900 dark:text-white">Stock data:</b> Yahoo Finance (unofficial). Fundamentals, analyst ratings and earnings dates can be stale or estimated. Always confirm the date and price at your broker before trading.</li>
@@ -234,7 +264,7 @@ export default function WheelGuide() {
         <li><b className="text-slate-900 dark:text-white">Nothing is estimated:</b> if data is missing the tool shows N/A or leaves the stock out.</li>
       </UL>
 
-      <H id="trouble">14. Troubleshooting</H>
+      <H id="trouble">15. Troubleshooting</H>
       <UL>
         <li><b className="text-slate-900 dark:text-white">Table is empty:</b> loosen the filters (delta range, minimum return, bid/ask gap) or wait for the scan progress bar to finish. The page lists why contracts were rejected.</li>
         <li><b className="text-slate-900 dark:text-white">&quot;Alpaca keys not set&quot;:</b> add them to <code className="rounded bg-slate-100 px-1 py-0.5 text-indigo-700 dark:bg-slate-800 dark:text-indigo-300">.env</code> and restart; until then Yahoo is used.</li>
@@ -243,7 +273,7 @@ export default function WheelGuide() {
         <li><b className="text-slate-900 dark:text-white">Rate limits:</b> if Yahoo or Alpaca throttles, affected stocks are skipped and retried later.</li>
       </UL>
 
-      <H id="glossary">15. Glossary</H>
+      <H id="glossary">16. Glossary</H>
       <dl className="mt-2 rounded-xl border border-slate-200 bg-white px-4 py-2 dark:border-slate-800 dark:bg-[#0F1A3A]">
         <Term t="Assignment">The option buyer exercises and you must fulfil the contract (buy shares for a put, sell shares for a call).</Term>
         <Term t="Cash-secured put">A short put backed by cash equal to strike × 100.</Term>
