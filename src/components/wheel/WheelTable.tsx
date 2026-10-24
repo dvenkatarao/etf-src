@@ -154,7 +154,7 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
           <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400 md:hidden">
             <span>← swipe to see more</span> <span className="ml-auto">Cards recommended on phone — toggle above</span>
           </div>
-          <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white -mx-2 md:mx-0 dark:border-slate-800 dark:bg-[#0F1A3A]">
+          <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-[#0F1A3A]">
             <table className="min-w-full text-sm">
               <thead className="bg-slate-50 text-left text-[10px] uppercase tracking-[0.12em] text-slate-500 dark:bg-[#0D1632] dark:text-slate-400">
                 <tr>
