@@ -25,7 +25,7 @@ export function Stat({ label, value, sub, valueClass = "text-slate-900", hint }:
   return (
     <div className="rounded-xl border border-slate-200/60 bg-slate-50/80 px-4 py-3.5 backdrop-blur-[1px] dark:border-slate-800 dark:bg-[#0F1A3A]" title={hint}>
       <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">{label}</div>
-      <div className={`mt-1.5 text-[22px] font-semibold leading-none tracking-tight tabular-nums ${valueClass} dark:text-white`}>{value}</div>
+      <div className={`mt-1.5 font-mono text-[22px] font-semibold leading-none tracking-tight tabular-nums ${valueClass} dark:text-white`}>{value}</div>
       {sub && <div className="mt-1 text-xs leading-4 text-slate-500 dark:text-slate-400">{sub}</div>}
     </div>
   );
@@ -46,9 +46,11 @@ export function Badge({ children, className = "", title }: { children: ReactNode
 /** Provenance footer: every data block says where it came from and when. */
 export function SourceNote({ source, asOf, fetchedAt, stale, error, href }: { source: string; asOf?: string | null; fetchedAt?: string | null; stale?: boolean; error?: string; href?: string }) {
   return (
-    <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-400">
+    <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] tracking-wide text-slate-400">
+      <span className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-1.5 py-0.5 font-sans text-[10px] font-medium uppercase tracking-[0.08em] text-teal-800 ring-1 ring-teal-200/80 dark:bg-teal-500/10 dark:text-teal-300 dark:ring-teal-500/30">
+        Verified
+      </span>
       <span>
-        Source:{" "}
         {href ? (
           <a href={href} target="_blank" rel="noreferrer" className="underline decoration-dotted hover:text-slate-600">
             {source}
@@ -60,8 +62,8 @@ export function SourceNote({ source, asOf, fetchedAt, stale, error, href }: { so
       {asOf && <span>· as of {asOf}</span>}
       {fetchedAt && <span title={dateTime(fetchedAt)}>· fetched {ago(fetchedAt)}</span>}
       {stale && (
-        <span className="rounded bg-amber-100 px-1.5 py-0.5 font-medium text-amber-800" title={error}>
-          STALE - upstream unavailable, showing last good copy
+        <span className="rounded bg-amber-100 px-1.5 py-0.5 font-sans font-medium text-amber-800" title={error}>
+          STALE — last good copy
         </span>
       )}
     </p>
@@ -83,7 +85,7 @@ export function PageHeader({ title, description, right, icon }: { title: string;
       <div>
         <div className="flex items-center gap-3">
           {icon}
-          <h1 className="text-[22px] font-semibold tracking-tight text-slate-900 sm:text-2xl">{title}</h1>
+          <h1 className="text-[22px] font-semibold tracking-tight text-slate-900 sm:text-2xl dark:text-white">{title}</h1>
         </div>
         {description && <p className={`mt-1.5 max-w-3xl text-[13px] leading-5 text-slate-500 ${icon ? "sm:pl-[52px]" : ""}`}>{description}</p>}
       </div>
@@ -94,13 +96,13 @@ export function PageHeader({ title, description, right, icon }: { title: string;
 
 export function TickerLink({ t, className = "" }: { t: string; className?: string }) {
   return (
-    <Link href={`/etf/${t}`} className={`font-semibold text-indigo-700 hover:underline ${className}`}>
+    <Link href={`/etf/${t}`} className={`font-semibold text-teal-800 hover:underline dark:text-teal-300 ${className}`}>
       {t}
     </Link>
   );
 }
 
-export function Sparkline({ values, width = 120, height = 32, color = "#4f46e5" }: { values: number[]; width?: number; height?: number; color?: string }) {
+export function Sparkline({ values, width = 120, height = 32, color = "#0f766e" }: { values: number[]; width?: number; height?: number; color?: string }) {
   if (values.length < 2) return null;
   const min = Math.min(...values);
   const max = Math.max(...values);
@@ -117,8 +119,50 @@ export function Sparkline({ values, width = 120, height = 32, color = "#4f46e5" 
 
 export function Disclaimer() {
   return (
-    <p className="text-xs leading-relaxed text-slate-500">
+    <p className="max-w-3xl text-xs leading-relaxed text-slate-500">
       Educational research tool, not investment advice. Past performance does not predict future results. Figures are computed from third-party data that may be delayed, incomplete or revised; always confirm with the fund&apos;s prospectus and issuer website.
     </p>
+  );
+}
+
+export function TableScroll({
+  children,
+  className = "",
+  density = "comfortable",
+}: {
+  children: ReactNode;
+  className?: string;
+  density?: "comfortable" | "compact";
+}) {
+  return (
+    <div
+      className={`cl-table-scroll rounded-xl border border-slate-200/70 bg-white dark:border-slate-800 dark:bg-[#0F1A3A] ${density === "compact" ? "cl-table-compact" : "cl-table-comfy"} ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+export function DensityToggle({
+  value,
+  onChange,
+}: {
+  value: "comfortable" | "compact";
+  onChange: (v: "comfortable" | "compact") => void;
+}) {
+  const btn = (id: "comfortable" | "compact", label: string) => (
+    <button
+      type="button"
+      onClick={() => onChange(id)}
+      className={`rounded px-2 py-1 text-[11px] font-medium ${value === id ? "bg-teal-600 text-white" : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"}`}
+    >
+      {label}
+    </button>
+  );
+  return (
+    <div className="inline-flex rounded-md border border-slate-200 bg-white p-0.5 dark:border-slate-700 dark:bg-[#0D1632]" role="group" aria-label="Table density">
+      {btn("comfortable", "Comfortable")}
+      {btn("compact", "Compact")}
+    </div>
   );
 }

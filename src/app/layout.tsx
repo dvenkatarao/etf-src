@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import Link from "next/link";
 import Nav from "@/components/Nav";
 import { Disclaimer } from "@/components/ui";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import "@fontsource/ibm-plex-sans/400.css";
+import "@fontsource/ibm-plex-sans/500.css";
+import "@fontsource/ibm-plex-sans/600.css";
+import "@fontsource/ibm-plex-sans/700.css";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,13 +28,24 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           }}
         />
       </head>
-      <body className="min-h-screen bg-[var(--bg-canvas)] text-[var(--text-primary)] antialiased transition-colors">
+      <body className="min-h-screen bg-[var(--bg-canvas)] font-sans text-[var(--text-primary)] antialiased transition-colors">
         <ThemeProvider>
           <Nav />
-          <main className="mx-auto max-w-[1600px] px-4 py-8 sm:px-6 lg:px-8">{children}</main>
+          <main className="mx-auto max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">{children}</main>
           <footer className="mx-auto max-w-[1600px] px-4 pb-10 sm:px-6 lg:px-8">
-            <div className="border-t border-[var(--border)] pt-4">
+            <div className="flex flex-col gap-3 border-t border-[var(--border)] pt-4 sm:flex-row sm:items-start sm:justify-between">
               <Disclaimer />
+              <nav className="flex shrink-0 flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500" aria-label="Help and data">
+                <Link href="/coverage" className="hover:text-teal-700 dark:hover:text-teal-300">
+                  Coverage
+                </Link>
+                <Link href="/sources" className="hover:text-teal-700 dark:hover:text-teal-300">
+                  Data sources
+                </Link>
+                <Link href="/wheel/guide" className="hover:text-teal-700 dark:hover:text-teal-300">
+                  Wheel guide
+                </Link>
+              </nav>
             </div>
           </footer>
         </ThemeProvider>

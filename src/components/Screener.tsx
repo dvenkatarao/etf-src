@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Badge, GradeBadge } from "@/components/ui";
+import { Badge, DensityToggle, GradeBadge, TableScroll } from "@/components/ui";
 import { CompareIcon, FiltersIcon, IconTile, ImportExportIcon, SearchIcon } from "@/components/icons/AppIcons";
 import { gradeRank, type QualityGrade } from "@/lib/grades";
 import { erosionStyle } from "@/lib/format";
@@ -83,6 +83,7 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
   const [hideLev, setHideLev] = useState(true);
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "aum", dir: -1 });
   const [picked, setPicked] = useState<string[]>([]);
+  const [density, setDensity] = useState<"comfortable" | "compact">("comfortable");
 
   const categories = useMemo(() => Array.from(new Set(rows.map((r) => r.category).filter((x): x is string => !!x))).sort(), [rows]);
   const freqs = useMemo(() => Array.from(new Set(rows.map((r) => r.freq))).sort(), [rows]);
@@ -118,7 +119,7 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
   }, [rows, q, cat, minYield, maxExp, minAum, erosion, freq, minGrade, rateFilter, hideLev, sort]);
 
   const toggle = (t: string) => setPicked((p) => (p.includes(t) ? p.filter((x) => x !== t) : p.length >= 5 ? p : [...p, t]));
-  const field = "rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none";
+  const field = "rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-teal-500 focus:outline-none dark:border-slate-700 dark:bg-[#0F1A3A]";
 
   return (
     <div>
@@ -180,7 +181,7 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
           <option value="sensitive">Sensitive — rates hurt</option>
         </select>
         <label className="flex items-center gap-2 text-sm text-slate-700">
-          <input type="checkbox" checked={hideLev} onChange={(e) => setHideLev(e.target.checked)} className="h-4 w-4 accent-indigo-600" />
+          <input type="checkbox" checked={hideLev} onChange={(e) => setHideLev(e.target.checked)} className="h-4 w-4 accent-teal-600" />
           Hide leveraged / inverse
         </label>
         </div>
@@ -191,6 +192,7 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
           {filtered.length} of {rows.length} ETFs
         </span>
         <div className="flex items-center gap-2">
+          <DensityToggle value={density} onChange={setDensity} />
           <button
             onClick={() => {
               const csv = screenerCsvRows(filtered.map((r) => ({ ticker: r.ticker, name: r.name, category: r.category, quality: r.quality, expense: r.expense, yieldTtm: r.yieldTtm, aum: r.aum, ytd: r.ytd, r1y: r.r1y, r3y: r.r3y, vol3y: r.vol3y, dd3y: r.dd3y, sharpe: r.sharpe, erosion: r.erosion, rateTag: r.rateTag })));
@@ -205,7 +207,7 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
           <Link
             href={picked.length >= 2 ? `/compare?t=${picked.join(",")}` : "#"}
             aria-disabled={picked.length < 2}
-            className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium ${picked.length >= 2 ? "bg-indigo-600 text-white hover:bg-indigo-500" : "cursor-not-allowed bg-slate-200 text-slate-500"}`}
+            className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium ${picked.length >= 2 ? "bg-teal-600 text-white hover:bg-teal-500" : "cursor-not-allowed bg-slate-200 text-slate-500"}`}
           >
             <CompareIcon size={14} />
             Compare selected ({picked.length}/5)
@@ -213,10 +215,10 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
         </div>
       </div>
 
-      <p className="mb-2 text-xs text-slate-500">Tip: start at <a href="/onboarding" className="underline text-indigo-600">Start → 3 questions</a> if unsure. Hover column headers for definitions.</p>
-      <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <p className="mb-2 text-xs text-slate-500">Hover column headers for definitions.</p>
+      <TableScroll density={density} className="shadow-sm">
         <table className="min-w-full text-sm">
-          <thead className="bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500">
+          <thead className="bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500 dark:bg-[#0D1632] dark:text-slate-400">
             <tr>
               <th className="w-8 px-3 py-3" />
               {COLUMNS.map((c) => (
@@ -229,12 +231,12 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
           </thead>
           <tbody className="divide-y divide-slate-100">
             {filtered.map((r) => (
-              <tr key={r.ticker} className="hover:bg-indigo-50/40">
+              <tr key={r.ticker} className="hover:bg-teal-50/40 dark:hover:bg-white/[0.03]">
                 <td className="px-3 py-2">
-                  <input type="checkbox" checked={picked.includes(r.ticker)} onChange={() => toggle(r.ticker)} className="h-4 w-4 accent-indigo-600" aria-label={`Select ${r.ticker} for comparison`} />
+                  <input type="checkbox" checked={picked.includes(r.ticker)} onChange={() => toggle(r.ticker)} className="h-4 w-4 accent-teal-600" aria-label={`Select ${r.ticker} for comparison`} />
                 </td>
                 <td className="px-3 py-2">
-                  <Link href={`/etf/${r.ticker}`} className="font-semibold text-indigo-700 hover:underline">
+                  <Link href={`/etf/${r.ticker}`} className="font-semibold text-teal-800 hover:underline dark:text-teal-300">
                     {r.ticker}
                   </Link>
                   <div className="max-w-[220px] truncate text-xs text-slate-500" title={r.name ?? ""}>
@@ -252,7 +254,7 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
                     {r.rateTag === "defensive" ? "Defensive" : r.rateTag === "sensitive" ? "Sensitive" : "Neutral"}
                   </Badge>
                 </td>
-                <td className="px-3 py-2 text-right tabular-nums">{r.price == null ? "N/A" : `$${r.price.toFixed(2)}`}</td>
+                <td className="px-3 py-2 text-right font-mono tabular-nums">{r.price == null ? "N/A" : `$${r.price.toFixed(2)}`}</td>
                 <td className={`px-3 py-2 text-right tabular-nums ${colorOf(r.changePct)}`}>{r.changePct == null ? "N/A" : `${r.changePct > 0 ? "+" : ""}${r.changePct.toFixed(2)}%`}</td>
                 <td className="px-3 py-2 text-right tabular-nums">{pctFmt(r.expense)}</td>
                 <td className="px-3 py-2 text-right tabular-nums">{pctFmt(r.yieldTtm)}</td>
@@ -276,15 +278,15 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
                   <p className="mt-1 text-xs text-slate-500">
                     Active: {[q && `search "${q}"`, cat && `category ${cat}`, minYield && `yield ≥${minYield}%`, maxExp && `expense ≤${maxExp}%`, minAum && `AUM ≥$${(Number(minAum)/1e9).toFixed(0)}B`, erosion && `erosion ${erosion}`, freq && `dist ${freq}`, minGrade && `grade ≥${minGrade}`, rateFilter && `${rateFilter}`, hideLev && "hide leveraged"].filter(Boolean).join(" · ") || "none"}
                   </p>
-                  <p className="mt-2 text-xs text-indigo-600">
-                    Try: lower <b>Min yield</b> by 0.5–1pp, widen <b>Max expense</b>, lower <b>AUM</b> to $100M, or set <b>erosion</b> to Any. <button onClick={() => { setQ(""); setCat(""); setMinYield(""); setMaxExp(""); setMinAum(""); setErosion(""); setFreq(""); setMinGrade(""); setRateFilter(""); setHideLev(true); }} className="underline">Clear all</button>
+                  <p className="mt-2 text-xs text-teal-700 dark:text-teal-300">
+                    Try: lower <b>Min yield</b> by 0.5–1pp, widen <b>Max expense</b>, lower <b>AUM</b> to $100M, or set <b>erosion</b> to Any. <button onClick={() => { setQ(""); setCat(""); setMinYield(""); setMaxExp(""); setMinAum(""); setErosion(""); setFreq(""); setMinGrade(""); setRateFilter(""); setHideLev(true); }} className="underline text-teal-700 dark:text-teal-300">Clear all</button>
                   </p>
                 </td>
               </tr>
             )}
           </tbody>
         </table>
-      </div>
+      </TableScroll>
       <Glossary />
     </div>
   );

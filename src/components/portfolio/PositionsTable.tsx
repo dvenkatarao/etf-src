@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useMemo } from "react";
 import { PositionWithAnalytics } from "@/lib/portfolio-service";
 import { money, pct, colorFor, erosionStyle } from "@/lib/format";
-import { Badge } from "@/components/ui";
+import { Badge, DensityToggle, TableScroll } from "@/components/ui";
 import { SearchIcon } from "@/components/icons/AppIcons";
 import { SUPPORTED_BROKERS, BrokerType } from "@/lib/brokers/types";
 
@@ -19,6 +19,7 @@ export default function PositionsTable({
   const [sortKey, setSortKey] = useState<keyof PositionWithAnalytics>("marketValue");
   const [sortDir, setSortDir] = useState<1 | -1>(-1);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [density, setDensity] = useState<"comfortable" | "compact">("comfortable");
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -92,12 +93,13 @@ export default function PositionsTable({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search positions, tickers or brokers…"
-            className="w-64 rounded-lg border border-slate-300 py-1.5 pl-8 pr-3 text-xs focus:border-indigo-500 focus:outline-none"
+            className="w-64 rounded-lg border border-slate-300 py-1.5 pl-8 pr-3 text-xs focus:border-teal-500 focus:outline-none dark:border-slate-700 dark:bg-[#0F1A3A]"
           />
         </div>
+        <DensityToggle value={density} onChange={setDensity} />
       </div>
 
-      <div className="overflow-x-auto">
+      <TableScroll density={density} className="rounded-none border-0">
         <table className="min-w-full text-xs">
           <thead className="bg-slate-50 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
             <tr>
@@ -288,7 +290,7 @@ export default function PositionsTable({
             )}
           </tbody>
         </table>
-      </div>
+      </TableScroll>
     </div>
   );
 }

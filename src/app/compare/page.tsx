@@ -94,7 +94,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
             </Card>
 
             <Card title="Side-by-side metrics">
-              <div className="overflow-x-auto">
+              <div className="cl-table-scroll cl-table-comfy overflow-x-auto">
                 <table className="min-w-full text-sm">
                   <thead>
                     <tr className="border-b border-slate-200 text-left">
