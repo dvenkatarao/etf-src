@@ -49,6 +49,8 @@ body {
 a { text-underline-offset: 2px; }
 ::selection { background: rgb(99 102 241 / 0.2); }
 :focus-visible { outline: 2px solid rgb(99 102 241); outline-offset: 2px; }
+html.dark ::selection { background: rgb(45 212 191 / 0.25); }
+html.dark :focus-visible { outline-color: rgb(20 184 166); }
 
 /* Scrollbars — adapt to theme */
 *::-webkit-scrollbar { width: 8px; height: 8px; }

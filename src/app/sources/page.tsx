@@ -1,6 +1,6 @@
 import SourcesBrowser from "@/components/SourcesBrowser";
 import { Card, PageHeader } from "@/components/ui";
-import { HelpIcon, ImportExportIcon, PageIcon } from "@/components/icons/AppIcons";
+import { HelpIcon, PageIcon } from "@/components/icons/AppIcons";
 import { ANALYST_FINDINGS, KNOWN_GAPS, SOURCES, VERIFIED_ON } from "@/lib/sources";
 
 export const dynamic = "force-dynamic";
@@ -18,12 +18,6 @@ export default function SourcesPage() {
         icon={<PageIcon label="Help"><HelpIcon size={22} /></PageIcon>}
         title="Free data source catalog"
         description={`Every source below was either called live from this app's environment or read in the provider's official documentation on ${VERIFIED_ON}. ${live} verified live, ${docs} verified in official docs (API key needed), ${failed} flagged do-not-use. Run the live health check to re-test keyless endpoints right now.`}
-        right={
-          <a href="/api/spec" className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-500" download>
-            <ImportExportIcon size={16} />
-            Download AI-agent build spec (.md)
-          </a>
-        }
       />
 
       <div className="grid gap-6 lg:grid-cols-2">

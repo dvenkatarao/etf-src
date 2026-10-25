@@ -15,6 +15,8 @@ import { REJECT_LABEL, scanCalls, scanPuts, type CallScan, type PutScan } from "
 import { filtersQuery, parseFilters, type SP } from "@/lib/wheel-filters";
 import { stockCtx, todayIso } from "@/lib/wheel-service";
 import { yahooQuotes } from "@/lib/yahoo";
+import { expectedMove, summarizeDteBuckets, vrpPp } from "@/lib/vol-metrics";
+import { calculatorHref } from "@/lib/wheel-cycle";
 
 export const dynamic = "force-dynamic";
 
@@ -90,6 +92,22 @@ export default async function WheelStockPage({ params, searchParams }: { params:
   const isA = g.grade != null && stockGradeRank(g.grade) <= stockGradeRank("A");
   const q = filtersQuery(f);
   const earnDays = ev?.nextEarnings && ev.nextEarnings >= today ? Math.round((Date.parse(ev.nextEarnings) - Date.parse(today)) / 86_400_000) : null;
+  const bestIv = puts?.candidates[0]?.contract.iv ?? null;
+  const hv30 = row.technicals.hv30 ?? null;
+  const em = ctx && bestIv != null ? expectedMove(ctx.price, bestIv, puts?.candidates[0]?.dte ?? 30) : ctx && hv30 != null ? expectedMove(ctx.price, hv30, 30) : null;
+  const vrp = vrpPp(bestIv, hv30);
+  const buckets = puts ? summarizeDteBuckets(puts.candidates.map((c) => ({ dte: c.dte, credit: c.credit, spreadPct: c.spreadPct, oi: c.contract.oi, iv: c.contract.iv }))) : [];
+  const calcHref = calculatorHref({
+    ticker,
+    preset: "short-put",
+    strike: puts?.candidates[0]?.contract.strike,
+    expiry: puts?.candidates[0]?.contract.expiration,
+    credit: puts?.candidates[0]?.credit,
+    spot: ctx?.price,
+    dte: puts?.candidates[0]?.dte,
+    iv: bestIv ?? undefined,
+    hv: hv30 ?? undefined,
+  });
 
   return (
     <div className="space-y-5">
@@ -103,7 +121,10 @@ export default async function WheelStockPage({ params, searchParams }: { params:
           </div>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{row.sector ?? ""}{row.industry ? ` · ${row.industry}` : ""}</p>
         </div>
-        <Link href={`/wheel?${q}`} className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100 dark:border-indigo-500/20 dark:bg-[#1B2540] dark:text-indigo-300 dark:hover:bg-[#24304F] dark:hover:text-white">← Wheel Screener</Link>
+        <div className="flex flex-wrap gap-2">
+          <Link href={calcHref} className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-500">Payoff & cycle →</Link>
+          <Link href={`/wheel?${q}`} className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100 dark:border-indigo-500/20 dark:bg-[#1B2540] dark:text-indigo-300 dark:hover:bg-[#24304F] dark:hover:text-white">← Wheel Screener</Link>
+        </div>
       </div>
 
       {!isA && <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">This stock is graded {g.grade ?? "n/a"}, below the A/A+ bar of the screener. Its options are shown for reference only.</div>}
@@ -111,9 +132,41 @@ export default async function WheelStockPage({ params, searchParams }: { params:
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <WheelStatDark label="Price" value={money(ctx?.price ?? row.price)} sub={live != null ? "live (delayed)" : `last close ${row.technicals.asOf}`} />
         <WheelStatDark label="Next earnings" value={ev?.nextEarnings ? dateShort(ev.nextEarnings) : "unknown"} sub={earnDays != null ? `in ${earnDays} days${ev?.earningsEstimated ? " (estimated)" : ""}` : undefined} valueClass={earnDays != null && earnDays <= 14 ? "text-amber-300" : "text-white"} />
+        <WheelStatDark label="1σ expected move" value={em ? `±${money(em.one)}` : "N/A"} sub={em ? `${money(em.low1)}–${money(em.high1)} · IV or HV30 × √(DTE/365)` : "need IV or HV30"} />
+        <WheelStatDark label="VRP (IV − HV30)" value={vrp == null ? "N/A" : `${vrp >= 0 ? "+" : ""}${vrp.toFixed(1)} pp`} sub={bestIv != null && hv30 != null ? `IV ${(bestIv * 100).toFixed(1)}% vs HV ${(hv30 * 100).toFixed(1)}%` : "need a put IV and 30-day realized vol"} valueClass={vrp != null && vrp >= 0 ? "text-emerald-300" : "text-white"} />
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
         <WheelStatDark label="Next ex-dividend" value={ev?.exDividend && ev.exDividend >= today ? dateShort(ev.exDividend) : "none upcoming"} sub={ev?.dividendPerShare != null ? `${money(ev.dividendPerShare)}/share · ${pct(ev.dividendYield, 2)} yield` : "no dividend"} />
         <WheelStatDark label="Analyst view" value={fu.recMean != null ? `${fu.recMean.toFixed(1)} / 5` : "N/A"} sub={fu.targetMean != null && fu.price ? `target ${money(fu.targetMean)} (${pct(fu.targetMean / fu.price - 1, 1, true)}) · ${fu.analystCount ?? "?"} analysts` : "1 = strong buy, 5 = sell"} />
       </div>
+
+      {buckets.some((b) => b.n > 0) && (
+        <WheelCardDark title="DTE buckets" subtitle="Median credit on puts that already passed the screener filters — compare 7 / 14 / 30 / 45 / 75 day windows.">
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead className="text-left text-[10px] uppercase tracking-[0.12em] text-slate-500">
+                <tr>
+                  {["Window", "Puts", "Median credit", "Credit / day", "Median IV", "Median OI"].map((h) => (
+                    <th key={h} className="px-3 py-2 font-medium">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800/60">
+                {buckets.map((b) => (
+                  <tr key={b.key} className={b.n === 0 ? "opacity-40" : ""}>
+                    <td className="px-3 py-2 font-medium text-white">{b.label}</td>
+                    <td className="px-3 py-2 tabular-nums text-slate-300">{b.n}</td>
+                    <td className="px-3 py-2 tabular-nums text-slate-200">{b.medianCredit != null ? money(b.medianCredit) : "—"}</td>
+                    <td className="px-3 py-2 tabular-nums text-teal-300">{b.creditPerDay != null ? money(b.creditPerDay, 3) : "—"}</td>
+                    <td className="px-3 py-2 tabular-nums text-slate-300">{b.medianIv != null ? pct(b.medianIv, 1) : "—"}</td>
+                    <td className="px-3 py-2 tabular-nums text-slate-300">{b.medianOi != null ? Math.round(b.medianOi).toLocaleString() : "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </WheelCardDark>
+      )}
 
       <WheelGradeCardDark quality={g.quality} />
       <WheelKeyLevelsDark t={row.technicals} livePrice={ctx?.price} />

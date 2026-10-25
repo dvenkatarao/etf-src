@@ -6,6 +6,8 @@ import { money, pct, dateShort } from "@/lib/format";
 import type { MacroEvent } from "@/lib/macro-events";
 import { expiryEventProximity } from "@/lib/macro-events";
 import { ivRankLabel } from "@/lib/wheel-iv";
+import { calculatorHref } from "@/lib/wheel-cycle";
+import { vrpPp } from "@/lib/vol-metrics";
 import type { WheelResults } from "@/lib/wheel-service";
 import { gradeBadgeClasses } from "@/components/GradePill";
 
@@ -349,13 +351,49 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                               <div className="space-y-1">
                                 <div className="text-[10px] tracking-[0.12em] text-slate-500">NEXT DIVIDEND</div>
                                 <div className="text-sm text-slate-700 dark:text-slate-300">{r.ctx.exDividend ? dateShort(r.ctx.exDividend) : "—"}</div>
-                                <div className="mt-3 flex gap-2">
+                                <div className="mt-2 text-[10px] tracking-[0.12em] text-slate-500">EXPECTED MOVE / VRP</div>
+                                <div className="text-sm text-slate-700 dark:text-slate-300">
+                                  {b.expMovePct != null ? `±${pct(b.expMovePct, 1)}` : "N/A"}
+                                  {b.sigmaDistance != null ? ` · ${b.sigmaDistance.toFixed(1)}σ OTM` : ""}
+                                  {(() => {
+                                    const v = vrpPp(b.contract.iv, r.ctx.hv30);
+                                    return v == null ? "" : ` · VRP ${v >= 0 ? "+" : ""}${v.toFixed(1)}pp`;
+                                  })()}
+                                </div>
+                                <div className="mt-3 flex flex-wrap gap-2">
                                   <Link href={`/wheel/${r.g.row.ticker}?${q}`} className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-500">
                                     View details →
                                   </Link>
-                                  <button className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-white/5">
-                                    Add to watchlist
-                                  </button>
+                                  <Link
+                                    href={calculatorHref({
+                                      tab: "payoff",
+                                      ticker: r.g.row.ticker,
+                                      preset: "short-put",
+                                      strike: c.strike,
+                                      expiry: c.expiration,
+                                      credit: b.credit,
+                                      spot: r.ctx.price,
+                                      dte: b.dte,
+                                      iv: c.iv ?? undefined,
+                                      hv: r.ctx.hv30 ?? undefined,
+                                    })}
+                                    className="rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-teal-500"
+                                  >
+                                    Open payoff
+                                  </Link>
+                                  <Link
+                                    href={calculatorHref({
+                                      tab: "cycle",
+                                      ticker: r.g.row.ticker,
+                                      strike: c.strike,
+                                      credit: b.credit,
+                                      spot: r.ctx.price,
+                                      dte: b.dte,
+                                    })}
+                                    className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-white/5"
+                                  >
+                                    Wheel cycle
+                                  </Link>
                                 </div>
                               </div>
                             </div>
@@ -414,6 +452,23 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                       Cushion <b className="text-slate-900 dark:text-white">{pct(b.breakevenCushion, 1)}</b>
                     </span>
                   </div>
+                  <Link
+                    href={calculatorHref({
+                      tab: "payoff",
+                      ticker: r.g.row.ticker,
+                      preset: "short-put",
+                      strike: b.contract.strike,
+                      expiry: b.contract.expiration,
+                      credit: b.credit,
+                      spot: r.ctx.price,
+                      dte: b.dte,
+                      iv: b.contract.iv ?? undefined,
+                      hv: r.ctx.hv30 ?? undefined,
+                    })}
+                    className="mt-3 inline-flex text-xs font-medium text-teal-600 hover:underline dark:text-teal-300"
+                  >
+                    Open payoff →
+                  </Link>
                 </div>
               );
             })}
