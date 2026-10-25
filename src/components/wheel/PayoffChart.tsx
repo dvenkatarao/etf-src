@@ -18,8 +18,8 @@ export default function PayoffChart({
   emHigh?: number | null;
 }) {
   if (points.length < 2) return null;
-  const w = 560;
-  const h = 140;
+  const w = 800;
+  const h = 240;
   const pad = { l: 2, r: 2, t: 6, b: 6 };
   const xs = points.map((p) => p.price);
   const ys = points.map((p) => p.pnl);
@@ -45,14 +45,14 @@ export default function PayoffChart({
   const spotPct = ((spot - minX) / spanX) * 100;
 
   return (
-    <div className="max-w-[640px]">
+    <div className="w-full">
       <div className="flex gap-2">
-        <div className="flex h-40 w-14 shrink-0 flex-col justify-between py-1 text-right font-mono text-[11px] tabular-nums text-slate-500">
+        <div className="flex h-60 w-14 shrink-0 flex-col justify-between py-1 text-right font-mono text-[11px] tabular-nums text-slate-500">
           <span>{money(maxY, 0)}</span>
           <span>{money(minY, 0)}</span>
         </div>
-        <div className="relative h-40 min-w-0 flex-1">
-          <svg viewBox={`0 0 ${w} ${h}`} className="h-full w-full text-slate-600 dark:text-slate-300" role="img" aria-label="Expiration payoff diagram">
+        <div className="relative h-60 min-w-0 flex-1">
+          <svg viewBox={`0 0 ${w} ${h}`} className="h-full w-full text-slate-600 dark:text-slate-300" preserveAspectRatio="none" role="img" aria-label="Expiration payoff diagram">
             {emLow != null && emHigh != null && emHigh > emLow && (
               <rect x={x(emLow)} y={pad.t} width={Math.max(0, x(emHigh) - x(emLow))} height={h - pad.t - pad.b} fill="#14b8a6" opacity={0.12} />
             )}
