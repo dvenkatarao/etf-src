@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Badge, DensityToggle, GradeBadge, TableScroll } from "@/components/ui";
+import Glossary from "@/components/Glossary";
 import { CompareIcon, FiltersIcon, IconTile, ImportExportIcon, SearchIcon } from "@/components/icons/AppIcons";
 import { gradeRank, type QualityGrade } from "@/lib/grades";
 import { erosionStyle } from "@/lib/format";
@@ -289,21 +290,5 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
       </TableScroll>
       <Glossary />
     </div>
-  );
-}
-
-function Glossary() {
-  return (
-    <details className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <summary className="cursor-pointer text-sm font-medium text-slate-700">Quick glossary — hover any header for detail</summary>
-      <dl className="mt-3 grid gap-2 text-xs sm:grid-cols-2 lg:grid-cols-3">
-        <div><dt className="font-semibold text-slate-800">TTM yield</dt><dd className="text-slate-600">Last 12 mo distributions ÷ price. Not a forecast.</dd></div>
-        <div><dt className="font-semibold text-slate-800">Price vs total return</dt><dd className="text-slate-600">Price excludes payouts; total reinvests them. Persistent gap + falling price = NAV erosion.</dd></div>
-        <div><dt className="font-semibold text-slate-800">Sharpe 3Y</dt><dd className="text-slate-600">(3Y ann. total return − T-bill) ÷ vol. Risk-adjusted.</dd></div>
-        <div><dt className="font-semibold text-slate-800">NAV erosion</dt><dd className="text-slate-600">Severe ≤−6%/yr price return while paying — price funds the yield.</dd></div>
-        <div><dt className="font-semibold text-slate-800">Quality A–F</dt><dd className="text-slate-600">Cost, size, liquidity, diversification, income. Not return.</dd></div>
-        <div><dt className="font-semibold text-slate-800">Rates: Defensive / Sensitive</dt><dd className="text-slate-600">Defensive holds up when yields rise (short bonds, low-vol); sensitive falls.</dd></div>
-      </dl>
-    </details>
   );
 }

@@ -35,6 +35,7 @@ export default function TransactionLedgerModal({
   const [txDate, setTxDate] = useState(new Date().toISOString().slice(0, 10));
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [notice, setNotice] = useState<{ tone: "ok" | "err"; text: string } | null>(null);
 
   const loadTransactions = useCallback(async (portId: string) => {
     setLoading(true);
@@ -62,6 +63,7 @@ export default function TransactionLedgerModal({
     if (!activePortId) return;
 
     setSubmitting(true);
+    setNotice(null);
     try {
       const calculatedAmount =
         amount || (parseFloat(quantity || "0") * parseFloat(price || "0")).toString();
@@ -88,10 +90,14 @@ export default function TransactionLedgerModal({
         setPrice("");
         setAmount("");
         setNotes("");
+        setNotice({ tone: "ok", text: "Transaction recorded." });
         loadTransactions(activePortId);
+      } else {
+        const j = await res.json().catch(() => ({}));
+        setNotice({ tone: "err", text: (j as { error?: string }).error ?? "Could not record that transaction." });
       }
     } catch {
-      alert("Failed to record transaction");
+      setNotice({ tone: "err", text: "Could not record that transaction." });
     } finally {
       setSubmitting(false);
     }
@@ -146,13 +152,14 @@ export default function TransactionLedgerModal({
                 onChange={async (e) => {
                   const f = e.target.files?.[0];
                   if (!f) return;
+                  setNotice(null);
                   const text = await f.text();
                   const lines = text.split(/\r?\n/).filter((l) => l.trim());
-                  if (lines.length < 2) { alert("CSV needs header + rows"); return; }
+                  if (lines.length < 2) { setNotice({ tone: "err", text: "CSV needs a header plus at least one row." }); return; }
                   const headers = lines[0].split(",").map((h) => h.trim().toLowerCase());
                   const idx = (k: string) => headers.indexOf(k);
                   const need = ["date", "type", "amount"];
-                  if (need.some((k) => idx(k) === -1)) { alert("CSV needs date,type,amount columns (ticker,quantity,price,fee,notes optional)"); return; }
+                  if (need.some((k) => idx(k) === -1)) { setNotice({ tone: "err", text: "CSV needs date, type, and amount columns (ticker, quantity, price, fee, notes optional)." }); return; }
                   const rows: any[] = [];
                   for (let i = 1; i < lines.length; i++) {
                     const cols = lines[i].split(",").map((c) => c.trim().replace(/^\"|\"$/g, ""));
@@ -169,9 +176,9 @@ export default function TransactionLedgerModal({
                       notes: cols[idx("notes")] || null,
                     });
                   }
-                  if (!rows.length) { alert("No valid rows"); return; }
+                  if (!rows.length) { setNotice({ tone: "err", text: "No valid rows in that CSV." }); return; }
                   const res = await fetch(`/api/portfolios/${activePortId}/transactions/batch`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ rows }) });
-                  if (res.ok) { alert(`Imported ${rows.length} transactions`); loadTransactions(activePortId); } else { const j = await res.json().catch(()=>({error:"failed"})); alert(j.error ?? "Import failed"); }
+                  if (res.ok) { setNotice({ tone: "ok", text: `Imported ${rows.length} transactions.` }); loadTransactions(activePortId); } else { const j = await res.json().catch(()=>({error:"failed"})); setNotice({ tone: "err", text: j.error ?? "Import failed." }); }
                   e.target.value = "";
                 }}
               />
@@ -186,6 +193,12 @@ export default function TransactionLedgerModal({
             </button>
           </div>
         </div>
+
+        {notice && (
+          <p className={`mt-3 rounded-lg px-3 py-2 text-xs ${notice.tone === "ok" ? "border border-emerald-200 bg-emerald-50 text-emerald-800" : "border border-rose-200 bg-rose-50 text-rose-800"}`}>
+            {notice.text}
+          </p>
+        )}
 
         {showAddForm && (
           <form

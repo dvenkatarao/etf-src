@@ -48,6 +48,7 @@ export default function WheelPositionsTracker() {
   const [premium, setPremium] = useState("");
   const [qty, setQty] = useState("1");
   const [openedAt, setOpenedAt] = useState(new Date().toISOString().slice(0, 10));
+  const [formError, setFormError] = useState<string | null>(null);
 
   useEffect(() => {
     setPositions(load());
@@ -62,7 +63,11 @@ export default function WheelPositionsTracker() {
     const st = Number(strike);
     const pr = Number(premium);
     const q = Number(qty) || 1;
-    if (!t || !st || !pr || !expiration) return alert("Ticker, strike, expiration and premium required");
+    if (!t || !st || !pr || !expiration) {
+      setFormError("Ticker, strike, expiration and premium are required.");
+      return;
+    }
+    setFormError(null);
     const row: WheelPos = {
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
       ticker: t,
@@ -145,6 +150,7 @@ export default function WheelPositionsTracker() {
             <input value={qty} onChange={(e) => setQty(e.target.value)} placeholder="Contracts" inputMode="numeric" className="w-20 rounded-lg border border-slate-700 bg-[#0F1A3A] px-2 py-1.5 text-xs text-white" />
             <button onClick={add} className="rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-teal-500">Add</button>
           </div>
+          {formError && <p className="mt-2 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs text-rose-200">{formError}</p>}
 
           {positions.length === 0 ? (
             <p className="mt-3 text-xs text-slate-500">No positions yet. Log the puts you sell — your cost basis after assignment is <b>strike − premium</b> and updates when you add follow-on premiums.</p>
