@@ -48,42 +48,6 @@ function Kpi({ label, value, hint, tone }: { label: string; value: string; hint?
   );
 }
 
-function StrikeRail({ legs, spot }: { legs: Leg[]; spot: number }) {
-  const optionLegs = legs.filter((l) => l.right !== "stock" && l.strike != null && l.strike > 0);
-  if (!optionLegs.length) return null;
-  const ks = optionLegs.map((l) => l.strike!);
-  const min = Math.min(spot, ...ks) * 0.88;
-  const max = Math.max(spot, ...ks) * 1.12;
-  const span = max - min || 1;
-  const pct = (v: number) => ((v - min) / span) * 100;
-  const step = span > 40 ? 5 : span > 15 ? 2 : 1;
-  const ticks: number[] = [];
-  for (let t = Math.ceil(min / step) * step; t <= max; t += step) ticks.push(Math.round(t * 100) / 100);
-
-  return (
-    <div className="relative h-20">
-      <div className="absolute inset-x-0 top-8 h-px bg-slate-300 dark:bg-slate-600" />
-      {ticks.map((t) => (
-        <span key={t} className="absolute top-[2.35rem] -translate-x-1/2 font-mono text-[10px] text-slate-400" style={{ left: `${pct(t)}%` }}>
-          {money(t, 0)}
-        </span>
-      ))}
-      <span className="absolute top-[1.65rem] h-2.5 w-px -translate-x-1/2 bg-slate-400" style={{ left: `${pct(spot)}%` }} title="Spot" />
-      {optionLegs.map((l) => (
-        <div key={l.id} className="absolute top-5 -translate-x-1/2 text-center" style={{ left: `${pct(l.strike!)}%` }}>
-          <div
-            className={`mx-auto ${l.side === "sell" ? "h-3.5 w-3.5 rounded-full bg-teal-500" : "h-3.5 w-3.5 rounded-[3px] border-2 border-sky-500 bg-white dark:bg-[#0F1A3A]"}`}
-            title={`${l.side} ${l.right} ${l.strike}`}
-          />
-          <div className={`mt-5 whitespace-nowrap text-[10px] font-semibold uppercase tracking-wide ${l.side === "sell" ? "text-teal-700 dark:text-teal-300" : "text-sky-700 dark:text-sky-300"}`}>
-            {l.side} {l.right} {money(l.strike, 0)}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function Conditions({ iv, hv, dteEarn, spreadPct }: { iv: number | null; hv: number | null; dteEarn: number | null; spreadPct: number | null }) {
   const vrp = vrpPp(iv, hv);
   const ivOk = vrp != null && vrp >= 0;
@@ -291,27 +255,6 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
             </div>
           </div>
           <p className="text-xs text-slate-500">{PRESET_META.find((p) => p.id === preset)?.desc}</p>
-
-          <StrikeRail legs={legs} spot={spot} />
-
-          <div className="flex flex-wrap gap-2">
-            {legs
-              .filter((l) => l.right !== "stock")
-              .map((l) => (
-                <div key={l.id} className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-xs dark:border-slate-700 dark:bg-[#111C3E]">
-                  <span className={`font-semibold uppercase ${l.side === "sell" ? "text-teal-700 dark:text-teal-300" : "text-sky-700 dark:text-sky-300"}`}>
-                    {l.side} {l.right}
-                  </span>
-                  <button type="button" className="px-1 text-slate-500" onClick={() => updateLeg(l.id, { strike: Math.max(0.5, (l.strike ?? 0) - 1) })}>
-                    −
-                  </button>
-                  <span className="font-mono font-semibold tabular-nums text-slate-900 dark:text-white">{money(l.strike, l.strike != null && l.strike < 100 ? 2 : 0)}</span>
-                  <button type="button" className="px-1 text-slate-500" onClick={() => updateLeg(l.id, { strike: (l.strike ?? 0) + 1 })}>
-                    +
-                  </button>
-                </div>
-              ))}
-          </div>
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             <Kpi label="Net credit" value={money(summary.netCredit)} tone={summary.netCredit >= 0 ? "up" : "down"} hint="Fees excluded" />
