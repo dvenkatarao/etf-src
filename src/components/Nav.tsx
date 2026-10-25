@@ -39,6 +39,7 @@ const ETF_LAB: readonly NavLink[] = [
 
 const WHEEL_LAB: readonly NavLink[] = [
   { href: "/wheel", label: "Wheel Screener", desc: "Cash-secured puts on A/A+ stocks", Icon: OptionsIcon },
+  { href: "/wheel/calculator", label: "Payoff & cycle", desc: "P&L diagram, CSP→CC, expected move", Icon: ResearchIcon },
   { href: "/wheel/guide", label: "Guide", desc: "15-step wheel manual", Icon: HelpIcon },
 ];
 

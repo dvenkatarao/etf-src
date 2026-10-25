@@ -66,9 +66,14 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
             Earnings, ex-dividend dates, key price levels and the optimal account type (<span className="text-violet-600 dark:text-violet-300">R</span> = retirement, <span className="text-sky-600 dark:text-sky-300">T</span> = taxable) are shown for every pick.
           </p>
         </div>
-        <Link href="/wheel/guide" className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100 dark:border-indigo-500/20 dark:bg-[#1B2540] dark:text-indigo-300 dark:hover:bg-[#24304F] dark:hover:text-white">
-          How to use this tool →
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/wheel/calculator" className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-500">
+            Payoff & cycle →
+          </Link>
+          <Link href="/wheel/guide" className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100 dark:border-indigo-500/20 dark:bg-[#1B2540] dark:text-indigo-300 dark:hover:bg-[#24304F] dark:hover:text-white">
+            How to use this tool →
+          </Link>
+        </div>
       </div>
 
       <MacroRegimeBanner regime={regime} />
