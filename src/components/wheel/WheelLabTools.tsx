@@ -231,14 +231,14 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
                 </button>
               ))}
             </div>
-            <div className="flex flex-wrap items-end gap-3">
-              <div>
+            <div className="flex flex-wrap items-end gap-6">
+              <div className="grid gap-1">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Example price</div>
-                <div className="font-mono text-xl font-semibold tabular-nums text-slate-900 dark:text-white">{money(spot)}</div>
+                <div className="font-mono text-xl font-semibold leading-8 tabular-nums text-slate-900 dark:text-white">{money(spot)}</div>
               </div>
-              <div>
+              <div className="grid gap-1">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Model expiration</div>
-                <div className="text-sm text-slate-700 dark:text-slate-200">{expiry || `${dte} DTE`}</div>
+                <div className="font-mono text-xl font-semibold leading-8 tabular-nums text-slate-900 dark:text-white">{expiry || `${dte} DTE`}</div>
               </div>
               <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
                 Position size
