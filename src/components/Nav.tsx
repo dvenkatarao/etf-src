@@ -44,12 +44,24 @@ const INSIGHTS: readonly NavLink[] = [
   { href: "/news", label: "News & Events", desc: "Fed, SEC 8-K, headline feeds", Icon: NotificationsIcon },
 ];
 
+const WHEEL_SUBPAGES = new Set(["calculator", "guide"]);
+
 function isActive(pathname: string | null, href: string) {
   if (!pathname) return false;
   if (href === "/") return pathname === "/";
+  // /wheel is the screener; /wheel/AAPL is a ticker. Calculator and guide are siblings, not children.
+  if (href === "/wheel") {
+    if (pathname === "/wheel") return true;
+    const seg = pathname.startsWith("/wheel/") ? pathname.slice("/wheel/".length) : "";
+    return Boolean(seg) && !seg.includes("/") && !WHEEL_SUBPAGES.has(seg);
+  }
   return pathname === href || pathname.startsWith(href + "/");
 }
 function labActive(pathname: string | null, links: readonly { href: string }[]) {
+  if (!pathname) return false;
+  if (links.some((l) => l.href === "/wheel" || l.href.startsWith("/wheel/"))) {
+    return pathname === "/wheel" || pathname.startsWith("/wheel/");
+  }
   return links.some((l) => isActive(pathname, l.href));
 }
 
