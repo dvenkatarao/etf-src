@@ -32,6 +32,7 @@ export default function PortfolioDashboard({
     initialOpen && initialAnalytics.portfolios.some((p) => p.id === initialOpen) ? initialOpen : "all",
   );
   const [syncing, setSyncing] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
 
   // Modals
   const [showConnectModal, setShowConnectModal] = useState(false);
@@ -66,6 +67,7 @@ export default function PortfolioDashboard({
 
   const handleSync = async () => {
     setSyncing(true);
+    setNotice(null);
     try {
       if (selectedPortfolioId !== "all") {
         await fetch(`/api/portfolios/${selectedPortfolioId}/sync`, { method: "POST" });
@@ -77,7 +79,7 @@ export default function PortfolioDashboard({
       }
       await refreshData();
     } catch {
-      alert("Sync encountered an error");
+      setNotice("Sync encountered an error.");
     } finally {
       setSyncing(false);
     }
@@ -88,6 +90,7 @@ export default function PortfolioDashboard({
 
   return (
     <div className="space-y-6">
+      {notice && <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">{notice}</p>}
       {/* Top Controls Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
         <div className="flex flex-wrap items-center gap-3">

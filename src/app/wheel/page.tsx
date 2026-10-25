@@ -76,6 +76,10 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
         </div>
       </div>
 
+      <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+        Selling options carries real risk: a put seller can lose most of the share price if the stock collapses, and assignment ties up the full cash amount. This tool does not place orders or give personal advice.
+      </p>
+
       <MacroRegimeBanner regime={regime} />
 
       <WheelHydratorDark staleStocks={staleS.length} staleScans={staleScans.length} total={stockUniverse().length} />
@@ -181,7 +185,6 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
       <div className="space-y-1 border-t border-slate-200 pt-4 text-[11px] text-slate-500 dark:border-slate-800">
         <p>Source: <span className="text-slate-500 dark:text-slate-400">Stock data: Yahoo Finance (unofficial) · Options: Alpaca (primary) with Yahoo as backup</span> · as of {dateShort(today)}</p>
         <p>Scores = return per year × chance the put expires worthless × liquidity × structure bonus/penalties. Stock and option data may be delayed. Fills usually land between the bid and the mid price.</p>
-        <p className="text-amber-700 dark:text-amber-300/70">Selling options carries real risk: a put seller can lose most of the share price if the stock collapses, and assignment ties up the full cash amount. This tool does not place orders or give personal advice.</p>
       </div>
     </div>
   );

@@ -126,6 +126,10 @@ export default async function WheelStockPage({ params, searchParams }: { params:
         }
       />
 
+      <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+        Selling options carries real risk: a put seller can lose most of the share price if the stock collapses, and assignment ties up the full cash amount. This tool does not place orders or give personal advice.
+      </p>
+
       {!isA && <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">This stock is graded {g.grade ?? "n/a"}, below the A/A+ bar of the screener. Its options are shown for reference only.</div>}
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -229,7 +233,6 @@ export default async function WheelStockPage({ params, searchParams }: { params:
           )
         ) : null}
       </WheelCardDark>
-      <p className="text-[11px] text-slate-500">Selling options carries real risk: a put seller can lose most of the share price if the stock collapses, and assignment ties up the full cash amount. This tool does not place orders or give personal advice.</p>
     </div>
   );
 }

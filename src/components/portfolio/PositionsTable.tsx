@@ -20,6 +20,8 @@ export default function PositionsTable({
   const [sortDir, setSortDir] = useState<1 | -1>(-1);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [density, setDensity] = useState<"comfortable" | "compact">("comfortable");
+  const [pending, setPending] = useState<PositionWithAnalytics | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -55,9 +57,7 @@ export default function PositionsTable({
   };
 
   const deletePosition = async (pos: PositionWithAnalytics) => {
-    if (!confirm(`Remove position ${pos.ticker} from ${pos.portfolioName || "portfolio"}?`)) {
-      return;
-    }
+    setNotice(null);
     setDeletingId(pos.id);
     try {
       const res = await fetch(
@@ -65,12 +65,13 @@ export default function PositionsTable({
         { method: "DELETE" },
       );
       if (res.ok) {
+        setPending(null);
         onPositionDeleted?.();
       } else {
-        alert("Failed to delete position");
+        setNotice("Could not delete that position.");
       }
     } catch {
-      alert("Error deleting position");
+      setNotice("Could not delete that position.");
     } finally {
       setDeletingId(null);
     }
@@ -98,6 +99,28 @@ export default function PositionsTable({
         </div>
         <DensityToggle value={density} onChange={setDensity} />
       </div>
+
+      {pending && (
+        <div className="mx-4 mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+          <span>
+            Remove <b>{pending.ticker}</b> from {pending.portfolioName || "portfolio"}?
+          </span>
+          <span className="flex gap-2">
+            <button type="button" onClick={() => setPending(null)} className="rounded-lg border border-amber-300 bg-white px-2.5 py-1 font-medium">
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={deletingId === pending.id}
+              onClick={() => void deletePosition(pending)}
+              className="rounded-lg bg-rose-600 px-2.5 py-1 font-semibold text-white disabled:opacity-50"
+            >
+              {deletingId === pending.id ? "Removing…" : "Remove"}
+            </button>
+          </span>
+        </div>
+      )}
+      {notice && <p className="mx-4 mt-3 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-800">{notice}</p>}
 
       <TableScroll density={density} className="rounded-none border-0">
         <table className="min-w-full text-xs">
@@ -276,7 +299,10 @@ export default function PositionsTable({
 
                     <td className="px-3 py-3 text-center">
                       <button
-                        onClick={() => deletePosition(pos)}
+                        onClick={() => {
+                          setNotice(null);
+                          setPending(pos);
+                        }}
                         disabled={deletingId === pos.id}
                         className="rounded p-1 text-slate-400 hover:bg-rose-50 hover:text-rose-600 disabled:opacity-40"
                         title="Delete position"

@@ -14,6 +14,7 @@ export default function Glossary() {
         <div><dt className="font-semibold text-slate-800">Vol 3Y / Max drawdown</dt><dd className="text-slate-600">Annualised volatility = stddev of daily total returns × √252. Drawdown = worst peak-to-trough loss.</dd></div>
         <div><dt className="font-semibold text-slate-800">NAV erosion</dt><dd className="text-slate-600">Proxy: if 3Y price return is negative while paying, distributions are funded by price loss. Severe ≤−6%/yr.</dd></div>
         <div><dt className="font-semibold text-slate-800">Quality grade A–F</dt><dd className="text-slate-600">Cost, size/track, ease of trading, diversification, income sustainability. Not a return forecast.</dd></div>
+        <div><dt className="font-semibold text-slate-800">Rates: Defensive / Sensitive</dt><dd className="text-slate-600">Defensive holds up when yields rise (short bonds, low-vol); sensitive falls.</dd></div>
       </dl>
       <p className="mt-2 text-[11px] text-slate-500">Full formulas: <a href="/sources" className="underline">Data Sources & spec</a>. No estimates — missing shows N/A.</p>
     </details>
