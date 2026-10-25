@@ -1,7 +1,7 @@
 /** Query-string <-> filter mapping for the Wheel pages (a plain GET form, so every view is a shareable URL). */
 import { DEFAULT_PARAMS, type WheelParams } from "./wheel";
 import type { AccountFilter, WheelFilters } from "./wheel-service";
-import { isPresetKey, STOCK_PRESETS, type PresetKey } from "./stock-presets";
+import { isPresetKey, STOCK_PRESETS, type MissingPolicy, type PresetKey } from "./stock-presets";
 import type { StockThresholds } from "./stock-presets";
 
 export type SP = Record<string, string | string[] | undefined>;
@@ -91,6 +91,7 @@ export function parseFilters(sp: SP): WheelFilters {
   }
 
   const optionableOnly = one(sp.opt) !== "0"; // default ON
+  const missingPolicy: MissingPolicy = one(sp.miss) === "keep" ? "keep" : "exclude";
 
   // Backward compat: minGrade used by old callers
   const minGrade = (preset === "all" ? "C" : preset) as WheelFilters["minGrade"];
@@ -102,6 +103,7 @@ export function parseFilters(sp: SP): WheelFilters {
     stockPreset,
     stockThresholds,
     optionableOnly,
+    missingPolicy,
     account,
     trendOnly: one(sp.trend) === "1",
     minScore: numIn(sp.minScore, 15, 0, 100),
@@ -155,6 +157,7 @@ export function filtersQuery(f: WheelFilters): string {
     else if (f.stockPreset === "all") q.set("preset", "all");
   }
   if (!f.optionableOnly) q.set("opt", "0");
+  if (f.missingPolicy === "keep") q.set("miss", "keep");
   if (p.allowEarnings) q.set("earn", "1");
   if (f.trendOnly) q.set("trend", "1");
   if (f.divOnly) q.set("divOnly", "1");

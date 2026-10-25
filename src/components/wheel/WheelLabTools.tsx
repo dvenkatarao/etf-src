@@ -6,6 +6,7 @@ import { money, pct } from "@/lib/format";
 import {
   PRESET_META,
   applyQuotes,
+  nearestQuote,
   presetLegs,
   summarizePayoff,
   type ChainQuote,
@@ -14,6 +15,7 @@ import {
 } from "@/lib/option-payoff";
 import { capitalForMonthlyIncome, expectedMove, vrpPp } from "@/lib/vol-metrics";
 import { wheelCycle } from "@/lib/wheel-cycle";
+import { daysBetween } from "@/lib/wheel";
 import PayoffChart from "./PayoffChart";
 
 export type ToolsInit = {
@@ -29,6 +31,8 @@ export type ToolsInit = {
   hv?: string;
   callStrike?: string;
   callCredit?: string;
+  earnDays?: string;
+  spreadPct?: string;
 };
 
 const n = (v: string | undefined, fallback: number) => {
@@ -50,22 +54,35 @@ function Kpi({ label, value, hint, tone }: { label: string; value: string; hint?
 
 function Conditions({ iv, hv, dteEarn, spreadPct }: { iv: number | null; hv: number | null; dteEarn: number | null; spreadPct: number | null }) {
   const vrp = vrpPp(iv, hv);
-  const ivOk = vrp != null && vrp >= 0;
-  const earnOk = dteEarn == null || dteEarn > 14;
-  const liqOk = spreadPct == null || spreadPct <= 0.1;
-  const pill = (ok: boolean, label: string, detail: string) => (
-    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium ring-1 ${ok ? "bg-emerald-500/10 text-emerald-300 ring-emerald-500/20" : "bg-amber-500/10 text-amber-200 ring-amber-500/20"}`}>
-      <span className={`h-1.5 w-1.5 rounded-full ${ok ? "bg-emerald-400" : "bg-amber-400"}`} />
+  const tone = (t: "ok" | "warn" | "unknown") =>
+    t === "ok"
+      ? "bg-emerald-50 text-emerald-800 ring-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-500/20"
+      : t === "warn"
+        ? "bg-amber-50 text-amber-900 ring-amber-200 dark:bg-amber-500/10 dark:text-amber-200 dark:ring-amber-500/20"
+        : "bg-slate-100 text-slate-600 ring-slate-200 dark:bg-slate-700/40 dark:text-slate-400 dark:ring-slate-600/30";
+  const dot = (t: "ok" | "warn" | "unknown") => (t === "ok" ? "bg-emerald-500" : t === "warn" ? "bg-amber-500" : "bg-slate-400");
+  const pill = (t: "ok" | "warn" | "unknown", label: string, detail: string) => (
+    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium ring-1 ${tone(t)}`}>
+      <span className={`h-1.5 w-1.5 rounded-full ${dot(t)}`} />
       {label}: {detail}
     </span>
   );
+  const vrpTone: "ok" | "warn" | "unknown" = vrp == null ? "unknown" : vrp >= 0 ? "ok" : "warn";
+  const earnTone: "ok" | "warn" | "unknown" = dteEarn == null ? "unknown" : dteEarn > 14 ? "ok" : "warn";
+  const liqTone: "ok" | "warn" | "unknown" = spreadPct == null ? "unknown" : spreadPct <= 0.1 ? "ok" : "warn";
   return (
     <div className="flex flex-wrap gap-2">
-      {pill(ivOk, "VRP", vrp == null ? "need IV & HV" : `${vrp >= 0 ? "+" : ""}${vrp.toFixed(1)} pp`)}
-      {pill(earnOk, "Earnings", dteEarn == null ? "unknown" : `${dteEarn}d away`)}
-      {pill(liqOk, "Liquidity", spreadPct == null ? "n/a" : `${(spreadPct * 100).toFixed(1)}% gap`)}
+      {pill(vrpTone, "VRP", vrp == null ? "unknown" : `${vrp >= 0 ? "+" : ""}${vrp.toFixed(1)} pp`)}
+      {pill(earnTone, "Earnings", dteEarn == null ? "unknown" : `${dteEarn}d away`)}
+      {pill(liqTone, "Liquidity", spreadPct == null ? "unknown" : `${(spreadPct * 100).toFixed(1)}% gap`)}
     </div>
   );
+}
+
+function quoteSpread(q: { bid: number | null; ask: number | null } | null): number | null {
+  if (!q || q.bid == null || q.ask == null || !(q.bid > 0) || !(q.ask >= q.bid)) return null;
+  const mid = (q.bid + q.ask) / 2;
+  return mid > 0 ? (q.ask - q.bid) / mid : null;
 }
 
 export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
@@ -97,6 +114,14 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
 
   const [monthly, setMonthly] = useState(500);
   const [rocCycle, setRocCycle] = useState(0.8);
+  const [dteEarn, setDteEarn] = useState<number | null>(() => {
+    const x = n(initial.earnDays, NaN);
+    return Number.isFinite(x) ? x : null;
+  });
+  const [spreadPct, setSpreadPct] = useState<number | null>(() => {
+    const x = n(initial.spreadPct, NaN);
+    return Number.isFinite(x) ? x : null;
+  });
 
   const emIv = expectedMove(spot, iv, dte);
   const emHv = expectedMove(spot, hv, dte);
@@ -124,9 +149,22 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
       if (!res.ok) throw new Error(j.error ?? "chain failed");
       setSpot(j.price);
       const chain = j.contracts as ChainQuote[];
-      setLegs((prev) => applyQuotes(prev, chain, expiry || undefined));
+      let nextLegs: Leg[] = [];
+      setLegs((prev) => {
+        nextLegs = applyQuotes(prev, chain, expiry || undefined);
+        return nextLegs;
+      });
+      const opt = nextLegs.find((l) => l.right === "put" || l.right === "call");
+      const q =
+        opt && opt.strike != null && (opt.right === "put" || opt.right === "call")
+          ? nearestQuote(chain, opt.right, opt.strike, expiry || undefined)
+          : null;
+      setSpreadPct(quoteSpread(q));
       const first = chain[0];
       if (first?.expiration) setExpiry(first.expiration);
+      const earn = typeof j.nextEarnings === "string" ? j.nextEarnings : null;
+      const today = new Date().toISOString().slice(0, 10);
+      setDteEarn(earn && earn >= today ? daysBetween(today, earn) : null);
       setChainMsg(`${t} ${money(j.price)} · ${chain.length} quotes · ${j.source}${j.stale ? " (stale)" : ""}`);
     } catch (e) {
       setChainMsg(e instanceof Error ? e.message : "Could not load chain");
@@ -206,7 +244,7 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
           <input type="number" step="0.01" value={spot} onChange={(e) => setSpot(Number(e.target.value) || 0)} className="w-28 rounded-lg border border-slate-700 bg-[#111C3E] px-2.5 py-1.5 text-sm text-white" />
         </label>
       </div>
-      <Conditions iv={iv} hv={hv} dteEarn={null} spreadPct={null} />
+      <Conditions iv={iv} hv={hv} dteEarn={dteEarn} spreadPct={spreadPct} />
 
       <div className="inline-flex rounded-lg border border-slate-800 bg-[#0F1A3A] p-0.5">
         {tabs.map((t) => (
@@ -369,7 +407,7 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
             <Kpi label="Cash required" value={money(cycle.cashRequired, 0)} />
             <Kpi label="Put premium" value={money(cycle.putPremium)} tone="up" />
             <Kpi label="Basis if assigned" value={money(cycle.basisIfAssigned)} hint={cycle.discountIfAssigned != null ? `${pct(cycle.discountIfAssigned, 1)} below spot` : undefined} />
-            <Kpi label="Put ROC / yr" value={pct(cycle.putAnnRoc, 1)} hint={`${pct(cycle.putRoc, 2)} this cycle`} />
+            <Kpi label="Put ROC / yr" value={pct(cycle.putAnnRoc, 1)} hint={`${pct(cycle.putRoc, 2)} this cycle · on cash at risk`} />
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="rounded-xl border border-slate-800 bg-[#0F1A3A] p-4">

@@ -123,41 +123,79 @@ export function isPresetKey(k: string | undefined): k is PresetKey {
   return !!k && (PRESET_ORDER as string[]).includes(k);
 }
 
+export type MissingPolicy = "exclude" | "keep";
+
+export type ThresholdEval = {
+  pass: boolean;
+  /** Filtered fields that had no usable value. */
+  missing: string[];
+};
+
+const usable = (v: number | null | undefined): v is number => v != null && Number.isFinite(v);
+
 /**
- * Check if a graded stock's fundamentals pass custom thresholds.
- * `optionableOnly` is kept for future non-optionable expansion — currently universe is all optionable.
+ * Evaluate custom thresholds. Missing is never guessed.
+ * `exclude` (default): a missing filtered field fails the name.
+ * `keep`: a missing filtered field is ignored; other fields still apply.
  */
-export function passesStockThresholds(inputs: StockInputs | null | undefined, t: StockThresholds): boolean {
-  if (!inputs) return false;
-  const check = {
-    opMargin: t.opMarginMin != null ? (inputs.operatingMargin ?? -Infinity) >= t.opMarginMin : true,
-    roe: t.roeMin != null ? (inputs.roe ?? -Infinity) >= t.roeMin : true,
-    fcfMargin:
-      t.fcfMarginMin != null
-        ? inputs.freeCashflow != null && inputs.totalRevenue != null && inputs.totalRevenue > 0
-          ? inputs.freeCashflow / inputs.totalRevenue >= t.fcfMarginMin
-          : false
-        : true,
-    debtEquity: t.debtEquityMax != null ? (inputs.debtToEquity ?? Infinity) <= t.debtEquityMax : true,
-    netDebtEbitda:
-      t.netDebtEbitdaMax != null
-        ? inputs.totalDebt != null && inputs.totalCash != null && inputs.ebitda != null && inputs.ebitda > 0
-          ? (inputs.totalDebt - inputs.totalCash) / inputs.ebitda <= t.netDebtEbitdaMax
-          : true // missing -> don't block
-        : true,
-    currentRatio: t.currentRatioMin != null ? (inputs.currentRatio ?? -Infinity) >= t.currentRatioMin : true,
-    forwardPE: t.forwardPEMax != null ? (inputs.forwardPE != null && inputs.forwardPE > 0 ? inputs.forwardPE <= t.forwardPEMax : true) : true,
-    peg: t.pegMax != null ? (inputs.pegRatio != null && inputs.pegRatio > 0 ? inputs.pegRatio <= t.pegMax : true) : true,
-    fcfYield:
-      t.fcfYieldMin != null
-        ? inputs.freeCashflow != null && inputs.marketCap != null && inputs.marketCap > 0
-          ? inputs.freeCashflow / inputs.marketCap >= t.fcfYieldMin
-          : false
-        : true,
-    recMean: t.recMeanMax != null ? (inputs.recMean != null ? inputs.recMean <= t.recMeanMax : true) : true,
-    marketCap: t.marketCapMin != null ? (inputs.marketCap ?? -Infinity) >= t.marketCapMin : true,
-    beta: t.betaMax != null ? (inputs.beta ?? -Infinity) <= t.betaMax : true,
-    dd: t.ddMax != null ? (inputs.dd1y ?? -Infinity) <= t.ddMax : true,
+export function evaluateStockThresholds(
+  inputs: StockInputs | null | undefined,
+  t: StockThresholds,
+  missingPolicy: MissingPolicy = "exclude",
+): ThresholdEval {
+  if (!inputs) return { pass: false, missing: ["fundamentals"] };
+  const missing: string[] = [];
+  let valueFail = false;
+
+  const requireMin = (name: string, value: number | null | undefined, threshold: number | null | undefined) => {
+    if (threshold == null) return;
+    if (!usable(value)) {
+      missing.push(name);
+      return;
+    }
+    if (value < threshold) valueFail = true;
   };
-  return Object.values(check).every(Boolean);
+  const requireMax = (name: string, value: number | null | undefined, threshold: number | null | undefined) => {
+    if (threshold == null) return;
+    if (!usable(value)) {
+      missing.push(name);
+      return;
+    }
+    if (value > threshold) valueFail = true;
+  };
+
+  requireMin("operating margin", inputs.operatingMargin, t.opMarginMin);
+  requireMin("ROE", inputs.roe, t.roeMin);
+  const fcfMargin =
+    usable(inputs.freeCashflow) && usable(inputs.totalRevenue) && inputs.totalRevenue > 0 ? inputs.freeCashflow / inputs.totalRevenue : null;
+  requireMin("FCF margin", fcfMargin, t.fcfMarginMin);
+  requireMax("debt/equity", inputs.debtToEquity, t.debtEquityMax);
+  const netDebtEbitda =
+    usable(inputs.totalDebt) && usable(inputs.totalCash) && usable(inputs.ebitda) && inputs.ebitda > 0
+      ? (inputs.totalDebt - inputs.totalCash) / inputs.ebitda
+      : null;
+  requireMax("net debt/EBITDA", netDebtEbitda, t.netDebtEbitdaMax);
+  requireMin("current ratio", inputs.currentRatio, t.currentRatioMin);
+  const forwardPE = usable(inputs.forwardPE) && inputs.forwardPE > 0 ? inputs.forwardPE : null;
+  requireMax("forward P/E", forwardPE, t.forwardPEMax);
+  const peg = usable(inputs.pegRatio) && inputs.pegRatio > 0 ? inputs.pegRatio : null;
+  requireMax("PEG", peg, t.pegMax);
+  const fcfYield =
+    usable(inputs.freeCashflow) && usable(inputs.marketCap) && inputs.marketCap > 0 ? inputs.freeCashflow / inputs.marketCap : null;
+  requireMin("FCF yield", fcfYield, t.fcfYieldMin);
+  requireMax("analyst rating", inputs.recMean, t.recMeanMax);
+  requireMin("market cap", inputs.marketCap, t.marketCapMin);
+  requireMax("beta", inputs.beta, t.betaMax);
+  requireMax("drawdown", inputs.dd1y, t.ddMax);
+
+  const missingBlocks = missingPolicy === "exclude" && missing.length > 0;
+  return { pass: !valueFail && !missingBlocks, missing };
+}
+
+export function passesStockThresholds(
+  inputs: StockInputs | null | undefined,
+  t: StockThresholds,
+  missingPolicy: MissingPolicy = "exclude",
+): boolean {
+  return evaluateStockThresholds(inputs, t, missingPolicy).pass;
 }

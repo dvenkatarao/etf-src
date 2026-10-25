@@ -12,7 +12,8 @@ export const metadata = {
     "Aggregate and analyze holdings from Charles Schwab, Fidelity, Vanguard, NinjaTrader, and MooMoo. Track asset allocation, dividend projections, benchmark alpha, fee drag, and NAV erosion risk.",
 };
 
-export default async function PortfolioPage() {
+export default async function PortfolioPage({ searchParams }: { searchParams: Promise<{ open?: string }> }) {
+  const sp = await searchParams;
   const initialAnalytics = await getPortfolioAnalytics();
 
   return (
@@ -23,7 +24,7 @@ export default async function PortfolioPage() {
         description="Import CSV statements from Charles Schwab, Fidelity, Vanguard, NinjaTrader, MooMoo or any broker (live account linking is not available yet; demo accounts are labelled). Track asset allocation look-through, dividend income cashflow, benchmark beta, and risk diagnostics."
       />
 
-      <PortfolioDashboard initialAnalytics={initialAnalytics} />
+      <PortfolioDashboard initialAnalytics={initialAnalytics} initialOpen={sp.open} />
     </div>
   );
 }

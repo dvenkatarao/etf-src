@@ -46,16 +46,21 @@ export default function OnboardingWizard({ prices }: { prices: Record<string, nu
       if (!res.ok) throw new Error(j?.error ?? "create failed");
       const id = j.portfolio?.id ?? j.id;
       if (!id) throw new Error("no portfolio id");
-      // create positions: $10k notional split by weight, quantity = notional / price, cost = price
+      const missingPx = s.holdings.filter((h) => !(prices[h.ticker] != null && prices[h.ticker]! > 0)).map((h) => h.ticker);
+      if (missingPx.length) {
+        throw new Error(`No live price for ${missingPx.join(", ")} — not guessing $100. Try again when quotes are available.`);
+      }
       for (const h of s.holdings) {
-        const price = prices[h.ticker] ?? 100;
+        const price = prices[h.ticker]!;
         const notional = 10000 * h.weight;
-        const qty = Math.max(0.001, notional / (price || 100));
-        await fetch(`/api/portfolios/${id}/positions`, {
+        const qty = Math.max(0.001, notional / price);
+        const pres = await fetch(`/api/portfolios/${id}/positions`, {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ ticker: h.ticker, quantity: Number(qty.toFixed(4)), averageCostBasis: Number((price || 100).toFixed(2)) }),
+          body: JSON.stringify({ ticker: h.ticker, quantity: Number(qty.toFixed(4)), averageCostBasis: Number(price.toFixed(2)) }),
         });
+        const pj = await pres.json().catch(() => ({}));
+        if (!pres.ok) throw new Error((pj as { error?: string }).error ?? `Could not add ${h.ticker}`);
       }
       setDone({ id, name: s.name });
     } catch (e) {
@@ -124,7 +129,7 @@ export default function OnboardingWizard({ prices }: { prices: Record<string, nu
 
       {done && (
         <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-          Created <b>{done.name}</b> — <Link className="underline" href={`/portfolio`}>open Portfolio to see it</Link> (or <Link className="underline" href={`/portfolio?open=${done.id}`}>view {done.id}</Link>).
+          Created <b>{done.name}</b> — <Link className="underline" href={`/portfolio?open=${done.id}`}>open this portfolio</Link>.
         </div>
       )}
       {error && <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</div>}

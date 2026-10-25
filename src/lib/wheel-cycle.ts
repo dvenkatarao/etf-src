@@ -40,7 +40,8 @@ export function wheelCycle(input: WheelCycleInput): WheelCycle | null {
   const cashRequired = putStrike * 100 * n;
   const putPremium = putCredit * 100 * n;
   const basisIfAssigned = putStrike - putCredit;
-  const putRoc = putStrike > 0 ? putCredit / putStrike : 0;
+  // Same as the screener / payoff: return on cash at risk (strike − credit), not on strike.
+  const putRoc = basisIfAssigned > 0 ? putCredit / basisIfAssigned : 0;
   const putAnnRoc = (putRoc * 365) / putDte;
   const callStrike = input.callStrike;
   const callCredit = input.callCredit;
@@ -85,6 +86,8 @@ export function calculatorHref(q: {
   hv?: number;
   callStrike?: number;
   callCredit?: number;
+  earnDays?: number | null;
+  spreadPct?: number | null;
 }): string {
   const p = new URLSearchParams();
   if (q.tab) p.set("tab", q.tab);
@@ -99,6 +102,8 @@ export function calculatorHref(q: {
   if (q.hv != null) p.set("hv", String(Number(q.hv.toFixed(4))));
   if (q.callStrike != null) p.set("callStrike", String(q.callStrike));
   if (q.callCredit != null) p.set("callCredit", String(Number(q.callCredit.toFixed(4))));
+  if (q.earnDays != null && Number.isFinite(q.earnDays)) p.set("earnDays", String(Math.round(q.earnDays)));
+  if (q.spreadPct != null && Number.isFinite(q.spreadPct)) p.set("spreadPct", String(Number(q.spreadPct.toFixed(4))));
   const s = p.toString();
   return s ? `/wheel/calculator?${s}` : "/wheel/calculator";
 }

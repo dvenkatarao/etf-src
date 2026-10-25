@@ -39,4 +39,10 @@ describe("parseFilters", () => {
     const g = parseFilters(sp);
     expect(g.params).toEqual(f.params);
   });
+  it("defaults missing-data policy to exclude and reads keep", () => {
+    expect(parseFilters({}).missingPolicy).toBe("exclude");
+    expect(parseFilters({ miss: "keep" }).missingPolicy).toBe("keep");
+    const q = filtersQuery(parseFilters({ miss: "keep", mode: "custom" }));
+    expect(q).toContain("miss=keep");
+  });
 });

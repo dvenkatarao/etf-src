@@ -10,8 +10,9 @@ import { yahooQuotes } from "./yahoo";
 import { DEFAULT_PARAMS, daysBetween, scanPuts, type OptionContract, type PutCandidate, type RejectReason, type StockCtx, type WheelParams } from "./wheel";
 import { generateId } from "./security";
 import { ivPercentile } from "./wheel-iv";
-import { passesStockThresholds, STOCK_PRESETS } from "./stock-presets";
+import { evaluateStockThresholds, STOCK_PRESETS, type MissingPolicy } from "./stock-presets";
 import type { PresetKey, StockThresholds } from "./stock-presets";
+import type { StockInputs } from "./stock-quality";
 
 /** Chains are scanned only for stocks graded at least this well. Broadened to C for transparent presets. */
 export const SCAN_MIN_GRADE: StockGrade = "C";
@@ -149,6 +150,7 @@ export type WheelFilters = {
   stockPreset: PresetKey;
   stockThresholds: StockThresholds;
   optionableOnly: boolean;
+  missingPolicy: MissingPolicy;
   account: AccountFilter;
   trendOnly: boolean;
   minScore: number;
@@ -161,6 +163,7 @@ export const DEFAULT_FILTERS: WheelFilters = {
   stockPreset: "A",
   stockThresholds: STOCK_PRESETS["A"],
   optionableOnly: true,
+  missingPolicy: "exclude",
   account: "all",
   trendOnly: false,
   minScore: 15,
@@ -184,21 +187,31 @@ export type WheelResults = {
   heldBackByEarnings: { ticker: string; days: number | null }[];
   earningsWatch: EarningsWatchRow[];
   rejected: Partial<Record<RejectReason, number>>;
-  info: { eligible: number; scanned: number; failed: { ticker: string; error: string }[]; waiting: number; oldest: Date | null; sources: Record<string, number>; fallbacks: number; universe: number; hydrated: number; staleStocks: number };
+  info: { eligible: number; scanned: number; failed: { ticker: string; error: string }[]; waiting: number; oldest: Date | null; sources: Record<string, number>; fallbacks: number; universe: number; hydrated: number; staleStocks: number; missingFields: number; missingDropped: number };
 };
 
 export async function getWheelResults(f: WheelFilters = DEFAULT_FILTERS, today = todayIso()): Promise<WheelResults> {
   const [all, scans, stale] = await Promise.all([getAllStocks(), db.select().from(wheelScans), staleStocks()]);
   const graded = all.map(gradeStock);
   let eligible: typeof graded;
+  let missingFields = 0;
+  let missingDropped = 0;
   if (f.stockMode === "custom") {
-    // Custom: filter directly on fundamentals via thresholds; grade still computed for display
-    eligible = graded.filter((g) => {
-      // Optionable toggle — currently universe is all optionable, keep for future non-optionable expansion
-      if (f.optionableOnly === false) return true;
-      // Passes explicit thresholds
-      return passesStockThresholds(g.row.fundamentals as any, f.stockThresholds);
-    });
+    eligible = [];
+    for (const g of graded) {
+      if (f.optionableOnly === false) {
+        eligible.push(g);
+        continue;
+      }
+      const ev = evaluateStockThresholds(g.row.fundamentals as StockInputs | null, f.stockThresholds, f.missingPolicy);
+      if (ev.missing.length) missingFields++;
+      if (ev.pass) {
+        eligible.push(g);
+      } else if (f.missingPolicy === "exclude" && ev.missing.length) {
+        const kept = evaluateStockThresholds(g.row.fundamentals as StockInputs | null, f.stockThresholds, "keep");
+        if (kept.pass) missingDropped++;
+      }
+    }
   } else {
     // Preset: inclusive grade filtering (B includes B,A,A+ etc)
     if (f.minGrade === "all") {
@@ -268,7 +281,7 @@ export async function getWheelResults(f: WheelFilters = DEFAULT_FILTERS, today =
     heldBackByEarnings: held,
     earningsWatch,
     rejected,
-    info: { eligible: eligible.length, scanned, failed, waiting: eligible.length - scanned - failed.length, oldest, sources, fallbacks, universe: all.length, hydrated: all.length, staleStocks: universe },
+    info: { eligible: eligible.length, scanned, failed, waiting: eligible.length - scanned - failed.length, oldest, sources, fallbacks, universe: all.length, hydrated: all.length, staleStocks: universe, missingFields, missingDropped },
   };
 }
 

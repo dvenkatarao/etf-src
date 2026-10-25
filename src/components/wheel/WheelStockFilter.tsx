@@ -6,7 +6,19 @@ import type { PresetKey } from "@/lib/stock-presets";
 
 const PRESETS: PresetKey[] = ["A+", "A", "B", "C", "all"];
 
-export default function WheelStockFilter({ f, eligibleCount, hydrated }: { f: WheelFilters; eligibleCount: number; hydrated: number }) {
+export default function WheelStockFilter({
+  f,
+  eligibleCount,
+  hydrated,
+  missingDropped = 0,
+  missingFields = 0,
+}: {
+  f: WheelFilters;
+  eligibleCount: number;
+  hydrated: number;
+  missingDropped?: number;
+  missingFields?: number;
+}) {
   const activePreset = f.stockMode === "custom" ? "custom" as any : f.stockPreset;
   const thresholds = f.stockMode === "custom" ? f.stockThresholds : STOCK_PRESETS[f.stockPreset];
 
@@ -18,7 +30,9 @@ export default function WheelStockFilter({ f, eligibleCount, hydrated }: { f: Wh
           Step 1 · Stock Filter
         </h3>
         <span className="text-xs text-slate-500 dark:text-slate-400">
-          {eligibleCount} stocks pass of {hydrated} analysed • {f.optionableOnly ? "Optionable only" : "All"} • Universe v2026-Q1
+          {eligibleCount} stocks pass of {hydrated} analysed • {f.optionableOnly ? "Optionable only" : "All"}
+          {f.stockMode === "custom" && missingDropped > 0 ? ` • ${missingDropped} skipped for missing data` : ""}
+          {f.stockMode === "custom" && f.missingPolicy === "keep" && missingFields > 0 ? ` • ${missingFields} included with missing fields` : ""}
         </span>
       </div>
 
@@ -38,6 +52,7 @@ export default function WheelStockFilter({ f, eligibleCount, hydrated }: { f: Wh
         {f.divOnly && <input type="hidden" name="divOnly" value="1" />}
         {f.account !== "all" && <input type="hidden" name="acct" value={f.account} />}
         {f.optionableOnly === false && <input type="hidden" name="opt" value="0" />}
+        {f.missingPolicy === "keep" && <input type="hidden" name="miss" value="keep" />}
 
         {PRESETS.map((p) => {
           const isActive = f.stockMode === "preset" && f.stockPreset === p;
@@ -76,7 +91,7 @@ export default function WheelStockFilter({ f, eligibleCount, hydrated }: { f: Wh
       </form>
 
       <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-        Presets are inclusive: <b className="text-slate-700 dark:text-slate-300">B = B and better (B, A, A+)</b> — same as today's Grade filter. Preset uses weighted grade engine (90=A+,80=A,65=B). Custom filters checks fundamentals directly; grade column still shows underlying quality for context.
+        Default is <b className="text-slate-700 dark:text-slate-300">A and better</b> (A, A+). Presets are inclusive: B also includes A and A+. Eligibility uses the weighted grade (A+ ≥ 90, A ≥ 80, B ≥ 65). Custom mode filters fundamentals directly; the grade column is still shown for context.
       </p>
 
       {/* Threshold preview — explanatory, not editable in preset mode */}
@@ -92,7 +107,7 @@ export default function WheelStockFilter({ f, eligibleCount, hydrated }: { f: Wh
             <div><b>Valuation:</b> FwdPE ≤ {thresholds.forwardPEMax} · PEG ≤ {thresholds.pegMax} · FCF Yield ≥ {((thresholds.fcfYieldMin ?? 0) * 100).toFixed(1)}%</div>
             <div><b>Analysts:</b> Rec ≤ {thresholds.recMeanMax} (need ≥8) {thresholds.betaMax ? `· Beta ≤ ${thresholds.betaMax}` : ""}</div>
             <div><b>Size:</b> MktCap ≥ {thresholds.marketCapMin ? `$${(thresholds.marketCapMin / 1e9).toFixed(0)}B` : "any"} · DD ≤ {thresholds.ddMax ? `${(thresholds.ddMax * 100).toFixed(0)}%` : "any"}</div>
-            <div className="text-teal-600 dark:text-teal-300">Preset uses grade engine, not these hard cutoffs — shown for finviz verification.</div>
+            <div className="text-slate-500 dark:text-slate-400">Illustration only — a typical {f.stockPreset} profile. The filter uses the weighted grade, not these cutoffs.</div>
           </div>
         ) : (
           <form method="GET" className="mt-3 grid gap-3 text-xs">
@@ -157,9 +172,13 @@ export default function WheelStockFilter({ f, eligibleCount, hydrated }: { f: Wh
                 <input type="checkbox" name="opt" value="1" defaultChecked={f.optionableOnly} className="h-4 w-4 rounded border-slate-300 accent-teal-600" />
                 <span className="text-xs font-medium text-slate-700 dark:text-slate-300">Optionable only</span>
               </label>
+              <label className="flex items-center gap-2 pt-5 sm:col-span-2">
+                <input type="checkbox" name="miss" value="keep" defaultChecked={f.missingPolicy === "keep"} className="h-4 w-4 rounded border-slate-300 accent-teal-600" />
+                <span className="text-xs font-medium text-slate-700 dark:text-slate-300">Keep names when a filtered field is missing</span>
+              </label>
             </div>
             <p className="text-[11px] leading-relaxed text-slate-500">
-              Custom mode filters on fundamentals directly; grade still computed and shown in options list for context. Empty = no filter on that field. Hard caps (e.g. mktCap&gt;$10B → max B) still apply to displayed grade.
+              Custom mode filters on fundamentals directly. Empty = no filter on that field. Missing values are never guessed — by default those names are skipped. Tick “keep” to include them anyway.
             </p>
             <div className="flex gap-2">
               <button type="submit" className="inline-flex items-center gap-2 rounded-lg bg-teal-600 px-5 py-2 text-sm font-semibold text-white hover:bg-teal-500">

@@ -8,8 +8,8 @@ describe("wheelCycle", () => {
     expect(r!.cashRequired).toBe(9500);
     expect(r!.putPremium).toBeCloseTo(102, 9);
     expect(r!.basisIfAssigned).toBeCloseTo(93.98, 9);
-    expect(r!.putRoc).toBeCloseTo(1.02 / 95, 9);
-    expect(r!.putAnnRoc).toBeCloseTo((1.02 / 95) * (365 / 30), 9);
+    expect(r!.putRoc).toBeCloseTo(1.02 / (95 - 1.02), 9);
+    expect(r!.putAnnRoc).toBeCloseTo((1.02 / (95 - 1.02)) * (365 / 30), 9);
     expect(r!.discountIfAssigned).toBeCloseTo((100 - 93.98) / 100, 9);
     expect(r!.call).toBeUndefined();
   });
