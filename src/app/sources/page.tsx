@@ -4,7 +4,7 @@ import { HelpIcon, PageIcon } from "@/components/icons/AppIcons";
 import { ANALYST_FINDINGS, KNOWN_GAPS, SOURCES, VERIFIED_ON } from "@/lib/sources";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Data source catalog · ETF Research Lab" };
+export const metadata = { title: "Data source catalog · Capital Lab" };
 
 export default function SourcesPage() {
   const categories = Array.from(new Set(SOURCES.map((s) => s.category)));

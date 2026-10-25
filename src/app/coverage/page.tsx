@@ -4,7 +4,7 @@ import { computeCoverage, type Field, type Readiness } from "@/lib/coverage";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
-export const metadata = { title: "Data coverage · ETF Research Lab" };
+export const metadata = { title: "Data coverage · Capital Lab" };
 
 const pc = (x: number | null) => (x == null ? "N/A" : `${Math.round(x * 100)}%`);
 const tone: Record<Readiness["status"], string> = {

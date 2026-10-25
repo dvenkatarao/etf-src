@@ -6,7 +6,7 @@ import { getLatest8Ks, getMacroNews, getRecentEarningsReleases, getSymbolNews, g
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
-export const metadata = { title: "News & events · ETF Research Lab" };
+export const metadata = { title: "News & events · Capital Lab" };
 
 export default async function NewsPage() {
   const [macro, earnings, eights, mkt, fomc, bls, upcoming] = await Promise.all([

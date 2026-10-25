@@ -1,6 +1,6 @@
-# ETF Research Lab
+# Capital Lab
 
-Live, source-verified US ETF research app (Next.js 16 App Router + PostgreSQL/Drizzle).
+Live, source-verified US market research (ETFs, options wheel, portfolio) — Next.js 16 App Router + PostgreSQL/Drizzle.
 
 * **Screener** – filter/sort ~115 ETFs on expense ratio, TTM yield, AUM, returns, volatility, drawdown, Sharpe, NAV-erosion level.
 * **ETF page** – price chart, price vs total return, risk, distributions, NAV-erosion analysis, holdings, sector mix, holdings-weighted analyst consensus, headlines.

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# Multi-stage production image for ETF Research Lab.
+# Multi-stage production image for Capital Lab.
 
 # ---- deps: full install (reproducible via package-lock.json) ----
 FROM node:22-alpine AS deps

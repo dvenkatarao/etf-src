@@ -5,7 +5,7 @@ import { getAllEtfs, getQuotes } from "@/lib/etf-service";
 import { STARTER_PORTFOLIOS } from "@/lib/starter-portfolios";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Get started — 3 questions · ETF Research Lab" };
+export const metadata = { title: "Get started — 3 questions · Capital Lab" };
 
 export default async function OnboardingPage() {
   const all = await getAllEtfs();

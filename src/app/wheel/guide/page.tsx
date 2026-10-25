@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { HelpIcon, IconTile, OptionsIcon } from "@/components/icons/AppIcons";
 
-export const metadata = { title: "Wheel User Guide · ETF Research Lab" };
+export const metadata = { title: "Wheel User Guide · Capital Lab" };
 
 const TOC: [string, string][] = [
   ["what", "What this tool is (and is not)"],

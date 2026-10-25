@@ -6,9 +6,9 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ETF Research Lab - live, source-verified US ETF analytics",
+  title: "Capital Lab — live, source-verified US market research",
   description:
-    "Screen, compare and analyse US ETFs with live data: returns, dividends, NAV-erosion proxy, expense ratios, holdings, analyst consensus, macro and market news. Every figure shows its source and timestamp.",
+    "Screen ETFs, run the options wheel, and track a portfolio with live, source-stamped data: returns, dividends, NAV-erosion, holdings, cash-secured puts, macro and market news. Every figure shows its source and timestamp.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
