@@ -11,7 +11,7 @@ import { UNIVERSE } from "@/lib/universe";
 import RecommendExport from "@/components/RecommendExport";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Goal-based ETF picks · ETF Research Lab" };
+export const metadata = { title: "Goal-based ETF picks · Capital Lab" };
 
 const AUM_OPTIONS = [
   { v: "0", l: "Any size" },

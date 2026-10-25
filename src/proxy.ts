@@ -28,7 +28,7 @@ async function safeEqual(a: string, b: string): Promise<boolean> {
 function unauthorized() {
   return new NextResponse("Authentication required", {
     status: 401,
-    headers: { "WWW-Authenticate": 'Basic realm="ETF Research Lab", charset="UTF-8"', "Cache-Control": "no-store" },
+    headers: { "WWW-Authenticate": 'Basic realm="Capital Lab", charset="UTF-8"', "Cache-Control": "no-store" },
   });
 }
 

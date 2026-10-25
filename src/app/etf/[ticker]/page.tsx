@@ -25,7 +25,7 @@ export const maxDuration = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ ticker: string }> }) {
   const { ticker } = await params;
-  return { title: `${ticker.toUpperCase()} ETF analysis · ETF Research Lab` };
+  return { title: `${ticker.toUpperCase()} ETF analysis · Capital Lab` };
 }
 
 const SECTOR_LABEL: Record<string, string> = {

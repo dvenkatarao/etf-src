@@ -7,7 +7,7 @@ import { MACRO_SERIES, getBlsSchedule, getFomcCalendar, getMacroSnapshot, getPol
 import { deriveRegime } from "@/lib/macro-regime";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Macro dashboard · ETF Research Lab" };
+export const metadata = { title: "Macro dashboard · Capital Lab" };
 
 const GROUPS = Array.from(new Set(MACRO_SERIES.map((s) => s.group)));
 

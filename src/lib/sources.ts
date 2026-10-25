@@ -40,7 +40,7 @@ export type Source = {
   health?: { url: string; timeoutMs?: number; headers?: Record<string, string> };
 };
 
-const SEC_HEADERS = { "User-Agent": process.env.SEC_USER_AGENT || "ETFResearchApp/1.0 (research-app@example.com)" };
+const SEC_HEADERS = { "User-Agent": process.env.SEC_USER_AGENT || "CapitalLab/1.0 (research-app@example.com)" };
 const BROWSER_UA_STR = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
 
 export const SOURCES: Source[] = [

@@ -11,7 +11,7 @@ import { getSpreadStats } from "@/lib/snapshots";
 import { UNIVERSE } from "@/lib/universe";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "ETF Screener · ETF Research Lab" };
+export const metadata = { title: "ETF Screener · Capital Lab" };
 
 export default async function ScreenerPage() {
   const [rows, stale] = await Promise.all([getAllEtfs(), staleTickers()]);

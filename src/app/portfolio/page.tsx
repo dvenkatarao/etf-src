@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 export const metadata = {
-  title: "Multi-Broker Portfolio Tracking · ETF Research Lab",
+  title: "Multi-Broker Portfolio Tracking · Capital Lab",
   description:
     "Aggregate and analyze holdings from Charles Schwab, Fidelity, Vanguard, NinjaTrader, and MooMoo. Track asset allocation, dividend projections, benchmark alpha, fee drag, and NAV erosion risk.",
 };

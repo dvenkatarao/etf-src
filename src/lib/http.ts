@@ -9,7 +9,7 @@ export const BROWSER_UA =
  * Override via SEC_USER_AGENT.
  */
 export const SEC_UA =
-  process.env.SEC_USER_AGENT || "ETFResearchApp/1.0 (research-app@example.com)";
+  process.env.SEC_USER_AGENT || "CapitalLab/1.0 (research-app@example.com)";
 
 export const DEFAULT_UA = SEC_UA;
 

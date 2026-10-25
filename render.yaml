@@ -24,7 +24,7 @@ services:
       - key: SEED_DEMO_DATA
         value: "true"
       - key: SEC_USER_AGENT
-        sync: false # prompted at deploy time: "ETFResearchLab you@yourdomain.com"
+        sync: false # prompted at deploy time: "CapitalLab you@yourdomain.com"
       - key: FRED_API_KEY
         sync: false
       - key: FINNHUB_API_KEY

@@ -11,7 +11,7 @@ import { UNIVERSE, isValidTicker } from "@/lib/universe";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
-export const metadata = { title: "Compare ETFs · ETF Research Lab" };
+export const metadata = { title: "Compare ETFs · Capital Lab" };
 
 const COLORS = ["#4f46e5", "#059669", "#d97706", "#db2777", "#0891b2"];
 

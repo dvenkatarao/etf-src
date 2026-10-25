@@ -23,7 +23,7 @@ import WheelSectorWarning from "@/components/wheel/WheelSectorWarning";
 import WheelPositionsTracker from "@/components/wheel/WheelPositionsTracker";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Wheel Screener · ETF Research Lab" };
+export const metadata = { title: "Wheel Screener · Capital Lab" };
 
 export default async function WheelPage({ searchParams }: { searchParams: Promise<SP> }) {
   const sp = await searchParams;

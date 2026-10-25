@@ -242,7 +242,7 @@ export default function Nav() {
           <IconTile size={32}>
             <EtfLabIcon size={18} />
           </IconTile>
-          <span className="hidden text-[15px] font-semibold tracking-tight sm:inline">ETF Research Lab</span>
+          <span className="hidden text-[15px] font-semibold tracking-tight sm:inline">Capital Lab</span>
         </Link>
 
         {/* Desktop primary */}
