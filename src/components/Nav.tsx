@@ -256,7 +256,7 @@ function LabDropdown({
       </button>
       {open && (
         <div className="absolute left-0 top-full z-40 pt-2">
-          <div className="min-w-[280px] rounded-xl border border-white/10 bg-[#0F1A3A] p-1.5 shadow-xl shadow-black/40">
+          <div className="min-w-[280px] rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-black/10 dark:border-white/10 dark:bg-[#0F1A3A] dark:shadow-black/40">
             <div className="px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-slate-500">{label}</div>
             <div className="grid gap-0.5">
               {links.map((l) => {
@@ -266,12 +266,16 @@ function LabDropdown({
                     key={l.href}
                     href={l.href}
                     onClick={onClose}
-                    className={`flex items-start gap-2.5 rounded-lg px-2.5 py-2 ${a ? "bg-teal-500/15 text-white" : "text-slate-200 hover:bg-white/5"}`}
+                    className={`flex items-start gap-2.5 rounded-lg px-2.5 py-2 ${
+                      a
+                        ? "bg-teal-50 text-teal-950 dark:bg-teal-500/15 dark:text-white"
+                        : "text-slate-800 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-white/5"
+                    }`}
                   >
                     <l.Icon size={16} />
                     <div className="min-w-0 pt-0.5">
                       <div className="text-sm font-medium leading-none">{l.label}</div>
-                      <div className={`mt-1 text-xs leading-none ${a ? "text-teal-200/80" : "text-slate-500"}`}>{l.desc}</div>
+                      <div className={`mt-1 text-xs leading-none ${a ? "text-teal-800 dark:text-teal-200/80" : "text-slate-500"}`}>{l.desc}</div>
                     </div>
                   </Link>
                 );

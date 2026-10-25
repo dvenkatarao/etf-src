@@ -84,7 +84,7 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
       <WheelStockFilter f={f} eligibleCount={res.info.eligible} hydrated={res.info.hydrated} />
 
       {res.info.failed.length > 0 && (
-        <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-xs text-amber-200">
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
           <span className="font-semibold">⚠ {res.info.failed.length} item(s) could not be fetched and are left out rather than guessed:</span> {res.info.failed.slice(0, 8).map((x) => x.ticker).join(", ")}
           {res.info.failed.length > 8 ? ` +${res.info.failed.length - 8} more` : ""}
         </div>
