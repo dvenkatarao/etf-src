@@ -37,12 +37,49 @@ const n = (v: string | undefined, fallback: number) => {
 };
 
 function Kpi({ label, value, hint, tone }: { label: string; value: string; hint?: string; tone?: "up" | "down" | "muted" }) {
-  const color = tone === "up" ? "text-emerald-400" : tone === "down" ? "text-rose-400" : "text-white";
+  const color =
+    tone === "up" ? "text-emerald-600 dark:text-emerald-400" : tone === "down" ? "text-rose-600 dark:text-rose-400" : "text-slate-900 dark:text-white";
   return (
-    <div className="rounded-xl border border-slate-800 bg-[#0F1A3A] px-3 py-3">
+    <div className="rounded-xl border border-slate-200 bg-white px-3 py-3 dark:border-slate-800 dark:bg-[#0F1A3A]">
       <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">{label}</div>
-      <div className={`mt-1 text-lg font-semibold tabular-nums ${color}`}>{value}</div>
+      <div className={`mt-1 font-mono text-lg font-semibold tabular-nums ${color}`}>{value}</div>
       {hint && <div className="mt-0.5 text-[11px] text-slate-500">{hint}</div>}
+    </div>
+  );
+}
+
+function StrikeRail({ legs, spot }: { legs: Leg[]; spot: number }) {
+  const optionLegs = legs.filter((l) => l.right !== "stock" && l.strike != null && l.strike > 0);
+  if (!optionLegs.length) return null;
+  const ks = optionLegs.map((l) => l.strike!);
+  const min = Math.min(spot, ...ks) * 0.88;
+  const max = Math.max(spot, ...ks) * 1.12;
+  const span = max - min || 1;
+  const pct = (v: number) => ((v - min) / span) * 100;
+  const step = span > 40 ? 5 : span > 15 ? 2 : 1;
+  const ticks: number[] = [];
+  for (let t = Math.ceil(min / step) * step; t <= max; t += step) ticks.push(Math.round(t * 100) / 100);
+
+  return (
+    <div className="relative h-20">
+      <div className="absolute inset-x-0 top-8 h-px bg-slate-300 dark:bg-slate-600" />
+      {ticks.map((t) => (
+        <span key={t} className="absolute top-[2.35rem] -translate-x-1/2 font-mono text-[10px] text-slate-400" style={{ left: `${pct(t)}%` }}>
+          {money(t, 0)}
+        </span>
+      ))}
+      <span className="absolute top-[1.65rem] h-2.5 w-px -translate-x-1/2 bg-slate-400" style={{ left: `${pct(spot)}%` }} title="Spot" />
+      {optionLegs.map((l) => (
+        <div key={l.id} className="absolute top-5 -translate-x-1/2 text-center" style={{ left: `${pct(l.strike!)}%` }}>
+          <div
+            className={`mx-auto ${l.side === "sell" ? "h-3.5 w-3.5 rounded-full bg-teal-500" : "h-3.5 w-3.5 rounded-[3px] border-2 border-sky-500 bg-white dark:bg-[#0F1A3A]"}`}
+            title={`${l.side} ${l.right} ${l.strike}`}
+          />
+          <div className={`mt-5 whitespace-nowrap text-[10px] font-semibold uppercase tracking-wide ${l.side === "sell" ? "text-teal-700 dark:text-teal-300" : "text-sky-700 dark:text-sky-300"}`}>
+            {l.side} {l.right} {money(l.strike, 0)}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -153,13 +190,13 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-teal-400/80">Wheel lab</div>
-          <h1 className="mt-1 text-xl font-semibold tracking-tight text-white">Payoff, cycle & expected move</h1>
-          <p className="mt-1 max-w-2xl text-sm text-slate-400">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-teal-700 dark:text-teal-400/80">Wheel lab</div>
+          <h1 className="mt-1 text-xl font-semibold tracking-tight text-slate-900 dark:text-white">Payoff, cycle & expected move</h1>
+          <p className="mt-1 max-w-2xl text-sm text-slate-500 dark:text-slate-400">
             Expiration P&amp;L from listed quotes (Alpaca / Yahoo). Credits use a 25% bid-to-ask fill. Not a forecast — research only.
           </p>
         </div>
-        <Link href="/wheel" className="rounded-lg border border-teal-500/20 bg-teal-500/10 px-4 py-2 text-sm font-medium text-teal-200 hover:bg-teal-500/20">
+        <Link href="/wheel" className="rounded-lg border border-teal-200 bg-teal-50 px-4 py-2 text-sm font-medium text-teal-800 hover:bg-teal-100 dark:border-teal-500/20 dark:bg-teal-500/10 dark:text-teal-200 dark:hover:bg-teal-500/20">
           ← Wheel screener
         </Link>
       </div>
@@ -169,11 +206,11 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
           e.preventDefault();
           void loadChain();
         }}
-        className="flex flex-wrap items-end gap-2 rounded-xl border border-slate-800 bg-[#0F1A3A] p-3"
+        className="flex flex-wrap items-end gap-2 rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-[#0F1A3A]"
       >
         <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
           Ticker
-          <input value={ticker} onChange={(e) => setTicker(e.target.value.toUpperCase())} placeholder="AAPL" maxLength={10} className="w-28 rounded-lg border border-slate-700 bg-[#111C3E] px-2.5 py-1.5 text-sm text-white" />
+          <input value={ticker} onChange={(e) => setTicker(e.target.value.toUpperCase())} placeholder="AAPL" maxLength={10} className="w-28 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111C3E] dark:text-white" />
         </label>
         <button type="submit" disabled={loading} className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500 disabled:opacity-50">
           {loading ? "Loading…" : "Load live chain"}
@@ -216,74 +253,133 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
       </div>
 
       {tab === "payoff" && (
-        <div className="space-y-4">
-          <div className="flex flex-wrap gap-2">
-            {PRESET_META.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => applyPreset(p.id)}
-                className={`rounded-lg px-3 py-1.5 text-xs font-medium ring-1 ${preset === p.id ? "bg-teal-600 text-white ring-teal-500" : "bg-[#0F1A3A] text-slate-300 ring-slate-800 hover:ring-slate-600"}`}
-                title={p.desc}
-              >
-                {p.label}
-              </button>
-            ))}
+        <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-[#0F1A3A]">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="flex flex-wrap gap-1.5">
+              {PRESET_META.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => applyPreset(p.id)}
+                  className={`rounded-full px-3 py-1.5 text-xs font-medium ${preset === p.id ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"}`}
+                  title={p.desc}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+            <div className="flex flex-wrap items-end gap-3">
+              <div>
+                <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Example price</div>
+                <div className="font-mono text-xl font-semibold tabular-nums text-slate-900 dark:text-white">{money(spot)}</div>
+              </div>
+              <div>
+                <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Model expiration</div>
+                <div className="text-sm text-slate-700 dark:text-slate-200">{expiry || `${dte} DTE`}</div>
+              </div>
+              <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                Position size
+                <span className="inline-flex overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
+                  <button type="button" className="px-2 py-1 text-sm text-slate-600 dark:text-slate-300" onClick={() => setLegs((prev) => prev.map((l) => ({ ...l, qty: Math.max(1, l.qty - 1) })))}>
+                    −
+                  </button>
+                  <span className="min-w-[2rem] bg-slate-50 px-2 py-1 text-center font-mono text-sm dark:bg-[#111C3E] dark:text-white">{legs[0]?.qty ?? 1}</span>
+                  <button type="button" className="px-2 py-1 text-sm text-slate-600 dark:text-slate-300" onClick={() => setLegs((prev) => prev.map((l) => ({ ...l, qty: l.qty + 1 })))}>
+                    +
+                  </button>
+                </span>
+              </label>
+            </div>
           </div>
           <p className="text-xs text-slate-500">{PRESET_META.find((p) => p.id === preset)?.desc}</p>
 
-          <div className="overflow-x-auto rounded-xl border border-slate-800">
-            <table className="min-w-full text-sm">
-              <thead className="bg-[#0D1632] text-left text-[10px] uppercase tracking-[0.12em] text-slate-500">
-                <tr>
-                  {["Side", "Type", "Strike", "Premium / sh", "Qty"].map((h) => (
-                    <th key={h} className="px-3 py-2 font-medium">
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/60">
-                {legs.map((l) => (
-                  <tr key={l.id}>
-                    <td className="px-3 py-2">
-                      <select value={l.side} onChange={(e) => updateLeg(l.id, { side: e.target.value as Leg["side"] })} className="rounded border border-slate-700 bg-[#111C3E] px-2 py-1 text-xs text-white">
-                        <option value="sell">Sell</option>
-                        <option value="buy">Buy</option>
-                      </select>
-                    </td>
-                    <td className="px-3 py-2 text-slate-300">{l.right}</td>
-                    <td className="px-3 py-2">
-                      {l.right === "stock" ? (
-                        <span className="text-slate-500">—</span>
-                      ) : (
-                        <input type="number" value={l.strike ?? 0} onChange={(e) => updateLeg(l.id, { strike: Number(e.target.value) })} className="w-24 rounded border border-slate-700 bg-[#111C3E] px-2 py-1 text-xs text-white" />
-                      )}
-                    </td>
-                    <td className="px-3 py-2">
-                      <input type="number" step="0.01" value={l.premium} onChange={(e) => updateLeg(l.id, { premium: Number(e.target.value) })} className="w-24 rounded border border-slate-700 bg-[#111C3E] px-2 py-1 text-xs text-white" />
-                    </td>
-                    <td className="px-3 py-2">
-                      <input type="number" min={1} value={l.qty} onChange={(e) => updateLeg(l.id, { qty: Math.max(1, Number(e.target.value) || 1) })} className="w-16 rounded border border-slate-700 bg-[#111C3E] px-2 py-1 text-xs text-white" />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <StrikeRail legs={legs} spot={spot} />
+
+          <div className="flex flex-wrap gap-2">
+            {legs
+              .filter((l) => l.right !== "stock")
+              .map((l) => (
+                <div key={l.id} className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-xs dark:border-slate-700 dark:bg-[#111C3E]">
+                  <span className={`font-semibold uppercase ${l.side === "sell" ? "text-teal-700 dark:text-teal-300" : "text-sky-700 dark:text-sky-300"}`}>
+                    {l.side} {l.right}
+                  </span>
+                  <button type="button" className="px-1 text-slate-500" onClick={() => updateLeg(l.id, { strike: Math.max(0.5, (l.strike ?? 0) - 1) })}>
+                    −
+                  </button>
+                  <span className="font-mono font-semibold tabular-nums text-slate-900 dark:text-white">{money(l.strike, l.strike != null && l.strike < 100 ? 2 : 0)}</span>
+                  <button type="button" className="px-1 text-slate-500" onClick={() => updateLeg(l.id, { strike: (l.strike ?? 0) + 1 })}>
+                    +
+                  </button>
+                </div>
+              ))}
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             <Kpi label="Net credit" value={money(summary.netCredit)} tone={summary.netCredit >= 0 ? "up" : "down"} hint="Fees excluded" />
             <Kpi label="Max profit" value={summary.profitUnbounded ? "Unlimited" : money(summary.maxProfit)} tone="up" hint="At expiration" />
             <Kpi label="Max loss" value={summary.lossUnbounded ? "Unlimited" : money(summary.maxLoss)} tone="down" hint="At expiration" />
-            <Kpi label="Breakevens" value={summary.breakevens.length ? summary.breakevens.map((b) => money(b)).join(" / ") : "—"} />
+            <Kpi label="Breakevens" value={summary.breakevens.length ? summary.breakevens.map((b) => money(b)).join(" / ") : "—"} hint="Stock at zero P/L" />
             <Kpi label="ROC" value={summary.roc != null ? pct(summary.roc, 1) : "N/A"} hint={summary.capital ? `capital ${money(summary.capital, 0)}` : undefined} />
           </div>
 
-          <div className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-[#0F1A3A]">
-            <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Profit / loss at expiration</div>
-            <PayoffChart points={summary.points} spot={spot} breakevens={summary.breakevens} emLow={emIv?.low1} emHigh={emIv?.high1} />
-            <p className="mt-2 text-[11px] text-slate-500">Green = profit, red = loss. Amber dots = breakevens. Teal band = 1σ expected move from IV. 100 shares per contract.</p>
+          <div>
+            <div className="mb-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Profit / loss at expiration</div>
+            <PayoffChart
+              points={summary.points}
+              spot={spot}
+              breakevens={summary.breakevens}
+              emLow={emIv?.low1}
+              emHigh={emIv?.high1}
+              maxProfit={summary.maxProfit}
+              maxLoss={summary.maxLoss}
+              profitUnbounded={summary.profitUnbounded}
+              lossUnbounded={summary.lossUnbounded}
+              strikes={legs.map((l) => l.strike).filter((x): x is number => x != null)}
+            />
+            <p className="mt-2 text-[11px] text-slate-500">Green = profit, red = loss. Amber = breakevens. Teal band = 1σ expected move from IV. 100 shares per contract. Not a forecast.</p>
           </div>
+
+          <details open className="rounded-xl border border-slate-200 dark:border-slate-800">
+            <summary className="cursor-pointer px-3 py-2 text-sm font-semibold text-slate-800 dark:text-slate-100">Position legs · {legs.length}</summary>
+            <div className="overflow-x-auto border-t border-slate-200 dark:border-slate-800">
+              <table className="min-w-full text-sm">
+                <thead className="bg-slate-50 text-left text-[10px] uppercase tracking-[0.12em] text-slate-500 dark:bg-[#0D1632]">
+                  <tr>
+                    {["Side", "Type", "Strike", "Premium / sh", "Qty"].map((h) => (
+                      <th key={h} className="px-3 py-2 font-medium">
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+                  {legs.map((l) => (
+                    <tr key={l.id}>
+                      <td className="px-3 py-2">
+                        <select value={l.side} onChange={(e) => updateLeg(l.id, { side: e.target.value as Leg["side"] })} className="rounded border border-slate-300 bg-white px-2 py-1 text-xs dark:border-slate-700 dark:bg-[#111C3E] dark:text-white">
+                          <option value="sell">Sell</option>
+                          <option value="buy">Buy</option>
+                        </select>
+                      </td>
+                      <td className="px-3 py-2 capitalize text-slate-600 dark:text-slate-300">{l.right}</td>
+                      <td className="px-3 py-2">
+                        {l.right === "stock" ? (
+                          <span className="text-slate-500">—</span>
+                        ) : (
+                          <input type="number" value={l.strike ?? 0} onChange={(e) => updateLeg(l.id, { strike: Number(e.target.value) })} className="w-24 rounded border border-slate-300 bg-white px-2 py-1 font-mono text-xs dark:border-slate-700 dark:bg-[#111C3E] dark:text-white" />
+                        )}
+                      </td>
+                      <td className="px-3 py-2">
+                        <input type="number" step="0.01" value={l.premium} onChange={(e) => updateLeg(l.id, { premium: Number(e.target.value) })} className="w-24 rounded border border-slate-300 bg-white px-2 py-1 font-mono text-xs dark:border-slate-700 dark:bg-[#111C3E] dark:text-white" />
+                      </td>
+                      <td className="px-3 py-2">
+                        <input type="number" min={1} value={l.qty} onChange={(e) => updateLeg(l.id, { qty: Math.max(1, Number(e.target.value) || 1) })} className="w-16 rounded border border-slate-300 bg-white px-2 py-1 font-mono text-xs dark:border-slate-700 dark:bg-[#111C3E] dark:text-white" />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </details>
         </div>
       )}
 
