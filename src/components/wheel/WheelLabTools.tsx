@@ -279,10 +279,10 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
             <Kpi label="ROC" value={summary.roc != null ? pct(summary.roc, 1) : "N/A"} hint={summary.capital ? `capital ${money(summary.capital, 0)}` : undefined} />
           </div>
 
-          <div className="rounded-xl border border-slate-800 bg-[#0F1A3A] p-3">
+          <div className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-[#0F1A3A]">
             <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Profit / loss at expiration</div>
             <PayoffChart points={summary.points} spot={spot} breakevens={summary.breakevens} emLow={emIv?.low1} emHigh={emIv?.high1} />
-            <p className="mt-2 text-[11px] text-slate-500">Green = profit, red = loss. Yellow dots = breakevens. Teal band = 1σ expected move from IV. 100 shares per contract.</p>
+            <p className="mt-2 text-[11px] text-slate-500">Green = profit, red = loss. Amber dots = breakevens. Teal band = 1σ expected move from IV. 100 shares per contract.</p>
           </div>
         </div>
       )}
