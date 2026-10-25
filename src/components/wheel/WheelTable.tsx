@@ -379,6 +379,8 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                                       dte: b.dte,
                                       iv: c.iv ?? undefined,
                                       hv: r.ctx.hv30 ?? undefined,
+                                      earnDays: b.daysToEarnings,
+                                      spreadPct: b.spreadPct,
                                     })}
                                     className="rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-teal-500"
                                   >
@@ -392,6 +394,8 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                                       credit: b.credit,
                                       spot: r.ctx.price,
                                       dte: b.dte,
+                                      earnDays: b.daysToEarnings,
+                                      spreadPct: b.spreadPct,
                                     })}
                                     className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-white/5"
                                   >
@@ -447,6 +451,26 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                       <div className={`mt-1 inline-flex rounded-md px-2 py-1 text-sm font-bold ring-1 ${scoreTone(b.score)}`}>{b.score.toFixed(1)}</div>
                     </div>
                   </div>
+                  <div className="mt-3 flex flex-wrap gap-1">
+                    {b.earnings === "inside" ? (
+                      <span className="rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-semibold text-rose-700 ring-1 ring-rose-200 dark:bg-rose-500/20 dark:text-rose-300 dark:ring-rose-500/20">
+                        earnings in {b.daysToEarnings}d
+                      </span>
+                    ) : b.daysToEarnings != null ? (
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-[10px] font-medium ring-1 ${b.daysToEarnings <= 14 ? "bg-amber-50 text-amber-800 ring-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:ring-amber-500/20" : "bg-slate-100 text-slate-600 ring-slate-200 dark:bg-slate-700/40 dark:text-slate-300 dark:ring-slate-600/20"}`}
+                      >
+                        earnings in {b.daysToEarnings}d
+                      </span>
+                    ) : (
+                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] text-slate-500 dark:bg-slate-700/40 dark:text-slate-400">earnings unknown</span>
+                    )}
+                    {b.exDivInside && (
+                      <span className="rounded-full bg-sky-50 px-2 py-0.5 text-[10px] font-medium text-sky-700 ring-1 ring-sky-200 dark:bg-sky-500/20 dark:text-sky-300 dark:ring-sky-500/20">
+                        ex-div {dateShort(r.ctx.exDividend)}
+                      </span>
+                    )}
+                  </div>
                   <div className="mt-3 flex items-center justify-between text-xs">
                     <span className="text-slate-500">
                       Return/yr <b className="text-emerald-600 dark:text-emerald-400">{pct(b.annRoc, 1)}</b>
@@ -467,6 +491,8 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                       dte: b.dte,
                       iv: b.contract.iv ?? undefined,
                       hv: r.ctx.hv30 ?? undefined,
+                      earnDays: b.daysToEarnings,
+                      spreadPct: b.spreadPct,
                     })}
                     className="mt-3 inline-flex text-xs font-medium text-teal-600 hover:underline dark:text-teal-300"
                   >

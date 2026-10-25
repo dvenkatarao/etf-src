@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PortfolioAnalyticsSummary } from "@/lib/portfolio-service";
 import PortfolioSummaryCards from "./PortfolioSummaryCards";
@@ -21,12 +21,16 @@ import { AccountIcon, ImportExportIcon, TransactionsIcon } from "@/components/ic
 
 export default function PortfolioDashboard({
   initialAnalytics,
+  initialOpen,
 }: {
   initialAnalytics: PortfolioAnalyticsSummary;
+  initialOpen?: string;
 }) {
   const router = useRouter();
   const [analytics, setAnalytics] = useState<PortfolioAnalyticsSummary>(initialAnalytics);
-  const [selectedPortfolioId, setSelectedPortfolioId] = useState<string>("all");
+  const [selectedPortfolioId, setSelectedPortfolioId] = useState<string>(() =>
+    initialOpen && initialAnalytics.portfolios.some((p) => p.id === initialOpen) ? initialOpen : "all",
+  );
   const [syncing, setSyncing] = useState(false);
 
   // Modals
@@ -53,6 +57,12 @@ export default function PortfolioDashboard({
     setSelectedPortfolioId(portId);
     await refreshData(portId);
   };
+
+  useEffect(() => {
+    if (selectedPortfolioId !== "all") void refreshData(selectedPortfolioId);
+    // Open a specific portfolio from ?open= on first paint.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSync = async () => {
     setSyncing(true);

@@ -62,7 +62,7 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
             <span className="rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1 text-[11px] font-medium text-teal-700 dark:border-teal-500/30 dark:bg-teal-500/10 dark:text-teal-300">Two-step filter · Grade always computed</span>
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-500 dark:text-slate-400">
-            <b className="text-slate-700 dark:text-slate-200">Step 1: stocks (preset B = B and better)</b> then <b className="text-slate-700 dark:text-slate-200">Step 2: options</b> — grade is always computed (5-pillar weighted + caps), tooltips explain why even when return is high.
+            <b className="text-slate-700 dark:text-slate-200">Step 1: stocks (preset A = A and better)</b> then <b className="text-slate-700 dark:text-slate-200">Step 2: options</b> — grade is always computed (5-pillar weighted + caps), tooltips explain why even when return is high.
             Earnings, ex-dividend dates, key price levels and the optimal account type (<span className="text-violet-600 dark:text-violet-300">R</span> = retirement, <span className="text-sky-600 dark:text-sky-300">T</span> = taxable) are shown for every pick.
           </p>
         </div>
@@ -81,7 +81,7 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
       <WheelHydratorDark staleStocks={staleS.length} staleScans={staleScans.length} total={stockUniverse().length} />
 
       {/* Step 1: Stock Filter — presets inclusive, optionable only default */}
-      <WheelStockFilter f={f} eligibleCount={res.info.eligible} hydrated={res.info.hydrated} />
+      <WheelStockFilter f={f} eligibleCount={res.info.eligible} hydrated={res.info.hydrated} missingDropped={res.info.missingDropped} missingFields={res.info.missingFields} />
 
       {res.info.failed.length > 0 && (
         <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">

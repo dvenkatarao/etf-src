@@ -30,6 +30,7 @@ export default function WheelFilters({ f, regime, guardrails }: { f: WheelFilter
           {f.stockThresholds.fcfYieldMin != null && <input type="hidden" name="fcyMin" value={f.stockThresholds.fcfYieldMin} />}
           {f.stockThresholds.recMeanMax != null && <input type="hidden" name="recMax" value={f.stockThresholds.recMeanMax} />}
           {!f.optionableOnly && <input type="hidden" name="opt" value="0" />}
+          {f.missingPolicy === "keep" && <input type="hidden" name="miss" value="keep" />}
         </>
       ) : (
         <>

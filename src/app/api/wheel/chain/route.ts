@@ -3,6 +3,7 @@ import { ApiError, handle } from "@/lib/api";
 import { getOptionChain } from "@/lib/options-providers";
 import { isValidTicker } from "@/lib/universe";
 import { yahooQuotes } from "@/lib/yahoo";
+import { getStock } from "@/lib/stock-service";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -55,9 +56,19 @@ export const GET = handle(async (req: Request) => {
       })),
   );
 
+  let nextEarnings: string | null = null;
+  try {
+    const row = await getStock(symbol);
+    const ev = row?.events as { nextEarnings?: string | null } | null | undefined;
+    nextEarnings = ev?.nextEarnings ?? null;
+  } catch {
+    /* stock row is optional — pills stay unknown */
+  }
+
   return Response.json({
     symbol,
     price,
+    nextEarnings,
     source: fetched.map((r) => r.source).join("+"),
     fetchedAt: fetched.map((r) => r.fetchedAt).sort().slice(-1)[0] ?? null,
     stale: fetched.some((r) => r.stale),
