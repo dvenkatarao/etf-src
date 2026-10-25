@@ -65,22 +65,20 @@ export default function WheelHydratorDark({ staleStocks, staleScans, total }: { 
   if (phase === "done" && failed.length === 0) return null;
   const pct = phase === "stocks" ? Math.round(((total - stocksLeft) / Math.max(1, total)) * 100) : Math.round(((scansTotal - scansLeft) / Math.max(1, scansTotal)) * 100);
   return (
-    <div className="rounded-xl border border-indigo-500/30 bg-indigo-500/10 px-4 py-3 text-sm text-indigo-200">
+    <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
       {phase !== "done" ? (
         <>
-          <div className="flex items-center justify-between gap-3">
-            <span className="font-medium">
-              {phase === "stocks" ? `Step 1 of 2: loading company data and chart levels… ${total - stocksLeft} / ${total} stocks` : `Step 2 of 2: scanning option chains for A/A+ stocks… ${scansTotal - scansLeft} / ${scansTotal}`}
-            </span>
-            <span className="tabular-nums text-xs text-indigo-300">{Math.max(0, Math.min(100, pct))}%</span>
-          </div>
-          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-indigo-900/40">
-            <div className="h-full rounded-full bg-indigo-500 transition-all" style={{ width: `${Math.max(0, Math.min(100, pct))}%` }} />
-          </div>
-          <p className="mt-1 text-xs text-indigo-300/80">The first load takes a few minutes. Results appear when it finishes and nothing is estimated.</p>
+          <span className="h-1 w-32 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+            <span className="block h-full rounded-full bg-teal-500" style={{ width: `${Math.max(0, Math.min(100, pct))}%` }} />
+          </span>
+          <span>
+            {phase === "stocks"
+              ? `Updating ${total - stocksLeft} of ${total} stocks…`
+              : `Scanning chains ${scansTotal - scansLeft} of ${scansTotal}…`}
+          </span>
         </>
       ) : (
-        <span className="text-amber-200">{failed.length} item(s) could not be fetched and are left out rather than guessed: {failed.slice(0, 30).join(", ")}{failed.length > 30 ? "…" : ""}.</span>
+        <span className="text-amber-700 dark:text-amber-300">{failed.length} item(s) could not be fetched and are left out rather than guessed: {failed.slice(0, 30).join(", ")}{failed.length > 30 ? "…" : ""}.</span>
       )}
     </div>
   );

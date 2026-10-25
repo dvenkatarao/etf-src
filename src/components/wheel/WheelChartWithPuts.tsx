@@ -108,7 +108,7 @@ export default function WheelChartWithPuts({ ticker, bars, technicals, puts, put
         )}
         {puts && puts.candidates.length > 0 && (
           <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-            <span className="h-2 w-2 rounded-full bg-indigo-500" /> Click a strike to pin it on the chart · Hover the chart to preview the nearest put · Hover the table to see the strike
+            <span className="h-2 w-2 rounded-full bg-teal-500" /> Click a strike to pin it on the chart · Hover the chart to preview the nearest put · Hover the table to see the strike
             {selectedStrike && (
               <button onClick={() => setSelectedStrike(null)} className="ml-2 rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300">
                 Clear pin

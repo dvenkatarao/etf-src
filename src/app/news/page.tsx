@@ -31,7 +31,7 @@ export default async function NewsPage() {
             <ul className="divide-y divide-slate-100 text-sm">
               {macro.items.map((n) => (
                 <li key={n.link} className="py-2.5">
-                  <a href={n.link} target="_blank" rel="noreferrer" className="font-medium text-slate-800 hover:text-indigo-700">{n.title}</a>
+                  <a href={n.link} target="_blank" rel="noreferrer" className="font-medium text-slate-800 hover:text-teal-700">{n.title}</a>
                   <div className="mt-0.5 flex flex-wrap items-center gap-2 text-[11px] text-slate-400">
                     <Badge className="bg-slate-50 text-slate-600 ring-slate-200">{n.source}</Badge>
                     {n.tag && <span>{n.tag}</span>}
@@ -57,7 +57,7 @@ export default async function NewsPage() {
             {nextFomc.length ? (
               <ul className="space-y-1.5 text-sm">
                 {nextFomc.map((m) => (
-                  <li key={m.start} className="flex justify-between"><span className="font-medium">{m.label}</span>{m.hasProjections && <Badge className="bg-indigo-50 text-indigo-700 ring-indigo-200">SEP</Badge>}</li>
+                  <li key={m.start} className="flex justify-between"><span className="font-medium">{m.label}</span>{m.hasProjections && <Badge className="bg-teal-50 text-teal-700 ring-teal-200">SEP</Badge>}</li>
                 ))}
               </ul>
             ) : (
@@ -87,7 +87,7 @@ export default async function NewsPage() {
               {earnings.data.slice(0, 60).map((f) => (
                 <li key={f.url} className="flex items-start justify-between gap-3 py-2">
                   <div>
-                    <a href={f.url} target="_blank" rel="noreferrer" className="font-medium text-slate-800 hover:text-indigo-700">{f.company}</a>
+                    <a href={f.url} target="_blank" rel="noreferrer" className="font-medium text-slate-800 hover:text-teal-700">{f.company}</a>
                     <div className="text-[11px] text-slate-400">{f.tickers.join(", ") || "no ticker listed"}</div>
                   </div>
                   <span className="whitespace-nowrap text-xs text-slate-500">{dateShort(f.filed)}</span>
@@ -105,7 +105,7 @@ export default async function NewsPage() {
             <ul className="max-h-[28rem] divide-y divide-slate-100 overflow-y-auto text-sm">
               {eights.data.map((n) => (
                 <li key={n.link} className="py-2">
-                  <a href={n.link} target="_blank" rel="noreferrer" className="font-medium text-slate-800 hover:text-indigo-700">{n.title}</a>
+                  <a href={n.link} target="_blank" rel="noreferrer" className="font-medium text-slate-800 hover:text-teal-700">{n.title}</a>
                   <div className="text-[11px] text-slate-400">{dateShort(n.date)}</div>
                 </li>
               ))}
@@ -123,7 +123,7 @@ export default async function NewsPage() {
             <ul className="divide-y divide-slate-100 text-sm">
               {mkt.data.map((n) => (
                 <li key={n.link} className="py-2">
-                  <a href={n.link} target="_blank" rel="noreferrer" className="font-medium text-slate-800 hover:text-indigo-700">{n.title}</a>
+                  <a href={n.link} target="_blank" rel="noreferrer" className="font-medium text-slate-800 hover:text-teal-700">{n.title}</a>
                   <div className="text-[11px] text-slate-400">{dateShort(n.date)}</div>
                 </li>
               ))}

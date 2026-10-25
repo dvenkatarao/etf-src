@@ -49,10 +49,10 @@ export default function SourcesBrowser({ sources, categories, verifiedOn }: { so
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search sources or data types…" className="w-64 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none" />
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search sources or data types…" className="w-64 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none" />
         <div className="flex flex-wrap gap-1.5">
           {["All", ...categories].map((c) => (
-            <button key={c} onClick={() => setCat(c)} className={`rounded-full px-3 py-1 text-xs font-medium ${cat === c ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}>
+            <button key={c} onClick={() => setCat(c)} className={`rounded-full px-3 py-1 text-xs font-medium ${cat === c ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}>
               {c}
             </button>
           ))}
@@ -75,7 +75,7 @@ export default function SourcesBrowser({ sources, categories, verifiedOn }: { so
                 <span className="font-semibold text-slate-900">{s.name}</span>
                 <span className={`inline-flex rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset ${v.cls}`}>{v.label}</span>
                 <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600">{s.auth === "None" ? "No key" : s.auth}</span>
-                {s.usedInApp && <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-[11px] font-medium text-indigo-700 ring-1 ring-inset ring-indigo-200">Used by this app</span>}
+                {s.usedInApp && <span className="rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-medium text-teal-700 ring-1 ring-inset ring-teal-200">Used by this app</span>}
                 {s.envVar && configured[s.id] !== undefined && (
                   <span className={`rounded-full px-2 py-0.5 text-[11px] ${configured[s.id] ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>{configured[s.id] ? "key configured" : "key not set"}</span>
                 )}
@@ -87,7 +87,7 @@ export default function SourcesBrowser({ sources, categories, verifiedOn }: { so
                 <div className="space-y-3 border-t border-slate-100 px-5 py-4 text-sm">
                   <div className="grid gap-3 md:grid-cols-2">
                     <div><div className="text-[11px] font-medium uppercase tracking-wide text-slate-500">Base URL</div><code className="break-all text-xs">{s.baseUrl}</code></div>
-                    <div><div className="text-[11px] font-medium uppercase tracking-wide text-slate-500">Docs</div><a className="break-all text-xs text-indigo-700 hover:underline" href={s.docsUrl} target="_blank" rel="noreferrer">{s.docsUrl}</a></div>
+                    <div><div className="text-[11px] font-medium uppercase tracking-wide text-slate-500">Docs</div><a className="break-all text-xs text-teal-700 hover:underline" href={s.docsUrl} target="_blank" rel="noreferrer">{s.docsUrl}</a></div>
                   </div>
                   {s.envVar && <div><span className="text-[11px] font-medium uppercase tracking-wide text-slate-500">Env var </span><code className="text-xs">{s.envVar}</code></div>}
                   {s.provides.length > 0 && (

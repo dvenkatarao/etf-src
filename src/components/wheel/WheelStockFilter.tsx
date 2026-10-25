@@ -50,7 +50,7 @@ export default function WheelStockFilter({ f, eligibleCount, hydrated }: { f: Wh
               title={PRESET_DESC[p]}
               className={`rounded-full px-3.5 py-1.5 text-xs font-semibold ring-1 transition ${
                 isActive
-                  ? "bg-indigo-600 text-white ring-indigo-600"
+                  ? "bg-teal-600 text-white ring-teal-600"
                   : p === "A+"
                     ? "bg-emerald-50 text-emerald-700 ring-emerald-200 hover:bg-emerald-100 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-500/20"
                     : "bg-slate-100 text-slate-700 ring-slate-200 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700"
@@ -65,7 +65,7 @@ export default function WheelStockFilter({ f, eligibleCount, hydrated }: { f: Wh
           name="mode"
           value="custom"
           className={`rounded-full px-3.5 py-1.5 text-xs font-semibold ring-1 ${
-            f.stockMode === "custom" ? "bg-indigo-600 text-white ring-indigo-600" : "bg-white text-slate-700 ring-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700"
+            f.stockMode === "custom" ? "bg-teal-600 text-white ring-teal-600" : "bg-white text-slate-700 ring-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700"
           }`}
         >
           Custom
@@ -92,7 +92,7 @@ export default function WheelStockFilter({ f, eligibleCount, hydrated }: { f: Wh
             <div><b>Valuation:</b> FwdPE ≤ {thresholds.forwardPEMax} · PEG ≤ {thresholds.pegMax} · FCF Yield ≥ {((thresholds.fcfYieldMin ?? 0) * 100).toFixed(1)}%</div>
             <div><b>Analysts:</b> Rec ≤ {thresholds.recMeanMax} (need ≥8) {thresholds.betaMax ? `· Beta ≤ ${thresholds.betaMax}` : ""}</div>
             <div><b>Size:</b> MktCap ≥ {thresholds.marketCapMin ? `$${(thresholds.marketCapMin / 1e9).toFixed(0)}B` : "any"} · DD ≤ {thresholds.ddMax ? `${(thresholds.ddMax * 100).toFixed(0)}%` : "any"}</div>
-            <div className="text-indigo-600 dark:text-indigo-300">Preset uses grade engine, not these hard cutoffs — shown for finviz verification.</div>
+            <div className="text-teal-600 dark:text-teal-300">Preset uses grade engine, not these hard cutoffs — shown for finviz verification.</div>
           </div>
         ) : (
           <form method="GET" className="mt-3 grid gap-3 text-xs">
@@ -154,7 +154,7 @@ export default function WheelStockFilter({ f, eligibleCount, hydrated }: { f: Wh
                 <input name="recMax" defaultValue={thresholds.recMeanMax ?? ""} placeholder="2.3" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111C3E] dark:text-white" />
               </label>
               <label className="flex items-center gap-2 pt-5">
-                <input type="checkbox" name="opt" value="1" defaultChecked={f.optionableOnly} className="h-4 w-4 rounded border-slate-300 accent-indigo-600" />
+                <input type="checkbox" name="opt" value="1" defaultChecked={f.optionableOnly} className="h-4 w-4 rounded border-slate-300 accent-teal-600" />
                 <span className="text-xs font-medium text-slate-700 dark:text-slate-300">Optionable only</span>
               </label>
             </div>
@@ -162,7 +162,7 @@ export default function WheelStockFilter({ f, eligibleCount, hydrated }: { f: Wh
               Custom mode filters on fundamentals directly; grade still computed and shown in options list for context. Empty = no filter on that field. Hard caps (e.g. mktCap&gt;$10B → max B) still apply to displayed grade.
             </p>
             <div className="flex gap-2">
-              <button type="submit" className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white hover:bg-indigo-500">
+              <button type="submit" className="inline-flex items-center gap-2 rounded-lg bg-teal-600 px-5 py-2 text-sm font-semibold text-white hover:bg-teal-500">
                 <FiltersIcon size={14} />
                 Apply Stock Filter
               </button>

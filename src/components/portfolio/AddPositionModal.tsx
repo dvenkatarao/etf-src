@@ -103,7 +103,7 @@ export default function AddPositionModal({
             <select
               value={targetPortId}
               onChange={(e) => setTargetPortId(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs focus:border-indigo-500 focus:outline-none"
+              className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs focus:border-teal-500 focus:outline-none"
             >
               {portfolios.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -122,7 +122,7 @@ export default function AddPositionModal({
                 value={ticker}
                 onChange={(e) => setTicker(e.target.value.toUpperCase())}
                 placeholder="e.g. VOO, SCHD"
-                className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-xs uppercase focus:border-indigo-500 focus:outline-none"
+                className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-xs uppercase focus:border-teal-500 focus:outline-none"
                 required
               />
               <datalist id="ticker-suggestions">
@@ -139,7 +139,7 @@ export default function AddPositionModal({
                 onChange={(e) =>
                   setAssetType(e.target.value as "ETF" | "EQUITY" | "BOND" | "FUTURES")
                 }
-                className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs focus:border-indigo-500 focus:outline-none"
+                className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs focus:border-teal-500 focus:outline-none"
               >
                 <option value="ETF">ETF</option>
                 <option value="EQUITY">Individual Stock</option>
@@ -159,7 +159,7 @@ export default function AddPositionModal({
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 placeholder="e.g. 50"
-                className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-xs focus:border-indigo-500 focus:outline-none"
+                className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-xs focus:border-teal-500 focus:outline-none"
                 required
               />
             </div>
@@ -173,7 +173,7 @@ export default function AddPositionModal({
                 value={averageCostBasis}
                 onChange={(e) => setAverageCostBasis(e.target.value)}
                 placeholder="e.g. 485.50"
-                className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-xs focus:border-indigo-500 focus:outline-none"
+                className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-xs focus:border-teal-500 focus:outline-none"
                 required
               />
             </div>
@@ -185,7 +185,7 @@ export default function AddPositionModal({
               type="date"
               value={purchaseDate}
               onChange={(e) => setPurchaseDate(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-xs focus:border-indigo-500 focus:outline-none"
+              className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-xs focus:border-teal-500 focus:outline-none"
             />
           </div>
 
@@ -200,7 +200,7 @@ export default function AddPositionModal({
             <button
               type="submit"
               disabled={loading}
-              className="rounded-xl bg-indigo-600 px-5 py-2 text-xs font-semibold text-white shadow hover:bg-indigo-500 disabled:opacity-50"
+              className="rounded-xl bg-teal-600 px-5 py-2 text-xs font-semibold text-white shadow hover:bg-teal-500 disabled:opacity-50"
             >
               {loading ? "Saving…" : "Save Position"}
             </button>

@@ -116,7 +116,7 @@ export default function WheelPriceChart({ ticker, bars, hi52, lo52, supports, re
   }, [closes, times, overlays]);
 
   const prepared = useMemo(() => {
-    const base: ChartSeries = { key: ticker, name: ticker, color: "#4f46e5", t: times, v: closes };
+    const base: ChartSeries = { key: ticker, name: ticker, color: "#0f766e", t: times, v: closes };
     const all = [base, ...overlaySeries];
     const valid = all.filter((s) => s.t.length > 1);
     if (!valid.length) return null;
@@ -219,7 +219,7 @@ export default function WheelPriceChart({ ticker, bars, hi52, lo52, supports, re
             <button
               key={r.key}
               onClick={() => setRange(r.key)}
-              className={`rounded-md px-2 py-1 text-xs font-medium transition ${range === r.key ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"}`}
+              className={`rounded-md px-2 py-1 text-xs font-medium transition ${range === r.key ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"}`}
             >
               {r.key}
             </button>
@@ -258,7 +258,7 @@ export default function WheelPriceChart({ ticker, bars, hi52, lo52, supports, re
         {/* Mobile collapse */}
         <div className="mt-2 sm:hidden">
           {!mobileExpanded ? (
-            <button onClick={() => setMobileExpanded(true)} className="text-xs font-medium text-indigo-600 dark:text-indigo-400">Show overlays ({overlaySeries.length + (showLevels ? 1 : 0)} active) ▾</button>
+            <button onClick={() => setMobileExpanded(true)} className="text-xs font-medium text-teal-600 dark:text-teal-400">Show overlays ({overlaySeries.length + (showLevels ? 1 : 0)} active) ▾</button>
           ) : (
             <button onClick={() => setMobileExpanded(false)} className="text-xs font-medium text-slate-500">Hide overlays ▴</button>
           )}
@@ -290,7 +290,7 @@ export default function WheelPriceChart({ ticker, bars, hi52, lo52, supports, re
           ))}
           {show52w && hi52 != null && <line x1={PAD.l} x2={W - PAD.r} y1={y(hi52)} y2={y(hi52)} stroke="#64748b" strokeWidth={1} strokeDasharray="3 3" opacity={0.5} />}
           {show52w && lo52 != null && <line x1={PAD.l} x2={W - PAD.r} y1={y(lo52)} y2={y(lo52)} stroke="#64748b" strokeWidth={1} strokeDasharray="3 3" opacity={0.5} />}
-          {selectedStrike != null && <line x1={PAD.l} x2={W - PAD.r} y1={y(selectedStrike)} y2={y(selectedStrike)} stroke="#4f46e5" strokeWidth={1.5} strokeDasharray="8 4" opacity={1} />}
+          {selectedStrike != null && <line x1={PAD.l} x2={W - PAD.r} y1={y(selectedStrike)} y2={y(selectedStrike)} stroke="#0f766e" strokeWidth={1.5} strokeDasharray="8 4" opacity={1} />}
           {/* Price and overlays */}
           {paths.map(({ s, d }) => (
             <polyline key={s.key} points={d} fill="none" stroke={s.color} strokeWidth={s.key === ticker ? 1.8 : 1.4} strokeLinejoin="round" strokeLinecap="round" opacity={s.key === ticker ? 1 : 0.85} />
@@ -332,19 +332,19 @@ export default function WheelPriceChart({ ticker, bars, hi52, lo52, supports, re
               const dist = ((price - nearest.price) / nearest.price) * 100;
               return <div className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Nearest {nearest.kind}: {nearest.price.toFixed(2)} ({dist > 0 ? "+" : ""}{dist.toFixed(1)}% away) · {nearest.touches} touches</div>;
             })()}
-            {selectedStrike != null && <div className="mt-1 text-[11px] font-medium text-indigo-600 dark:text-indigo-400">Selected put strike: {selectedStrike.toFixed(2)}</div>}
+            {selectedStrike != null && <div className="mt-1 text-[11px] font-medium text-teal-600 dark:text-teal-400">Selected put strike: {selectedStrike.toFixed(2)}</div>}
           </div>
         )}
       </div>
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600 dark:text-slate-400">
-        <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-3 rounded-sm" style={{ background: "#4f46e5" }} /> {ticker} price</span>
+        <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-3 rounded-sm" style={{ background: "#0f766e" }} /> {ticker} price</span>
         {overlaySeries.map((s) => (
           <span key={s.key} className="flex items-center gap-1.5"><span className="inline-block h-2 w-3 rounded-sm" style={{ background: s.color }} /> {s.name}</span>
         ))}
         {showLevels && supports.length > 0 && <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-3 rounded-sm bg-emerald-500" /> Supports ({supports.length})</span>}
         {showLevels && resistances.length > 0 && <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-3 rounded-sm bg-rose-500" /> Resistances ({resistances.length})</span>}
         {show52w && <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-3 rounded-sm bg-slate-400" /> 52W H/L</span>}
-        {selectedStrike != null && <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-3 rounded-sm bg-indigo-500" /> Strike {selectedStrike.toFixed(0)}</span>}
+        {selectedStrike != null && <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-3 rounded-sm bg-teal-500" /> Strike {selectedStrike.toFixed(0)}</span>}
       </div>
       <p className="mt-2 text-[11px] text-slate-500">Daily closes (unadjusted) · S/R = swing pivots ±1.5% · 52W from last year. Hover syncs with puts below.</p>
     </div>

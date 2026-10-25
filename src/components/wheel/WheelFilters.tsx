@@ -5,9 +5,9 @@ import { FiltersIcon, IconTile, OptionsIcon } from "@/components/icons/AppIcons"
 
 const labelCls = "text-[10px] font-semibold tracking-[0.12em] text-slate-500 dark:text-slate-400";
 const inputCls =
-  "w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 dark:border-slate-700 dark:bg-[#111C3E] dark:text-white dark:placeholder:text-slate-500";
+  "w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/30 dark:border-slate-700 dark:bg-[#111C3E] dark:text-white dark:placeholder:text-slate-500";
 const selectCls =
-  "w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 dark:border-slate-700 dark:bg-[#111C3E] dark:text-white";
+  "w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm text-slate-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/30 dark:border-slate-700 dark:bg-[#111C3E] dark:text-white";
 
 export default function WheelFilters({ f, regime, guardrails }: { f: WheelFilters; regime?: Regime | null; guardrails?: { deltaMax: number; minOi: number; maxSpreadPct: number; note: string } | null }) {
   const p = f.params;
@@ -91,20 +91,20 @@ export default function WheelFilters({ f, regime, guardrails }: { f: WheelFilter
         <div className="col-span-12 flex flex-col gap-3 pt-1 sm:col-span-8 lg:col-span-8 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
             <label className="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
-              <input type="checkbox" name="earn" value="1" defaultChecked={p.allowEarnings} className="h-4 w-4 rounded border-slate-300 bg-white accent-indigo-600 dark:border-slate-600 dark:bg-slate-700" />
+              <input type="checkbox" name="earn" value="1" defaultChecked={p.allowEarnings} className="h-4 w-4 rounded border-slate-300 bg-white accent-teal-600 dark:border-slate-600 dark:bg-slate-700" />
               Include options that expire after earnings
             </label>
             <label className="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
-              <input type="checkbox" name="trend" value="1" defaultChecked={f.trendOnly} className="h-4 w-4 rounded border-slate-300 bg-white accent-indigo-600 dark:border-slate-600 dark:bg-slate-700" />
+              <input type="checkbox" name="trend" value="1" defaultChecked={f.trendOnly} className="h-4 w-4 rounded border-slate-300 bg-white accent-teal-600 dark:border-slate-600 dark:bg-slate-700" />
               Only stocks above 200-day
             </label>
             <label className="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
-              <input type="checkbox" name="divOnly" value="1" defaultChecked={f.divOnly ?? false} className="h-4 w-4 rounded border-slate-300 bg-white accent-indigo-600 dark:border-slate-600 dark:bg-slate-700" />
+              <input type="checkbox" name="divOnly" value="1" defaultChecked={f.divOnly ?? false} className="h-4 w-4 rounded border-slate-300 bg-white accent-teal-600 dark:border-slate-600 dark:bg-slate-700" />
               Dividend plays only
             </label>
           </div>
           <div className="flex items-center gap-2">
-            <button className="inline-flex items-center gap-2 rounded-lg bg-[#4F6BFF] px-5 py-2 text-sm font-semibold text-white shadow hover:bg-[#5B78FF] focus:outline-none focus:ring-2 focus:ring-indigo-400/40">
+            <button className="inline-flex items-center gap-2 rounded-lg bg-teal-600 px-5 py-2 text-sm font-semibold text-white shadow hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-400/40">
               <FiltersIcon size={14} />
               Apply Filters
             </button>

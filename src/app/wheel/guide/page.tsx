@@ -32,7 +32,7 @@ const UL = ({ children }: { children: ReactNode }) => <ul className="mt-2 list-d
 function Step({ n, title, children }: { n: number; title: string; children: ReactNode }) {
   return (
     <div className="mt-4 flex gap-4 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-[#0F1A3A]">
-      <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-indigo-600 text-sm font-bold text-white">{n}</div>
+      <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-teal-600 text-sm font-bold text-white">{n}</div>
       <div className="min-w-0 flex-1">
         <h3 className="font-semibold text-slate-900 dark:text-white">{title}</h3>
         <div className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">{children}</div>
@@ -41,7 +41,7 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
   );
 }
 function Callout({ tone = "info", title, children }: { tone?: "info" | "warn" | "danger"; title: string; children: ReactNode }) {
-  const c = tone === "danger" ? "border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200" : tone === "warn" ? "border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200" : "border-indigo-200 bg-indigo-50 text-indigo-900 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-200";
+  const c = tone === "danger" ? "border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200" : tone === "warn" ? "border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200" : "border-teal-200 bg-teal-50 text-teal-900 dark:border-teal-500/30 dark:bg-teal-500/10 dark:text-teal-200";
   return (
     <div className={`mt-4 rounded-xl border p-4 text-sm ${c}`}>
       <div className="font-semibold">{title}</div>
@@ -64,7 +64,7 @@ export default function WheelGuide() {
           </div>
           <p className="mt-1 max-w-3xl text-sm text-slate-500 dark:text-slate-400 sm:pl-[52px]">A step-by-step guide to finding, placing and managing wheel trades with this tool, including what happens on assignment, around ex-dividend dates and around earnings.</p>
         </div>
-        <Link href="/wheel" className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500">
+        <Link href="/wheel" className="inline-flex items-center gap-2 rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-500">
           <OptionsIcon size={16} />
           Open the Wheel Screener →
         </Link>
@@ -73,7 +73,7 @@ export default function WheelGuide() {
       <nav className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-[#0F1A3A]">
         <div className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">In this guide</div>
         <ol className="mt-2 grid gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
-          {TOC.map(([id, t], i) => <li key={id}><a href={`#${id}`} className="text-indigo-600 hover:text-indigo-700 hover:underline dark:text-indigo-300 dark:hover:text-indigo-200">{i + 1}. {t}</a></li>)}
+          {TOC.map(([id, t], i) => <li key={id}><a href={`#${id}`} className="text-teal-600 hover:text-teal-700 hover:underline dark:text-teal-300 dark:hover:text-teal-200">{i + 1}. {t}</a></li>)}
         </ol>
       </nav>
 
@@ -99,7 +99,7 @@ export default function WheelGuide() {
       <H id="setup">3. Before you start</H>
       <UL>
         <li><b className="text-slate-900 dark:text-white">Broker permissions:</b> you need approval to sell cash-secured puts and covered calls (usually &quot;Level 1&quot; or &quot;Level 2&quot;). Retirement accounts allow both, but not margin.</li>
-        <li><b className="text-slate-900 dark:text-white">Data keys (recommended):</b> put <code className="rounded bg-slate-100 px-1 py-0.5 text-indigo-700 dark:bg-slate-800 dark:text-indigo-300">ALPACA_API_KEY</code> and <code className="rounded bg-slate-100 px-1 py-0.5 text-indigo-700 dark:bg-slate-800 dark:text-indigo-300">ALPACA_SECRET_KEY</code> from a free Alpaca account in the <code className="rounded bg-slate-100 px-1 py-0.5 text-indigo-700 dark:bg-slate-800 dark:text-indigo-300">.env</code> file, then restart the app. Alpaca is the primary option data source. If a key is missing or Alpaca fails, Yahoo Finance is used as the backup and every row is labelled with the source. Without Alpaca, deltas are modelled and marked with a ≈ sign.</li>
+        <li><b className="text-slate-900 dark:text-white">Data keys (recommended):</b> put <code className="rounded bg-slate-100 px-1 py-0.5 text-teal-700 dark:bg-slate-800 dark:text-teal-300">ALPACA_API_KEY</code> and <code className="rounded bg-slate-100 px-1 py-0.5 text-teal-700 dark:bg-slate-800 dark:text-teal-300">ALPACA_SECRET_KEY</code> from a free Alpaca account in the <code className="rounded bg-slate-100 px-1 py-0.5 text-teal-700 dark:bg-slate-800 dark:text-teal-300">.env</code> file, then restart the app. Alpaca is the primary option data source. If a key is missing or Alpaca fails, Yahoo Finance is used as the backup and every row is labelled with the source. Without Alpaca, deltas are modelled and marked with a ≈ sign.</li>
         <li><b className="text-slate-900 dark:text-white">First load:</b> the first visit to the Wheel Screener loads about 330 large US stocks and then scans option chains for the A/A+ ones. This takes a few minutes. Later visits are instant and data refreshes in the background while the app runs.</li>
         <li><b className="text-slate-900 dark:text-white">Capital:</b> there is no cap in the screener. Check the <i>Cash needed</i> yourself: it is strike × 100 per contract (a $400 strike needs $40,000).</li>
       </UL>
@@ -264,9 +264,9 @@ export default function WheelGuide() {
 
       <H id="limits">14. Data sources and limits</H>
       <UL>
-        <li><b className="text-slate-900 dark:text-white">Option data:</b> Alpaca first; if it errors or returns no usable quotes, Yahoo Finance is used and the row shows a &quot;Yahoo (backup)&quot; badge. Alpaca&apos;s free (&quot;indicative&quot;) feed is not the full exchange feed and can lag or differ slightly; set <code className="rounded bg-slate-100 px-1 py-0.5 text-indigo-700 dark:bg-slate-800 dark:text-indigo-300">ALPACA_OPTIONS_FEED=opra</code> if you have the paid subscription. Yahoo quotes are delayed and its implied volatility can be noisy for thinly traded contracts.</li>
+        <li><b className="text-slate-900 dark:text-white">Option data:</b> Alpaca first; if it errors or returns no usable quotes, Yahoo Finance is used and the row shows a &quot;Yahoo (backup)&quot; badge. Alpaca&apos;s free (&quot;indicative&quot;) feed is not the full exchange feed and can lag or differ slightly; set <code className="rounded bg-slate-100 px-1 py-0.5 text-teal-700 dark:bg-slate-800 dark:text-teal-300">ALPACA_OPTIONS_FEED=opra</code> if you have the paid subscription. Yahoo quotes are delayed and its implied volatility can be noisy for thinly traded contracts.</li>
         <li><b className="text-slate-900 dark:text-white">Stock data:</b> Yahoo Finance (unofficial). Fundamentals, analyst ratings and earnings dates can be stale or estimated. Always confirm the date and price at your broker before trading.</li>
-        <li><b className="text-slate-900 dark:text-white">Stock universe:</b> a bundled list of about 330 large US stocks (an approximation of the S&amp;P 500, not an official index feed). Add your own with <code className="rounded bg-slate-100 px-1 py-0.5 text-indigo-700 dark:bg-slate-800 dark:text-indigo-300">WHEEL_EXTRA_SYMBOLS</code> (comma-separated).</li>
+        <li><b className="text-slate-900 dark:text-white">Stock universe:</b> a bundled list of about 330 large US stocks (an approximation of the S&amp;P 500, not an official index feed). Add your own with <code className="rounded bg-slate-100 px-1 py-0.5 text-teal-700 dark:bg-slate-800 dark:text-teal-300">WHEEL_EXTRA_SYMBOLS</code> (comma-separated).</li>
         <li><b className="text-slate-900 dark:text-white">Early exercise:</b> US options can be exercised any time. Models and the early-assignment flag are guides.</li>
         <li><b className="text-slate-900 dark:text-white">Nothing is estimated:</b> if data is missing the tool shows N/A or leaves the stock out.</li>
       </UL>
@@ -274,8 +274,8 @@ export default function WheelGuide() {
       <H id="trouble">15. Troubleshooting</H>
       <UL>
         <li><b className="text-slate-900 dark:text-white">Table is empty:</b> loosen the filters (delta range, minimum return, bid/ask gap) or wait for the scan progress bar to finish. The page lists why contracts were rejected.</li>
-        <li><b className="text-slate-900 dark:text-white">&quot;Alpaca keys not set&quot;:</b> add them to <code className="rounded bg-slate-100 px-1 py-0.5 text-indigo-700 dark:bg-slate-800 dark:text-indigo-300">.env</code> and restart; until then Yahoo is used.</li>
-        <li><b className="text-slate-900 dark:text-white">A stock is missing:</b> it may not be A/A+, may have no analyst data, or its scan failed (see the failure list). Open <code className="rounded bg-slate-100 px-1 py-0.5 text-indigo-700 dark:bg-slate-800 dark:text-indigo-300">/wheel/TICKER</code> to see its grade and options directly.</li>
+        <li><b className="text-slate-900 dark:text-white">&quot;Alpaca keys not set&quot;:</b> add them to <code className="rounded bg-slate-100 px-1 py-0.5 text-teal-700 dark:bg-slate-800 dark:text-teal-300">.env</code> and restart; until then Yahoo is used.</li>
+        <li><b className="text-slate-900 dark:text-white">A stock is missing:</b> it may not be A/A+, may have no analyst data, or its scan failed (see the failure list). Open <code className="rounded bg-slate-100 px-1 py-0.5 text-teal-700 dark:bg-slate-800 dark:text-teal-300">/wheel/TICKER</code> to see its grade and options directly.</li>
         <li><b className="text-slate-900 dark:text-white">Data looks old:</b> the scanner refreshes while the app is running (every few minutes in market hours). If you start the app only occasionally, reload and let the progress bar finish.</li>
         <li><b className="text-slate-900 dark:text-white">Rate limits:</b> if Yahoo or Alpaca throttles, affected stocks are skipped and retried later.</li>
       </UL>

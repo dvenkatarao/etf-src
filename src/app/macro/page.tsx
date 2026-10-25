@@ -28,7 +28,7 @@ export default async function MacroPage() {
             <>
               <YieldCurveChart points={curve.data.points} />
               <div className="mt-2 flex flex-wrap gap-4 text-xs text-slate-600">
-                <span className="flex items-center gap-1.5"><span className="inline-block h-0.5 w-5 bg-indigo-600" /> Latest</span>
+                <span className="flex items-center gap-1.5"><span className="inline-block h-0.5 w-5 bg-teal-600" /> Latest</span>
                 <span className="flex items-center gap-1.5"><span className="inline-block h-0.5 w-5 border-t-2 border-dashed border-slate-400" /> One year earlier</span>
                 {spread != null && <span className="ml-auto font-medium">10Y − 2Y: {spread >= 0 ? "+" : ""}{spread.toFixed(2)} pp {spread < 0 ? "(inverted)" : ""}</span>}
               </div>
@@ -98,8 +98,8 @@ export default async function MacroPage() {
                     <tr key={m.start} className={past ? "text-slate-400" : ""}>
                       <td className="py-1.5 font-medium">{m.label}{m.hasProjections ? " *" : ""}</td>
                       <td className="py-1.5 text-right text-xs">
-                        {m.statementUrl ? <a href={m.statementUrl} target="_blank" rel="noreferrer" className="text-indigo-700 hover:underline">Statement</a> : <span>{past ? "-" : "Upcoming"}</span>}
-                        {m.minutesUrl && <> · <a href={m.minutesUrl} target="_blank" rel="noreferrer" className="text-indigo-700 hover:underline">Minutes</a></>}
+                        {m.statementUrl ? <a href={m.statementUrl} target="_blank" rel="noreferrer" className="text-teal-700 hover:underline">Statement</a> : <span>{past ? "-" : "Upcoming"}</span>}
+                        {m.minutesUrl && <> · <a href={m.minutesUrl} target="_blank" rel="noreferrer" className="text-teal-700 hover:underline">Minutes</a></>}
                       </td>
                     </tr>
                   );

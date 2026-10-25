@@ -26,7 +26,7 @@ export default async function OnboardingPage() {
         title="New here? 3 questions → a starting point"
         description="Answer goal, horizon and risk — we map you to a ranked goal + a starter portfolio you can build in one click and then edit. No advice, no account, no trade placed."
       />
-      <div className="mt-6 rounded-2xl border border-indigo-200 bg-indigo-50 p-4 text-sm leading-relaxed text-indigo-900">
+      <div className="mt-6 rounded-2xl border border-teal-200 bg-teal-50 p-4 text-sm leading-relaxed text-teal-900">
         <b>How it works:</b> 1) Pick what you want (income/growth/balanced/defensive) + when you need it + how much drawdown you tolerate → 2) See 3 vetted starter allocations (conservative, balanced, growth) with why + watch-outs → 3) “Build in Portfolio” creates a manual portfolio sized to $10k at last prices — edit from there. All data is provider-sourced; scores are percentile-ranked on past data.
       </div>
       <div className="mt-6">

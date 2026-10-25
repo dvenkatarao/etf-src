@@ -420,7 +420,7 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                 <div key={r.g.row.ticker} className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-[#0F1A3A]">
                   <div className="flex items-start justify-between">
                     <div>
-                      <Link href={`/wheel/${r.g.row.ticker}?${q}`} className="text-sm font-bold text-slate-900 hover:text-indigo-700 dark:text-white dark:hover:text-indigo-300">
+                      <Link href={`/wheel/${r.g.row.ticker}?${q}`} className="text-sm font-bold text-slate-900 hover:text-teal-700 dark:text-white dark:hover:text-teal-300">
                         {r.g.row.ticker}
                       </Link>
                       <div className="max-w-[180px] truncate text-xs text-slate-500 dark:text-slate-400">{r.g.row.name}</div>
