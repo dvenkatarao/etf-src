@@ -65,8 +65,8 @@ export function YieldCurveChart({ points }: { points: { label: string; years: nu
         </text>
       ))}
       <polyline points={line("yearAgo")} fill="none" stroke="#94a3b8" strokeWidth={2} strokeDasharray="5 4" />
-      <polyline points={line("now")} fill="none" stroke="#4f46e5" strokeWidth={2.4} />
-      {points.map((p, i) => p.now != null && <circle key={p.label} cx={x(i)} cy={y(p.now)} r={3} fill="#4f46e5"><title>{`${p.label}: ${p.now}%`}</title></circle>)}
+      <polyline points={line("now")} fill="none" stroke="#0f766e" strokeWidth={2.4} />
+      {points.map((p, i) => p.now != null && <circle key={p.label} cx={x(i)} cy={y(p.now)} r={3} fill="#0f766e"><title>{`${p.label}: ${p.now}%`}</title></circle>)}
     </svg>
   );
 }

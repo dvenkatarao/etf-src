@@ -48,6 +48,10 @@ body {
   color: var(--text-primary);
 }
 a { text-underline-offset: 2px; }
+a, button, [role="button"] {
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+tbody tr { transition: background-color 150ms ease; }
 ::selection { background: rgb(20 184 166 / 0.22); }
 :focus-visible { outline: 2px solid rgb(20 184 166); outline-offset: 2px; }
 html.dark ::selection { background: rgb(45 212 191 / 0.25); }
@@ -99,8 +103,8 @@ html.dark .text-slate-700 { color: #cbd5e1 !important; }
 html.dark .text-slate-600 { color: var(--text-secondary) !important; }
 html.dark .text-slate-500 { color: var(--text-secondary) !important; }
 html.dark .text-slate-400 { color: var(--text-muted) !important; }
-html.dark .text-indigo-700 { color: #a5b4fc !important; }
-html.dark .text-indigo-600 { color: #818cf8 !important; }
+html.dark .text-teal-700 { color: #a5b4fc !important; }
+html.dark .text-teal-600 { color: #818cf8 !important; }
 
 /* ───────────────────────────────────────────────── */
 /* Dark → Light (when light, wheel dark utilities become light) */
@@ -124,11 +128,11 @@ html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#080E28\], .bg-\[\#0D1632\]) .text-
 html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#080E28\], .bg-\[\#0D1632\]) .text-slate-300 { color: #334155 !important; }
 html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#080E28\]) .text-slate-400,
 html:not(.dark) .bg-\[\#0D1632\] .text-slate-400 { color: #64748b !important; }
-html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#080E28\], .bg-\[\#111C3E\]) .text-indigo-300 { color: #4f46e5 !important; }
-html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#111C3E\]) .text-indigo-200 { color: #4338ca !important; }
+html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#080E28\], .bg-\[\#111C3E\]) .text-teal-300 { color: #0f766e !important; }
+html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#111C3E\]) .text-teal-200 { color: #4338ca !important; }
 /* Colored CTAs must keep white text in light — exception to scoped rules */
-html:not(.dark) .bg-indigo-500.text-white,
-html:not(.dark) .bg-indigo-600.text-white,
+html:not(.dark) .bg-teal-500.text-white,
+html:not(.dark) .bg-teal-600.text-white,
 html:not(.dark) .bg-\[\#4F6BFF\].text-white,
 html:not(.dark) .bg-\[\#4F6BFF\] .text-white,
 html:not(.dark) .bg-violet-500\/40.text-white,

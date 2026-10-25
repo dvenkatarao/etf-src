@@ -183,7 +183,7 @@ export default function PositionsTable({
                     <td className="px-4 py-3">
                       <Link
                         href={`/etf/${pos.ticker}`}
-                        className="font-bold text-indigo-700 hover:underline"
+                        className="font-bold text-teal-700 hover:underline"
                       >
                         {pos.ticker}
                       </Link>

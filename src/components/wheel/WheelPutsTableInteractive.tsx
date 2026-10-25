@@ -46,7 +46,7 @@ export default function WheelPutsTableInteractive({ puts, putErr, selectedStrike
                 onClick={() => onStrikeSelect(c.contract.strike)}
                 onMouseEnter={() => onStrikeHover(c.contract.strike)}
                 onMouseLeave={() => onStrikeHover(null)}
-                className={`cursor-pointer align-top transition ${isSelected ? "bg-indigo-50 dark:bg-indigo-500/10 ring-1 ring-inset ring-indigo-200 dark:ring-indigo-500/30" : isHovered ? "bg-amber-50 dark:bg-amber-500/10" : "hover:bg-slate-50 dark:hover:bg-white/[0.03]"}`}
+                className={`cursor-pointer align-top transition ${isSelected ? "bg-teal-50 dark:bg-teal-500/10 ring-1 ring-inset ring-teal-200 dark:ring-teal-500/30" : isHovered ? "bg-amber-50 dark:bg-amber-500/10" : "hover:bg-slate-50 dark:hover:bg-white/[0.03]"}`}
               >
                 <td className="whitespace-nowrap px-3 py-2 text-slate-700 dark:text-slate-300">{dateShort(c.contract.expiration)}<div className="text-[11px] text-slate-500">{c.dte}d{(() => { const prox = expiryEventProximity(c.contract.expiration, events, 3); return prox.near ? <span className="ml-1 inline-flex items-center gap-1 rounded-full bg-rose-50 px-1.5 py-0.5 text-[10px] font-semibold text-rose-700 ring-1 ring-rose-200 dark:bg-rose-500/15 dark:text-rose-300 dark:ring-rose-500/20">● {prox.event!.kind}</span> : null; })()}</div></td>
                 <td className="px-3 py-2 font-medium tabular-nums text-slate-900 dark:text-white">{money(c.contract.strike, c.contract.strike % 1 ? 2 : 0)}<div className="text-[11px] text-slate-500">{pct(c.otmPct, 1)} below</div></td>

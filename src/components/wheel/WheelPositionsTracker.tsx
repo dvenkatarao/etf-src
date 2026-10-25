@@ -109,7 +109,7 @@ export default function WheelPositionsTracker() {
         </div>
         <button
           onClick={() => setOpen((o) => !o)}
-          className="rounded-lg bg-[#1B2540] px-3 py-1.5 text-xs font-medium text-indigo-300 ring-1 ring-indigo-500/20 hover:bg-[#24304F]"
+          className="rounded-lg bg-[#1B2540] px-3 py-1.5 text-xs font-medium text-teal-300 ring-1 ring-teal-500/20 hover:bg-[#24304F]"
         >
           {open ? "Hide log" : `Open ledger (${positions.length})`}
         </button>
@@ -143,7 +143,7 @@ export default function WheelPositionsTracker() {
             <input value={expiration} onChange={(e) => setExpiration(e.target.value)} type="date" className="rounded-lg border border-slate-700 bg-[#0F1A3A] px-2 py-1.5 text-xs text-white" />
             <input value={premium} onChange={(e) => setPremium(e.target.value)} placeholder="Premium $/share" inputMode="decimal" className="rounded-lg border border-slate-700 bg-[#0F1A3A] px-2 py-1.5 text-xs text-white placeholder:text-slate-500" />
             <input value={qty} onChange={(e) => setQty(e.target.value)} placeholder="Contracts" inputMode="numeric" className="w-20 rounded-lg border border-slate-700 bg-[#0F1A3A] px-2 py-1.5 text-xs text-white" />
-            <button onClick={add} className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-500">Add</button>
+            <button onClick={add} className="rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-teal-500">Add</button>
           </div>
 
           {positions.length === 0 ? (

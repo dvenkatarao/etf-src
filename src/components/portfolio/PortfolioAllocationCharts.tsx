@@ -32,7 +32,7 @@ export default function PortfolioAllocationCharts({
                 </div>
                 <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-slate-100">
                   <div
-                    className="h-full rounded-full bg-indigo-600 transition-all"
+                    className="h-full rounded-full bg-teal-600 transition-all"
                     style={{ width: `${Math.min(100, Math.max(1, ac.weight * 100))}%` }}
                   />
                 </div>
@@ -89,7 +89,7 @@ export default function PortfolioAllocationCharts({
                     {idx + 1}
                   </span>
                   <div>
-                    <span className="font-semibold text-indigo-700">{p.ticker}</span>
+                    <span className="font-semibold text-teal-700">{p.ticker}</span>
                     <span className="ml-1 text-[11px] text-slate-400">
                       ({p.quantity.toFixed(1)} shs)
                     </span>

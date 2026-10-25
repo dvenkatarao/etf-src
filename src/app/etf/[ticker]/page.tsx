@@ -3,8 +3,7 @@ import { Suspense } from "react";
 import LineChart from "@/components/LineChart";
 import QualityCard from "@/components/QualityCard";
 import { DistributionBars } from "@/components/SvgCharts";
-import { Badge, Card, SourceNote, Stat, Unavailable } from "@/components/ui";
-import { EtfLabIcon, IconTile } from "@/components/icons/AppIcons";
+import { Badge, Card, QuoteTape, SourceNote, Stat, Unavailable } from "@/components/ui";
 import { getRiskFree } from "@/lib/data";
 import { REFRESH_TTL_MS, getAllEtfs, getEtf, getHistory, getHoldingsAnalystConsensus, getQuotes, refreshEtf, type EtfRow } from "@/lib/etf-service";
 import { NA, big, colorFor, dateShort, erosionStyle, isLeveragedOrInverse, money, num, pct } from "@/lib/format";
@@ -71,7 +70,7 @@ export default async function EtfPage({ params }: { params: Promise<{ ticker: st
       <div className="mx-auto max-w-xl">
         <Card title={`${ticker} could not be loaded`}>
           <p className="text-sm text-slate-600">The data provider did not return usable ETF data for this symbol: <span className="font-mono text-xs">{error ?? "unknown error"}</span></p>
-          <p className="mt-2 text-sm text-slate-500">Nothing is guessed. Check the ticker, or see provider status on the <Link className="text-indigo-700 underline" href="/sources">Data Sources</Link> page.</p>
+          <p className="mt-2 text-sm text-slate-500">Nothing is guessed. Check the ticker, or see provider status on the <Link className="text-teal-700 underline" href="/sources">Data Sources</Link> page.</p>
         </Card>
       </div>
     );
@@ -122,29 +121,22 @@ export default async function EtfPage({ params }: { params: Promise<{ ticker: st
     <div className="space-y-6">
       {error && <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-2 text-sm text-amber-800">{error}</div>}
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <IconTile size={40}><EtfLabIcon size={22} /></IconTile>
-              <h1 className="text-3xl font-semibold tracking-tight">{ticker}</h1>
-              {row.category && <Badge className="bg-indigo-50 text-indigo-700 ring-indigo-200">{row.category}</Badge>}
-              {row.exchange && <Badge className="bg-slate-50 text-slate-600 ring-slate-200">{row.exchange}</Badge>}
-              {leveraged && <Badge className="bg-rose-50 text-rose-700 ring-rose-200">Leveraged / inverse - not for buy-and-hold</Badge>}
-              {(() => { const ac = assetClassOf(row.category, row.profile?.allocation); const rt = rateTagForEtf({ ticker, category: row.category, name: row.name, assetClass: ac }); return <Badge className={rt.color} title={rt.hint}>{rt.label}</Badge>; })()}
-            </div>
-            <p className="mt-1 text-slate-600">{row.name ?? NA}</p>
-            <p className="text-xs text-slate-500">Issuer: {row.family ?? NA} · Inception {row.inceptionDate ?? NA}</p>
-          </div>
-          <div className="text-right">
-            <div className="text-3xl font-semibold tabular-nums">{money(price)}</div>
-            <div className={`text-sm font-medium tabular-nums ${colorFor(q?.changePct)}`}>
-              {q?.changePct != null ? `${q.changePct > 0 ? "+" : ""}${q.changePct.toFixed(2)}% today` : "Day change N/A"}
-            </div>
-            <div className="text-[11px] text-slate-400">Delayed quote{q?.marketState ? ` · market ${q.marketState.toLowerCase()}` : ""} · last daily bar {dateShort(m.asOf)}</div>
-          </div>
-        </div>
-        <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-6">
+      <QuoteTape
+        ticker={ticker}
+        name={row.name ?? NA}
+        last={money(price)}
+        changePct={q?.changePct}
+        meta={`Issuer ${row.family ?? NA} · Inception ${row.inceptionDate ?? NA} · last daily bar ${dateShort(m.asOf)}`}
+        badges={
+          <>
+            {row.category && <Badge className="bg-teal-50 text-teal-800 ring-teal-200 dark:bg-teal-500/15 dark:text-teal-300 dark:ring-teal-500/30">{row.category}</Badge>}
+            {row.exchange && <Badge className="bg-slate-50 text-slate-600 ring-slate-200">{row.exchange}</Badge>}
+            {leveraged && <Badge className="bg-rose-50 text-rose-700 ring-rose-200">Leveraged / inverse</Badge>}
+            {(() => { const ac = assetClassOf(row.category, row.profile?.allocation); const rt = rateTagForEtf({ ticker, category: row.category, name: row.name, assetClass: ac }); return <Badge className={rt.color} title={rt.hint}>{rt.label}</Badge>; })()}
+          </>
+        }
+      />
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-6">
           <Stat label="Expense ratio" value={pct(row.expenseRatio)} sub="Annual report" hint="Fund-reported annual operating expense ratio" />
           <Stat label="Yield (TTM)" value={pct(d.ttmYield)} sub={`Provider: ${pct(row.reportedYield)}`} hint="Computed: sum of last-12-month distributions ÷ price" />
           <Stat label="AUM" value={big(row.totalAssets)} />
@@ -153,11 +145,10 @@ export default async function EtfPage({ params }: { params: Promise<{ ticker: st
           <Stat label="Turnover" value={pct(row.turnover, 0)} sub="Annual holdings" />
         </div>
         {row.navPrice != null && (
-          <p className="mt-3 text-xs text-slate-500">
+          <p className="text-xs text-slate-500">
             Provider NAV snapshot {money(row.navPrice)} → price {premium != null && premium >= 0 ? "premium" : "discount"} of {pct(premium != null ? Math.abs(premium) : null)}. The NAV date is not supplied by the provider, so treat as indicative only.
           </p>
         )}
-      </section>
 
       <QualityCard quality={quality} />
 
@@ -170,16 +161,16 @@ export default async function EtfPage({ params }: { params: Promise<{ ticker: st
         <div className="rounded-2xl border border-slate-200 bg-white p-4 text-xs leading-relaxed text-slate-600">
           <b className="text-slate-800">What to do next</b>
           <ul className="mt-2 list-disc pl-5 space-y-1">
-            <li><Link className="text-indigo-700 underline" href={`/compare?t=${[ticker, ...peers.slice(0,2).map(p=>p.ticker)].join(",")}`}>Compare vs peers head-to-head</Link> — growth overlay + correlation.</li>
-            <li><Link className="text-indigo-700 underline" href={`/recommend?goal=balanced`}>See balanced picks</Link> or <Link className="text-indigo-700 underline" href="/screener">screen by yield / expense</Link>.</li>
-            <li>New? <Link className="text-indigo-700 underline" href="/onboarding">3-question starter</Link> builds a portfolio you can edit.</li>
+            <li><Link className="text-teal-700 underline" href={`/compare?t=${[ticker, ...peers.slice(0,2).map(p=>p.ticker)].join(",")}`}>Compare vs peers head-to-head</Link> — growth overlay + correlation.</li>
+            <li><Link className="text-teal-700 underline" href={`/recommend?goal=balanced`}>See balanced picks</Link> or <Link className="text-teal-700 underline" href="/screener">screen by yield / expense</Link>.</li>
+            <li>New? <Link className="text-teal-700 underline" href="/onboarding">3-question starter</Link> builds a portfolio you can edit.</li>
           </ul>
         </div>
       </div>
 
       <Card title="Price history" subtitle="Hover for exact values · split-adjusted close">
         {history ? (
-          <LineChart mode="price" defaultRange="3Y" series={[{ key: ticker, name: ticker, color: "#4f46e5", t: history.t, v: history.c }]} />
+          <LineChart mode="price" defaultRange="3Y" series={[{ key: ticker, name: ticker, color: "#0f766e", t: history.t, v: history.c }]} />
         ) : (
           <Unavailable what="Price history" />
         )}
@@ -332,7 +323,7 @@ export default async function EtfPage({ params }: { params: Promise<{ ticker: st
               {p.sectors.filter((s) => s.weight > 0).map((s) => (
                 <div key={s.sector} className="flex items-center gap-2 text-xs">
                   <div className="w-36 truncate text-slate-600">{SECTOR_LABEL[s.sector] ?? s.sector}</div>
-                  <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-indigo-500" style={{ width: `${Math.min(100, s.weight * 100)}%` }} /></div>
+                  <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-teal-500" style={{ width: `${Math.min(100, s.weight * 100)}%` }} /></div>
                   <div className="w-12 text-right tabular-nums">{pct(s.weight, 1)}</div>
                 </div>
               ))}
@@ -424,7 +415,7 @@ async function NewsPanel({ ticker }: { ticker: string }) {
         <ul className="divide-y divide-slate-100 text-sm">
           {res.data.map((n) => (
             <li key={n.link} className="py-2">
-              <a href={n.link} target="_blank" rel="noreferrer" className="font-medium text-slate-800 hover:text-indigo-700">{n.title}</a>
+              <a href={n.link} target="_blank" rel="noreferrer" className="font-medium text-slate-800 hover:text-teal-700">{n.title}</a>
               <div className="text-[11px] text-slate-400">{dateShort(n.date)}</div>
             </li>
           ))}

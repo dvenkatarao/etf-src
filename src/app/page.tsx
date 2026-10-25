@@ -1,6 +1,7 @@
 import Link from "next/link";
+import FirstRunBanner from "@/components/FirstRunBanner";
 import Hydrator from "@/components/Hydrator";
-import { OptionsIcon, ScreenerIcon, StartIcon } from "@/components/icons/AppIcons";
+import { OptionsIcon, ScreenerIcon } from "@/components/icons/AppIcons";
 import { Card, SourceNote, Sparkline, Unavailable } from "@/components/ui";
 import { getAllEtfs, getQuotes, staleTickers } from "@/lib/etf-service";
 import { colorFor, dateShort, isLeveragedOrInverse, macroValue, num } from "@/lib/format";
@@ -54,12 +55,10 @@ export default async function Dashboard() {
           <Link href="/portfolio" className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#0F1A3A] dark:text-slate-100">
             Portfolio
           </Link>
-          <Link href="/onboarding" className="inline-flex items-center gap-1.5 px-2 py-1.5 text-sm text-slate-500 hover:text-teal-700 dark:hover:text-teal-300">
-            <StartIcon size={14} /> New here
-          </Link>
         </div>
       </section>
 
+      <FirstRunBanner />
       <Hydrator remaining={stale.length} total={UNIVERSE.length} />
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5">

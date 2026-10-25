@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { ago, dateTime } from "@/lib/format";
+import { ago, colorFor, dateTime } from "@/lib/format";
 import { GRADE_WORD, type QualityGrade } from "@/lib/grades";
 import { gradeBadgeClasses } from "@/components/GradePill";
 
@@ -70,12 +70,56 @@ export function SourceNote({ source, asOf, fetchedAt, stale, error, href }: { so
   );
 }
 
-export function Unavailable({ what, why }: { what: string; why?: string }) {
+export function Unavailable({ what, why, action }: { what: string; why?: string; action?: ReactNode }) {
   return (
-    <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">
-      <div className="font-medium text-slate-600">{what} unavailable</div>
-      {why && <div className="mt-1 text-xs">{why}</div>}
+    <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-[#0D1632]">
+      <div className="font-medium text-slate-700 dark:text-slate-200">{what} unavailable</div>
+      {why && <div className="mt-1 text-xs leading-relaxed">{why}</div>}
+      {action && <div className="mt-3">{action}</div>}
     </div>
+  );
+}
+
+export function QuoteTape({
+  ticker,
+  name,
+  last,
+  changePct,
+  meta,
+  badges,
+  actions,
+}: {
+  ticker: string;
+  name?: ReactNode;
+  last: ReactNode;
+  changePct?: number | null;
+  meta?: ReactNode;
+  badges?: ReactNode;
+  actions?: ReactNode;
+}) {
+  return (
+    <section className="flex flex-col gap-4 border-b border-slate-200 pb-5 dark:border-slate-800 sm:flex-row sm:items-start sm:justify-between">
+      <div className="min-w-0">
+        <div className="flex flex-wrap items-center gap-2">
+          <h1 className="font-mono text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">{ticker}</h1>
+          {badges}
+        </div>
+        {name && <p className="mt-1 truncate text-sm text-slate-500">{name}</p>}
+        {meta && <p className="mt-0.5 text-[11px] text-slate-400">{meta}</p>}
+      </div>
+      <div className="flex flex-wrap items-end gap-4 sm:gap-6">
+        <div className="sm:text-right">
+          <div className="font-mono text-3xl font-semibold tabular-nums text-slate-900 dark:text-white">{last}</div>
+          {changePct !== undefined && (
+            <div className={`font-mono text-sm tabular-nums ${colorFor(changePct)}`}>
+              {changePct == null ? "Day N/A" : `${changePct > 0 ? "+" : ""}${changePct.toFixed(2)}%`}
+            </div>
+          )}
+          <div className="text-[11px] text-slate-400">US cash · Delayed</div>
+        </div>
+        {actions}
+      </div>
+    </section>
   );
 }
 

@@ -65,7 +65,7 @@ export default function OnboardingWizard({ prices }: { prices: Record<string, nu
     }
   }
 
-  const field = "w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:border-indigo-500 focus:outline-none";
+  const field = "w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:border-teal-500 focus:outline-none";
 
   return (
     <div className="space-y-6">
@@ -87,7 +87,7 @@ export default function OnboardingWizard({ prices }: { prices: Record<string, nu
           </label>
         </div>
         <div className="mt-4 flex flex-wrap gap-2">
-          <Link href={goalHref} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500">See ranked picks for “{rec.goal}” →</Link>
+          <Link href={goalHref} className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500">See ranked picks for “{rec.goal}” →</Link>
           <Link href="/screener" className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50">Open screener</Link>
         </div>
         <p className="mt-2 text-[11px] text-slate-400">Your answers set <code className="rounded bg-slate-100 px-1">{rec.goal}</code> + <code className="rounded bg-slate-100 px-1">{horizon}</code> + <code className="rounded bg-slate-100 px-1">{risk}</code> → starter <b>{rec.name}</b>. You can change them anytime in Recommend.</p>
@@ -97,8 +97,8 @@ export default function OnboardingWizard({ prices }: { prices: Record<string, nu
         {STARTER_PORTFOLIOS.map((s) => {
           const isRec = s.id === rec.id;
           return (
-            <div key={s.id} className={`relative rounded-2xl border bg-white p-4 shadow-sm ${isRec ? "border-indigo-300 ring-1 ring-indigo-200" : "border-slate-200"}`}>
-              {isRec && <span className="absolute -top-2 right-3 rounded-full bg-indigo-600 px-2 py-0.5 text-[10px] font-semibold text-white">Recommended</span>}
+            <div key={s.id} className={`relative rounded-2xl border bg-white p-4 shadow-sm ${isRec ? "border-teal-300 ring-1 ring-teal-200" : "border-slate-200"}`}>
+              {isRec && <span className="absolute -top-2 right-3 rounded-full bg-teal-600 px-2 py-0.5 text-[10px] font-semibold text-white">Recommended</span>}
               <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{s.badge}</div>
               <h3 className="mt-1 text-base font-semibold text-slate-900">{s.name}</h3>
               <p className="mt-1 text-xs leading-relaxed text-slate-600">{s.why}</p>
@@ -112,7 +112,7 @@ export default function OnboardingWizard({ prices }: { prices: Record<string, nu
               </ul>
               <p className="mt-3 text-xs text-amber-700 bg-amber-50 rounded-lg p-2">Watch: {s.watch}</p>
               <div className="mt-4 grid gap-2">
-                <button onClick={() => buildStarter(s)} disabled={!!creating} className={`rounded-lg px-3 py-2 text-sm font-semibold ${isRec ? "bg-indigo-600 text-white hover:bg-indigo-500" : "bg-slate-900 text-white hover:bg-slate-800"} disabled:opacity-50`}>
+                <button onClick={() => buildStarter(s)} disabled={!!creating} className={`rounded-lg px-3 py-2 text-sm font-semibold ${isRec ? "bg-teal-600 text-white hover:bg-teal-500" : "bg-slate-900 text-white hover:bg-slate-800"} disabled:opacity-50`}>
                   {creating === s.id ? "Creating…" : "Build this starter in Portfolio →"}
                 </button>
                 <Link href={`/recommend?goal=${s.goal}&aum=1000000000`} className="text-center rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50">See why these rank →</Link>

@@ -37,7 +37,7 @@ export default function WheelCapitalPlanner({ rows }: { rows: WheelRow[] }) {
               onChange={(e) => setCashInput(e.target.value)}
               placeholder="e.g. 50000"
               inputMode="numeric"
-              className="w-36 rounded-lg border border-slate-700 bg-[#111C3E] px-3 py-1.5 text-sm text-white placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none"
+              className="w-36 rounded-lg border border-slate-700 bg-[#111C3E] px-3 py-1.5 text-sm text-white placeholder:text-slate-500 focus:border-teal-500 focus:outline-none"
             />
           </label>
           <label className="grid gap-1 text-[11px] font-semibold tracking-[0.08em] text-slate-400">
@@ -46,7 +46,7 @@ export default function WheelCapitalPlanner({ rows }: { rows: WheelRow[] }) {
               value={lotsInput}
               onChange={(e) => setLotsInput(e.target.value)}
               inputMode="numeric"
-              className="w-20 rounded-lg border border-slate-700 bg-[#111C3E] px-3 py-1.5 text-sm text-white focus:border-indigo-500 focus:outline-none"
+              className="w-20 rounded-lg border border-slate-700 bg-[#111C3E] px-3 py-1.5 text-sm text-white focus:border-teal-500 focus:outline-none"
             />
           </label>
         </div>

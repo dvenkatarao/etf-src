@@ -5,6 +5,7 @@ import WheelKeyLevelsDark from "@/components/wheel/WheelKeyLevelsDark";
 import WheelGradeCardDark from "@/components/wheel/WheelGradeCardDark";
 import { WheelCardDark, WheelStatDark, WheelBadgeDark } from "@/components/wheel/WheelStockHeader";
 import WheelChartWithPuts from "@/components/wheel/WheelChartWithPuts";
+import { QuoteTape } from "@/components/ui";
 import { dateShort, money, num, pct } from "@/lib/format";
 import { yahooBars } from "@/lib/yahoo";
 import { getOptionChain } from "@/lib/options-providers";
@@ -42,7 +43,7 @@ export default async function WheelStockPage({ params, searchParams }: { params:
           <p className="mt-1 text-sm text-slate-400">This stock has not been analysed yet.</p>
           <p className="mt-2 text-xs text-slate-500">{row?.lastError ?? "Open the Wheel Screener first so the stock universe can load, or add the ticker with WHEEL_EXTRA_SYMBOLS."}</p>
         </div>
-        <Link href="/wheel" className="text-sm font-medium text-indigo-300 hover:text-white">← Wheel Screener</Link>
+        <Link href="/wheel" className="text-sm font-medium text-teal-300 hover:text-white">← Wheel Screener</Link>
       </div>
     );
   }
@@ -111,21 +112,19 @@ export default async function WheelStockPage({ params, searchParams }: { params:
 
   return (
     <div className="space-y-5">
-      {/* Header */}
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{ticker}</h1>
-            <span className="text-sm font-medium text-slate-500 dark:text-slate-400">· {row.name ?? ""}</span>
-            {g.grade && <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold ring-1 ring-emerald-200 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 dark:ring-emerald-500/30">{g.grade}</span>}
+      <QuoteTape
+        ticker={ticker}
+        name={<>{row.name ?? ""}{row.sector ? ` · ${row.sector}` : ""}{row.industry ? ` · ${row.industry}` : ""}</>}
+        last={money(ctx?.price ?? row.price)}
+        meta={live != null ? "Delayed quote" : `Last close ${row.technicals.asOf}`}
+        badges={g.grade ? <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold ring-1 ring-emerald-200 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 dark:ring-emerald-500/30">{g.grade}</span> : null}
+        actions={
+          <div className="flex flex-wrap gap-2">
+            <Link href={calcHref} className="rounded-md bg-teal-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-teal-500">Payoff & cycle</Link>
+            <Link href={`/wheel?${q}`} className="rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#0F1A3A] dark:text-slate-200">Screener</Link>
           </div>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{row.sector ?? ""}{row.industry ? ` · ${row.industry}` : ""}</p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Link href={calcHref} className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-500">Payoff & cycle →</Link>
-          <Link href={`/wheel?${q}`} className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100 dark:border-indigo-500/20 dark:bg-[#1B2540] dark:text-indigo-300 dark:hover:bg-[#24304F] dark:hover:text-white">← Wheel Screener</Link>
-        </div>
-      </div>
+        }
+      />
 
       {!isA && <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">This stock is graded {g.grade ?? "n/a"}, below the A/A+ bar of the screener. Its options are shown for reference only.</div>}
 
@@ -186,8 +185,8 @@ export default async function WheelStockPage({ params, searchParams }: { params:
         <form method="GET" className="mb-3 flex flex-wrap items-end gap-3 text-sm">
           {Object.entries({ dteMin: p.dteMin, dteMax: p.dteMax, dMin: p.deltaMin, dMax: p.deltaMax, oi: p.minOi, spread: Math.round(p.maxSpreadPct * 100), ret: Math.round(p.minAnnReturn * 100) }).map(([k, v]) => <input key={k} type="hidden" name={k} value={String(v)} />)}
           {p.allowEarnings && <input type="hidden" name="earn" value="1" />}
-          <label className="grid gap-1 text-xs text-slate-400">Your cost basis per share<input name="basis" defaultValue={basis ?? ""} placeholder={ctx ? num(ctx.price, 2) : ""} className="w-32 rounded-lg border border-slate-700 bg-[#111C3E] px-2 py-1.5 text-sm text-white placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none" /></label>
-          <button className="rounded-lg bg-indigo-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-indigo-500">Find calls</button>
+          <label className="grid gap-1 text-xs text-slate-400">Your cost basis per share<input name="basis" defaultValue={basis ?? ""} placeholder={ctx ? num(ctx.price, 2) : ""} className="w-32 rounded-lg border border-slate-700 bg-[#111C3E] px-2 py-1.5 text-sm text-white placeholder:text-slate-500 focus:border-teal-500 focus:outline-none" /></label>
+          <button className="rounded-lg bg-teal-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-teal-500">Find calls</button>
         </form>
         {basis == null ? (
           <p className="text-sm text-slate-400">Enter a cost basis above. The guide explains how to work it out after an assignment.</p>

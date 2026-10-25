@@ -50,21 +50,17 @@ export default function Hydrator({ remaining, total }: { remaining: number; tota
   if (done && failed.length === 0) return null;
   const pct = total > 0 ? Math.max(0, Math.min(100, Math.round(((total - left) / total) * 100))) : 100;
   return (
-    <div className="mb-4 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm text-indigo-900">
+    <div className="mb-3 flex flex-wrap items-center gap-3 text-xs text-slate-500">
       {!done ? (
         <>
-          <div className="flex items-center justify-between gap-3">
-            <span className="font-medium">Fetching live data from providers… {total - left} / {total} ETFs ready</span>
-            <span className="tabular-nums text-xs">{pct}%</span>
-          </div>
-          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-indigo-100">
-            <div className="h-full rounded-full bg-indigo-600 transition-all" style={{ width: `${pct}%` }} />
-          </div>
-          <p className="mt-1 text-xs text-indigo-700">Nothing is estimated: rows appear only after real provider data is stored.</p>
+          <span className="h-1 w-32 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+            <span className="block h-full rounded-full bg-teal-500" style={{ width: `${pct}%` }} />
+          </span>
+          <span>Updating {total - left} of {total} funds…</span>
         </>
       ) : (
-        <span>
-          {failed.length} ticker(s) could not be fetched from the provider and are hidden rather than guessed: {failed.join(", ")}.
+        <span className="text-amber-700 dark:text-amber-300">
+          {failed.length} ticker(s) could not be fetched and are hidden rather than guessed: {failed.join(", ")}.
         </span>
       )}
     </div>

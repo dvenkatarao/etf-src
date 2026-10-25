@@ -59,7 +59,7 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
           <div className="flex items-center gap-3">
             <IconTile size={40}><WheelLabIcon size={22} /></IconTile>
             <h1 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-white">Wheel Strategy Screener</h1>
-            <span className="rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-[11px] font-medium text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-300">Two-step filter · Grade always computed</span>
+            <span className="rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1 text-[11px] font-medium text-teal-700 dark:border-teal-500/30 dark:bg-teal-500/10 dark:text-teal-300">Two-step filter · Grade always computed</span>
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-500 dark:text-slate-400">
             <b className="text-slate-700 dark:text-slate-200">Step 1: stocks (preset B = B and better)</b> then <b className="text-slate-700 dark:text-slate-200">Step 2: options</b> — grade is always computed (5-pillar weighted + caps), tooltips explain why even when return is high.
@@ -70,7 +70,7 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
           <Link href="/wheel/calculator" className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-500">
             Payoff & cycle →
           </Link>
-          <Link href="/wheel/guide" className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100 dark:border-indigo-500/20 dark:bg-[#1B2540] dark:text-indigo-300 dark:hover:bg-[#24304F] dark:hover:text-white">
+          <Link href="/wheel/guide" className="rounded-lg border border-teal-200 bg-teal-50 px-4 py-2 text-sm font-medium text-teal-700 hover:bg-teal-100 dark:border-teal-500/20 dark:bg-[#1B2540] dark:text-teal-300 dark:hover:bg-[#24304F] dark:hover:text-white">
             How to use this tool →
           </Link>
         </div>

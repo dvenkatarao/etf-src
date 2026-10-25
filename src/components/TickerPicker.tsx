@@ -17,9 +17,9 @@ export default function TickerPicker({ current, suggestions, max = 5 }: { curren
     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex flex-wrap items-center gap-2">
         {current.map((t) => (
-          <span key={t} className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-800 ring-1 ring-inset ring-indigo-200">
+          <span key={t} className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-3 py-1 text-sm font-semibold text-teal-800 ring-1 ring-inset ring-teal-200">
             {t}
-            <button aria-label={`Remove ${t}`} className="text-indigo-400 hover:text-indigo-700" onClick={() => go(current.filter((x) => x !== t))}>
+            <button aria-label={`Remove ${t}`} className="text-teal-400 hover:text-teal-700" onClick={() => go(current.filter((x) => x !== t))}>
               ×
             </button>
           </span>
@@ -37,7 +37,7 @@ export default function TickerPicker({ current, suggestions, max = 5 }: { curren
               value={value}
               onChange={(e) => setValue(e.target.value)}
               placeholder="Add ETF ticker…"
-              className="w-44 rounded-lg border border-slate-300 px-3 py-1.5 text-sm uppercase placeholder:normal-case focus:border-indigo-500 focus:outline-none"
+              className="w-44 rounded-lg border border-slate-300 px-3 py-1.5 text-sm uppercase placeholder:normal-case focus:border-teal-500 focus:outline-none"
               maxLength={10}
             />
             <datalist id="etf-suggestions">
@@ -45,7 +45,7 @@ export default function TickerPicker({ current, suggestions, max = 5 }: { curren
                 <option key={s} value={s} />
               ))}
             </datalist>
-            <button className="rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-500">Add</button>
+            <button className="rounded-lg bg-teal-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-teal-500">Add</button>
           </form>
         )}
         <span className="ml-auto text-xs text-slate-500">

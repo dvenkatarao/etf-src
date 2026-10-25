@@ -23,7 +23,7 @@ export default function BenchmarkAttribution({
               Risk-adjusted performance &amp; sensitivity analysis
             </p>
           </div>
-          <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-700">
+          <span className="rounded-full bg-teal-50 px-2.5 py-0.5 text-xs font-semibold text-teal-700">
             {benchmark.benchmarkTicker}
           </span>
         </div>
@@ -49,7 +49,7 @@ export default function BenchmarkAttribution({
             <div className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
               Portfolio Sharpe
             </div>
-            <div className="mt-1 text-xl font-bold tabular-nums text-indigo-700">
+            <div className="mt-1 text-xl font-bold tabular-nums text-teal-700">
               {benchmark.portfolioSharpe !== null ? num(benchmark.portfolioSharpe, 2) : "N/A"}
             </div>
             <div className="text-[10px] text-slate-400">
@@ -128,7 +128,7 @@ export default function BenchmarkAttribution({
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/etf/${alert.ticker}`}
-                      className="font-bold text-indigo-700 hover:underline"
+                      className="font-bold text-teal-700 hover:underline"
                     >
                       {alert.ticker}
                     </Link>

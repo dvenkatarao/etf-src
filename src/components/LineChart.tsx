@@ -124,7 +124,7 @@ export default function LineChart({
             <button
               key={r.key}
               onClick={() => setRange(r.key)}
-              className={`rounded-md px-2 py-1 text-xs font-medium transition ${range === r.key ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+              className={`rounded-md px-2 py-1 text-xs font-medium transition ${range === r.key ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
             >
               {r.key}
             </button>

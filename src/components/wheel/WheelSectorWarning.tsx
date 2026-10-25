@@ -22,7 +22,7 @@ export default function WheelSectorWarning({ rows }: { rows: WheelRow[] }) {
       <div className="mt-3 flex flex-wrap gap-2">
         {breakdown.slice(0, 6).map((b) => (
           <span key={b.sector} className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs ${b.pct >= 0.3 ? "border-amber-400/40 bg-amber-500/10 text-amber-200" : "border-slate-700 bg-[#111C3E] text-slate-300"}`}>
-            <span className="h-2 w-2 rounded-full bg-indigo-400" /> {b.sector}: {b.count} ({Math.round(b.pct * 100)}%)
+            <span className="h-2 w-2 rounded-full bg-teal-400" /> {b.sector}: {b.count} ({Math.round(b.pct * 100)}%)
           </span>
         ))}
       </div>

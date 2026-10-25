@@ -18,7 +18,10 @@ import {
   PortfolioIcon,
   ResearchIcon,
   ScreenerIcon,
+  CloseIcon,
+  MenuIcon,
   SearchIcon,
+  SunIcon,
   ThemeIcon,
   WheelLabIcon,
 } from "@/components/icons/AppIcons";
@@ -169,18 +172,17 @@ function SmartTickerSearch({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-function ThemeToggle({ compact }: { compact?: boolean }) {
+function ThemeToggle() {
   const { theme, toggle } = useTheme();
   const isDark = theme === "dark";
   return (
     <button
       onClick={toggle}
-      className={`inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-medium text-slate-200 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-teal-400/50 ${compact ? "px-2" : ""}`}
+      className="grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-teal-400/50"
       aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
-      title={`Currently ${isDark ? "dark" : "light"} — click to switch to ${isDark ? "light" : "dark"}`}
+      title={`Currently ${isDark ? "dark" : "light"} — click for ${isDark ? "light" : "dark"}`}
     >
-      <ThemeIcon size={14} />
-      <span className={compact ? "hidden sm:inline" : ""}>{isDark ? "Light" : "Dark"}</span>
+      {isDark ? <SunIcon size={15} /> : <ThemeIcon size={15} />}
     </button>
   );
 }
@@ -224,39 +226,26 @@ function LabDropdown({
   Icon,
   links,
   pathname,
+  open,
+  onOpen,
+  onClose,
 }: {
   label: string;
   Icon?: ComponentType<IconProps>;
   links: readonly NavLink[];
   pathname: string | null;
+  open: boolean;
+  onOpen: () => void;
+  onClose: () => void;
 }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
   const active = labActive(pathname, links);
 
-  useEffect(() => {
-    function onClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    }
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
-    }
-    document.addEventListener("mousedown", onClick);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onClick);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, []);
-  useEffect(() => setOpen(false), [pathname]);
-
   return (
-    <div ref={ref} className="relative">
+    <div className="relative" onMouseEnter={onOpen}>
       <button
-        onClick={() => setOpen((o) => !o)}
-        onMouseEnter={() => setOpen(true)}
-        className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[13px] font-medium transition ${
-          active ? "bg-teal-500/15 text-teal-200" : "text-slate-300 hover:bg-white/10 hover:text-white"
+        onClick={() => (open ? onClose() : onOpen())}
+        className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[13px] font-medium ${
+          open || active ? "bg-teal-500/15 text-teal-200" : "text-slate-300 hover:bg-white/10 hover:text-white"
         }`}
         aria-expanded={open}
         aria-haspopup="true"
@@ -266,29 +255,28 @@ function LabDropdown({
         <span className={`ml-0.5 text-[10px] transition ${open ? "rotate-180" : ""}`}>▾</span>
       </button>
       {open && (
-        <div
-          onMouseLeave={() => setOpen(false)}
-          className="absolute left-0 top-full z-40 mt-2 min-w-[280px] rounded-xl border border-white/10 bg-[#0F1A3A] p-1.5 shadow-xl shadow-black/40"
-        >
-          <div className="px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-slate-500">{label}</div>
-          <div className="grid gap-0.5">
-            {links.map((l) => {
-              const a = isActive(pathname, l.href);
-              return (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  onClick={() => setOpen(false)}
-                  className={`flex items-start gap-2.5 rounded-lg px-2.5 py-2 transition ${a ? "bg-teal-500/15 text-white" : "text-slate-200 hover:bg-white/5"}`}
-                >
-                  <l.Icon size={16} />
-                  <div className="min-w-0 pt-0.5">
-                    <div className="text-sm font-medium leading-none">{l.label}</div>
-                    <div className={`mt-1 text-xs leading-none ${a ? "text-teal-200/80" : "text-slate-500"}`}>{l.desc}</div>
-                  </div>
-                </Link>
-              );
-            })}
+        <div className="absolute left-0 top-full z-40 pt-2">
+          <div className="min-w-[280px] rounded-xl border border-white/10 bg-[#0F1A3A] p-1.5 shadow-xl shadow-black/40">
+            <div className="px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-slate-500">{label}</div>
+            <div className="grid gap-0.5">
+              {links.map((l) => {
+                const a = isActive(pathname, l.href);
+                return (
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    onClick={onClose}
+                    className={`flex items-start gap-2.5 rounded-lg px-2.5 py-2 ${a ? "bg-teal-500/15 text-white" : "text-slate-200 hover:bg-white/5"}`}
+                  >
+                    <l.Icon size={16} />
+                    <div className="min-w-0 pt-0.5">
+                      <div className="text-sm font-medium leading-none">{l.label}</div>
+                      <div className={`mt-1 text-xs leading-none ${a ? "text-teal-200/80" : "text-slate-500"}`}>{l.desc}</div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
@@ -304,9 +292,21 @@ const navLink = (active: boolean) =>
 export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileLabOpen, setMobileLabOpen] = useState<string | null>(null);
+  const [openLab, setOpenLab] = useState<string | null>(null);
   const pathname = usePathname();
 
-  useEffect(() => setMobileOpen(false), [pathname]);
+  useEffect(() => {
+    setMobileOpen(false);
+    setOpenLab(null);
+  }, [pathname]);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpenLab(null);
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
 
   return (
     <header className="sticky top-0 z-30 border-b border-white/10 bg-[#070D2A]/95 text-slate-100 backdrop-blur supports-[backdrop-filter]:bg-[#070D2A]/90">
@@ -316,18 +316,42 @@ export default function Nav() {
           <span className="hidden text-[15px] font-semibold tracking-tight sm:inline">Capital Lab</span>
         </Link>
 
-        <nav className="hidden items-center gap-0.5 lg:flex">
+        <nav className="hidden items-center gap-0.5 lg:flex" onMouseLeave={() => setOpenLab(null)}>
           <Link href="/" className={navLink(isActive(pathname, "/") && pathname === "/")}>
             <DashboardIcon size={14} />
             Dashboard
           </Link>
-          <LabDropdown label="ETF Lab" Icon={EtfLabIcon} links={ETF_LAB} pathname={pathname} />
-          <LabDropdown label="Wheel Lab" Icon={WheelLabIcon} links={WHEEL_LAB} pathname={pathname} />
+          <LabDropdown
+            label="ETF Lab"
+            Icon={EtfLabIcon}
+            links={ETF_LAB}
+            pathname={pathname}
+            open={openLab === "etf"}
+            onOpen={() => setOpenLab("etf")}
+            onClose={() => setOpenLab(null)}
+          />
+          <LabDropdown
+            label="Wheel Lab"
+            Icon={WheelLabIcon}
+            links={WHEEL_LAB}
+            pathname={pathname}
+            open={openLab === "wheel"}
+            onOpen={() => setOpenLab("wheel")}
+            onClose={() => setOpenLab(null)}
+          />
           <Link href="/portfolio" className={navLink(isActive(pathname, "/portfolio"))}>
             <PortfolioIcon size={14} />
             Portfolio
           </Link>
-          <LabDropdown label="Insights" Icon={InsightsIcon} links={INSIGHTS} pathname={pathname} />
+          <LabDropdown
+            label="Insights"
+            Icon={InsightsIcon}
+            links={INSIGHTS}
+            pathname={pathname}
+            open={openLab === "insights"}
+            onOpen={() => setOpenLab("insights")}
+            onClose={() => setOpenLab(null)}
+          />
         </nav>
 
         <div className="ml-auto hidden items-center gap-3 lg:flex">
@@ -338,14 +362,14 @@ export default function Nav() {
 
         <div className="ml-auto flex items-center gap-2 lg:hidden">
           <MarketStatus compact />
-          <ThemeToggle compact />
+          <ThemeToggle />
           <button
             onClick={() => setMobileOpen((o) => !o)}
             className="grid h-9 w-9 place-items-center rounded-md border border-white/10 bg-white/5 text-slate-200"
             aria-label="Toggle navigation"
             aria-expanded={mobileOpen}
           >
-            {mobileOpen ? "✕" : "☰"}
+            {mobileOpen ? <CloseIcon size={16} /> : <MenuIcon size={16} />}
           </button>
         </div>
 
