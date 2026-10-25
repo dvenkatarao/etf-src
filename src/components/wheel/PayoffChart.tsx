@@ -90,13 +90,6 @@ export default function PayoffChart({
             <circle cx={x(spot)} cy={zeroY} r="3.5" fill="#f8fafc" stroke="#94a3b8" strokeWidth="1.25" />
           </svg>
 
-          <span className="pointer-events-none absolute left-1 top-[42%] -translate-y-1/2 text-[10px] font-semibold uppercase tracking-wide text-emerald-600 dark:text-emerald-400">
-            + Profit
-          </span>
-          <span className="pointer-events-none absolute left-1 top-[58%] text-[10px] font-semibold uppercase tracking-wide text-rose-600 dark:text-rose-400">
-            − Loss
-          </span>
-
           <span
             className="pointer-events-none absolute top-1 -translate-x-1/2 rounded-full bg-white px-1.5 py-0.5 font-mono text-[10px] font-semibold text-slate-800 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-white dark:ring-slate-600"
             style={{ left: pctX(spot) }}
