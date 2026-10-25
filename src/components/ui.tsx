@@ -6,7 +6,7 @@ import { gradeBadgeClasses } from "@/components/GradePill";
 
 export function Card({ title, subtitle, right, children, className = "" }: { title?: ReactNode; subtitle?: ReactNode; right?: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <section className={`rounded-xl border border-slate-200/70 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_4px_12px_rgba(15,23,42,0.06)] dark:border-slate-800 dark:bg-[#0F1A3A] ${className}`}>
+    <section className={`rounded-xl border border-slate-200/70 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_4px_12px_rgba(15,23,42,0.06)] dark:border-slate-800 dark:bg-[#0f172a] ${className}`}>
       {(title || right) && (
         <header className="mb-4 flex flex-wrap items-start justify-between gap-2">
           <div>
@@ -23,7 +23,7 @@ export function Card({ title, subtitle, right, children, className = "" }: { tit
 
 export function Stat({ label, value, sub, valueClass = "text-slate-900", hint }: { label: string; value: ReactNode; sub?: ReactNode; valueClass?: string; hint?: string }) {
   return (
-    <div className="rounded-xl border border-slate-200/60 bg-slate-50/80 px-4 py-3.5 backdrop-blur-[1px] dark:border-slate-800 dark:bg-[#0F1A3A]" title={hint}>
+    <div className="rounded-xl border border-slate-200/60 bg-slate-50/80 px-4 py-3.5 backdrop-blur-[1px] dark:border-slate-800 dark:bg-[#0f172a]" title={hint}>
       <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">{label}</div>
       <div className={`mt-1.5 font-mono text-[22px] font-semibold leading-none tracking-tight tabular-nums ${valueClass} dark:text-white`}>{value}</div>
       {sub && <div className="mt-1 text-xs leading-4 text-slate-500 dark:text-slate-400">{sub}</div>}
@@ -47,7 +47,7 @@ export function Badge({ children, className = "", title }: { children: ReactNode
 export function SourceNote({ source, asOf, fetchedAt, stale, error, href }: { source: string; asOf?: string | null; fetchedAt?: string | null; stale?: boolean; error?: string; href?: string }) {
   return (
     <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] tracking-wide text-slate-400">
-      <span className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-1.5 py-0.5 font-sans text-[10px] font-medium uppercase tracking-[0.08em] text-teal-800 ring-1 ring-teal-200/80 dark:bg-teal-500/10 dark:text-teal-300 dark:ring-teal-500/30">
+      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-1.5 py-0.5 font-sans text-[10px] font-medium uppercase tracking-[0.08em] text-emerald-800 ring-1 ring-emerald-200/80 dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-500/30">
         Verified
       </span>
       <span>
@@ -72,7 +72,7 @@ export function SourceNote({ source, asOf, fetchedAt, stale, error, href }: { so
 
 export function Unavailable({ what, why, action }: { what: string; why?: string; action?: ReactNode }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-[#0D1632]">
+    <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-[#0b1220]">
       <div className="font-medium text-slate-700 dark:text-slate-200">{what} unavailable</div>
       {why && <div className="mt-1 text-xs leading-relaxed">{why}</div>}
       {action && <div className="mt-3">{action}</div>}
@@ -140,13 +140,13 @@ export function PageHeader({ title, description, right, icon }: { title: string;
 
 export function TickerLink({ t, className = "" }: { t: string; className?: string }) {
   return (
-    <Link href={`/etf/${t}`} className={`font-semibold text-teal-800 hover:underline dark:text-teal-300 ${className}`}>
+    <Link href={`/etf/${t}`} className={`font-semibold text-emerald-800 hover:underline dark:text-emerald-300 ${className}`}>
       {t}
     </Link>
   );
 }
 
-export function Sparkline({ values, width = 120, height = 32, color = "#0f766e" }: { values: number[]; width?: number; height?: number; color?: string }) {
+export function Sparkline({ values, width = 120, height = 32, color = "#059669" }: { values: number[]; width?: number; height?: number; color?: string }) {
   if (values.length < 2) return null;
   const min = Math.min(...values);
   const max = Math.max(...values);
@@ -180,7 +180,7 @@ export function TableScroll({
 }) {
   return (
     <div
-      className={`cl-table-scroll rounded-xl border border-slate-200/70 bg-white dark:border-slate-800 dark:bg-[#0F1A3A] ${density === "compact" ? "cl-table-compact" : "cl-table-comfy"} ${className}`}
+      className={`cl-table-scroll rounded-xl border border-slate-200/70 bg-white dark:border-slate-800 dark:bg-[#0f172a] ${density === "compact" ? "cl-table-compact" : "cl-table-comfy"} ${className}`}
     >
       {children}
     </div>
@@ -198,15 +198,39 @@ export function DensityToggle({
     <button
       type="button"
       onClick={() => onChange(id)}
-      className={`rounded px-2 py-1 text-[11px] font-medium ${value === id ? "bg-teal-600 text-white" : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"}`}
+      className={`rounded px-2 py-1 text-[11px] font-medium ${value === id ? "bg-emerald-600 text-white" : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"}`}
     >
       {label}
     </button>
   );
   return (
-    <div className="inline-flex rounded-md border border-slate-200 bg-white p-0.5 dark:border-slate-700 dark:bg-[#0D1632]" role="group" aria-label="Table density">
+    <div className="inline-flex rounded-md border border-slate-200 bg-white p-0.5 dark:border-slate-700 dark:bg-[#0b1220]" role="group" aria-label="Table density">
       {btn("comfortable", "Comfortable")}
       {btn("compact", "Compact")}
+    </div>
+  );
+}
+
+export function ViewToggle({
+  value,
+  onChange,
+}: {
+  value: "table" | "cards";
+  onChange: (v: "table" | "cards") => void;
+}) {
+  const btn = (id: "table" | "cards", label: string) => (
+    <button
+      type="button"
+      onClick={() => onChange(id)}
+      className={`rounded-md px-3 py-1.5 text-xs font-medium ${value === id ? "bg-emerald-600 text-white" : "text-slate-500 dark:text-slate-400"}`}
+    >
+      {label}
+    </button>
+  );
+  return (
+    <div className="inline-flex rounded-lg border border-slate-200 bg-white p-0.5 dark:border-slate-800 dark:bg-[#0f172a]" role="group" aria-label="Result layout">
+      {btn("table", "Table")}
+      {btn("cards", "Cards")}
     </div>
   );
 }

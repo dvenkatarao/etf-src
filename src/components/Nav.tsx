@@ -68,7 +68,7 @@ function labActive(pathname: string | null, links: readonly { href: string }[]) 
 function BrandMark() {
   return (
     <span
-      className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-teal-500/15 font-mono text-[11px] font-semibold tracking-tight text-teal-300 ring-1 ring-teal-400/30"
+      className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-700 font-mono text-[11px] font-extrabold tracking-tight text-slate-950 ring-1 ring-emerald-400/40"
       aria-hidden
     >
       CL
@@ -151,7 +151,7 @@ function SmartTickerSearch({ onNavigate }: { onNavigate?: () => void }) {
           }
         }}
         placeholder="Jump to ticker"
-        className="w-[200px] rounded-md border border-white/10 bg-white/5 py-1.5 pl-8 pr-3 font-mono text-sm uppercase tracking-wide text-white placeholder:font-sans placeholder:normal-case placeholder:tracking-normal placeholder:text-slate-500 focus:border-teal-400/60 focus:outline-none focus:ring-1 focus:ring-teal-400/40 sm:w-[240px]"
+        className="w-[200px] rounded-lg border border-slate-800 bg-slate-900/90 py-1.5 pl-8 pr-3 font-mono text-xs uppercase tracking-wide text-slate-200 placeholder:font-sans placeholder:normal-case placeholder:tracking-normal placeholder:text-slate-500 focus:border-emerald-500/60 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 sm:w-[240px]"
         maxLength={10}
         aria-label="Jump to ETF or stock ticker"
         aria-autocomplete="list"
@@ -171,7 +171,7 @@ function SmartTickerSearch({ onNavigate }: { onNavigate?: () => void }) {
                 type="button"
                 onMouseEnter={() => setHi(i)}
                 onClick={() => goTo(h)}
-                className={`flex w-full items-center justify-between px-3 py-1.5 text-left text-sm ${i === hi ? "bg-teal-500/15 text-white" : "text-slate-200 hover:bg-white/5"}`}
+                className={`flex w-full items-center justify-between px-3 py-1.5 text-left text-sm ${i === hi ? "bg-emerald-500/15 text-white" : "text-slate-200 hover:bg-white/5"}`}
               >
                 <span className="font-mono font-medium tracking-wide">{h.ticker}</span>
                 <span className="text-[10px] uppercase tracking-wider text-slate-500">{h.kind}</span>
@@ -190,7 +190,7 @@ function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-teal-400/50"
+      className="grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400/50"
       aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
       title={`Currently ${isDark ? "dark" : "light"} — click for ${isDark ? "light" : "dark"}`}
     >
@@ -212,7 +212,7 @@ function MarketStatus({ compact }: { compact?: boolean }) {
   const s = usCashSession(now);
   const clock = formatNyClock(now);
   const dot =
-    s.session === "open" ? "bg-teal-400" : s.session === "closed" ? "bg-slate-500" : "bg-amber-400";
+    s.session === "open" ? "bg-emerald-400" : s.session === "closed" ? "bg-slate-500" : "bg-amber-400";
   if (compact) {
     return (
       <div className="flex items-center gap-1.5 font-mono text-[10px] text-slate-300">
@@ -257,7 +257,7 @@ function LabDropdown({
       <button
         onClick={() => (open ? onClose() : onOpen())}
         className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[13px] font-medium ${
-          open || active ? "bg-teal-500/15 text-teal-200" : "text-slate-300 hover:bg-white/10 hover:text-white"
+          open || active ? "bg-emerald-500/15 text-emerald-200" : "text-slate-300 hover:bg-white/10 hover:text-white"
         }`}
         aria-expanded={open}
         aria-haspopup="true"
@@ -280,14 +280,14 @@ function LabDropdown({
                     onClick={onClose}
                     className={`flex items-start gap-2.5 rounded-lg px-2.5 py-2 ${
                       a
-                        ? "bg-teal-50 text-teal-950 dark:bg-teal-500/15 dark:text-white"
+                        ? "bg-emerald-50 text-emerald-950 dark:bg-emerald-500/15 dark:text-white"
                         : "text-slate-800 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-white/5"
                     }`}
                   >
                     <l.Icon size={16} />
                     <div className="min-w-0 pt-0.5">
                       <div className="text-sm font-medium leading-none">{l.label}</div>
-                      <div className={`mt-1 text-xs leading-none ${a ? "text-teal-800 dark:text-teal-200/80" : "text-slate-500"}`}>{l.desc}</div>
+                      <div className={`mt-1 text-xs leading-none ${a ? "text-emerald-800 dark:text-emerald-200/80" : "text-slate-500"}`}>{l.desc}</div>
                     </div>
                   </Link>
                 );
@@ -302,7 +302,7 @@ function LabDropdown({
 
 const navLink = (active: boolean) =>
   `inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[13px] font-medium transition ${
-    active ? "bg-teal-500/15 text-teal-200" : "text-slate-300 hover:bg-white/10 hover:text-white"
+    active ? "bg-emerald-500/15 text-emerald-200" : "text-slate-300 hover:bg-white/10 hover:text-white"
   }`;
 
 export default function Nav() {
@@ -325,7 +325,7 @@ export default function Nav() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-white/10 bg-[#070D2A]/95 text-slate-100 backdrop-blur supports-[backdrop-filter]:bg-[#070D2A]/90">
+    <header className="sticky top-0 z-30 border-b border-white/10 bg-[#020617]/95 text-slate-100 backdrop-blur supports-[backdrop-filter]:bg-[#020617]/90">
       <div className="mx-auto flex max-w-[1600px] flex-wrap items-center gap-x-2 gap-y-2 px-4 py-2.5 sm:px-6 lg:px-8">
         <Link href="/" className="flex shrink-0 items-center gap-2 text-white">
           <BrandMark />
@@ -395,14 +395,14 @@ export default function Nav() {
               <Link
                 href="/"
                 onClick={() => setMobileOpen(false)}
-                className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/") && pathname === "/" ? "bg-teal-500/20 text-white" : "bg-white/5 text-slate-200"}`}
+                className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/") && pathname === "/" ? "bg-emerald-500/20 text-white" : "bg-white/5 text-slate-200"}`}
               >
                 <DashboardIcon size={14} /> Dashboard
               </Link>
               <Link
                 href="/portfolio"
                 onClick={() => setMobileOpen(false)}
-                className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/portfolio") ? "bg-teal-500/20 text-white" : "bg-white/5 text-slate-200"}`}
+                className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/portfolio") ? "bg-emerald-500/20 text-white" : "bg-white/5 text-slate-200"}`}
               >
                 <PortfolioIcon size={14} /> Portfolio
               </Link>
@@ -416,7 +416,7 @@ export default function Nav() {
               const active = labActive(pathname, sec.links);
               const expanded = mobileLabOpen === sec.id;
               return (
-                <div key={sec.id} className={`overflow-hidden rounded-lg border ${active ? "border-teal-500/30 bg-teal-500/10" : "border-white/10 bg-white/5"}`}>
+                <div key={sec.id} className={`overflow-hidden rounded-lg border ${active ? "border-emerald-500/30 bg-emerald-500/10" : "border-white/10 bg-white/5"}`}>
                   <button
                     onClick={() => setMobileLabOpen(expanded ? null : sec.id)}
                     className="flex w-full items-center justify-between px-3 py-2.5 text-left"
@@ -436,7 +436,7 @@ export default function Nav() {
                           key={l.href}
                           href={l.href}
                           onClick={() => setMobileOpen(false)}
-                          className={`flex items-center justify-between rounded-md px-3 py-2.5 ${isActive(pathname, l.href) ? "bg-teal-500/20 text-white" : "text-slate-300 hover:bg-white/5"}`}
+                          className={`flex items-center justify-between rounded-md px-3 py-2.5 ${isActive(pathname, l.href) ? "bg-emerald-500/20 text-white" : "text-slate-300 hover:bg-white/5"}`}
                         >
                           <span className="inline-flex items-center gap-2 text-sm font-medium">
                             <l.Icon size={14} />

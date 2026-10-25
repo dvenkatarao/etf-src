@@ -10,7 +10,7 @@ import { calculatorHref } from "@/lib/wheel-cycle";
 import { vrpPp } from "@/lib/vol-metrics";
 import type { WheelResults } from "@/lib/wheel-service";
 import { gradeBadgeClasses } from "@/components/GradePill";
-import { DensityToggle, TableScroll } from "@/components/ui";
+import { DensityToggle, TableScroll, ViewToggle } from "@/components/ui";
 
 type Props = {
   res: WheelResults;
@@ -41,7 +41,7 @@ function Pagination({ page, total, onChange }: { page: number; total: number; on
     pages.push(total);
   }
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2.5 dark:border-slate-800 dark:bg-[#0F1A3A]">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2.5 dark:border-slate-800 dark:bg-[#0f172a]">
       <span className="text-xs text-slate-500 dark:text-slate-400">
         Page <b className="text-slate-900 dark:text-white">{page}</b> of {total}
       </span>
@@ -49,7 +49,7 @@ function Pagination({ page, total, onChange }: { page: number; total: number; on
         <button
           onClick={() => onChange(Math.max(1, page - 1))}
           disabled={page === 1}
-          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-40 dark:border-slate-700 dark:bg-[#0D1632] dark:text-slate-200"
+          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-40 dark:border-slate-700 dark:bg-[#0b1220] dark:text-slate-200"
         >
           ← Prev
         </button>
@@ -62,7 +62,7 @@ function Pagination({ page, total, onChange }: { page: number; total: number; on
             <button
               key={p}
               onClick={() => onChange(p as number)}
-              className={`min-w-[32px] rounded-md px-2.5 py-1.5 text-xs font-medium ring-1 ${page === p ? "bg-teal-600 text-white ring-teal-600" : "bg-white text-slate-700 ring-slate-200 hover:bg-slate-50 dark:bg-[#0D1632] dark:text-slate-300 dark:ring-slate-700"}`}
+              className={`min-w-[32px] rounded-md px-2.5 py-1.5 text-xs font-medium ring-1 ${page === p ? "bg-emerald-600 text-white ring-emerald-600" : "bg-white text-slate-700 ring-slate-200 hover:bg-slate-50 dark:bg-[#0b1220] dark:text-slate-300 dark:ring-slate-700"}`}
             >
               {p}
             </button>
@@ -71,7 +71,7 @@ function Pagination({ page, total, onChange }: { page: number; total: number; on
         <button
           onClick={() => onChange(Math.min(total, page + 1))}
           disabled={page === total}
-          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-40 dark:border-slate-700 dark:bg-[#0D1632] dark:text-slate-200"
+          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-40 dark:border-slate-700 dark:bg-[#0b1220] dark:text-slate-200"
         >
           Next →
         </button>
@@ -115,8 +115,8 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2 text-sm text-slate-900 dark:text-white">
-          <span className="h-2 w-2 rounded-full bg-teal-500" /> Filtered Stock Options{" "}
-          <span className="rounded-full bg-teal-50 px-2 py-0.5 text-xs font-medium text-teal-800 ring-1 ring-teal-200 dark:bg-teal-500/20 dark:text-teal-300 dark:ring-teal-500/30">
+          <span className="h-2 w-2 rounded-full bg-emerald-500" /> Filtered Stock Options{" "}
+          <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-800 ring-1 ring-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300 dark:ring-emerald-500/30">
             {rows.length} results
           </span>
           {rows.length > pageSize && (
@@ -130,27 +130,14 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as any)}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900 dark:border-slate-700 dark:bg-[#0F1A3A] dark:text-white"
+            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900 dark:border-slate-700 dark:bg-[#0f172a] dark:text-white"
           >
             <option value="score">Score</option>
             <option value="return">Return /yr</option>
             <option value="delta">Delta (low→high)</option>
           </select>
           {view === "table" && <DensityToggle value={density} onChange={setDensity} />}
-          <div className="ml-2 inline-flex rounded-lg border border-slate-200 bg-white p-0.5 dark:border-slate-800 dark:bg-[#0F1A3A]">
-            <button
-              onClick={() => setView("table")}
-              className={`rounded-md px-3 py-1.5 text-xs font-medium ${view === "table" ? "bg-teal-600 text-white" : "text-slate-500 dark:text-slate-400"}`}
-            >
-              Table
-            </button>
-            <button
-              onClick={() => setView("cards")}
-              className={`rounded-md px-3 py-1.5 text-xs font-medium ${view === "cards" ? "bg-teal-600 text-white" : "text-slate-500 dark:text-slate-400"}`}
-            >
-              Cards
-            </button>
-          </div>
+          <ViewToggle value={view} onChange={setView} />
         </div>
       </div>
 
@@ -161,10 +148,10 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
           </div>
           <TableScroll density={density}>
             <table className="min-w-full text-sm">
-              <thead className="bg-slate-50 text-left text-[10px] uppercase tracking-[0.12em] text-slate-500 dark:bg-[#0D1632] dark:text-slate-400">
+              <thead className="bg-slate-50 text-left text-[10px] uppercase tracking-[0.12em] text-slate-500 dark:bg-[#0b1220] dark:text-slate-400">
                 <tr>
                   <th className="whitespace-nowrap px-2 py-2 font-medium">#</th>
-                  <th className="whitespace-nowrap px-3 py-2 font-medium sticky left-0 bg-slate-50 dark:bg-[#0D1632] z-10">STOCK</th>
+                  <th className="whitespace-nowrap px-3 py-2 font-medium sticky left-0 bg-slate-50 dark:bg-[#0b1220] z-10">STOCK</th>
                   <th className="whitespace-nowrap px-3 py-2 font-medium hidden sm:table-cell">GRADE</th>
                   <th className="whitespace-nowrap px-3 py-2 font-medium hidden lg:table-cell">ACCT</th>
                   <th className="whitespace-nowrap px-3 py-2 font-medium hidden xl:table-cell">PRICE</th>
@@ -194,8 +181,8 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                         className={`align-top hover:bg-slate-50 dark:hover:bg-white/[0.03] ${isOpen ? "bg-slate-50 dark:bg-white/[0.03]" : ""}`}
                       >
                         <td className="px-2 py-3 text-xs text-slate-500 dark:text-slate-400">{globalIdx + 1}</td>
-                        <td className="px-3 py-3 sticky left-0 bg-white dark:bg-[#0F1A3A] md:bg-transparent dark:md:bg-transparent z-10">
-                          <Link href={`/wheel/${r.g.row.ticker}?${q}`} className="font-semibold text-slate-900 hover:text-teal-700 dark:text-white dark:hover:text-teal-300">
+                        <td className="px-3 py-3 sticky left-0 bg-white dark:bg-[#0f172a] md:bg-transparent dark:md:bg-transparent z-10">
+                          <Link href={`/wheel/${r.g.row.ticker}?${q}`} className="font-semibold text-slate-900 hover:text-emerald-700 dark:text-white dark:hover:text-emerald-300">
                             {r.g.row.ticker}
                           </Link>
                           <div className="max-w-[150px] truncate text-xs text-slate-500 dark:text-slate-400">{r.g.row.name}</div>
@@ -314,7 +301,7 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                         </td>
                       </tr>
                       {isOpen && (
-                        <tr className="bg-slate-50 dark:bg-[#0D1632]">
+                        <tr className="bg-slate-50 dark:bg-[#0b1220]">
                           <td colSpan={16} className="px-4 py-4">
                             <div className="grid grid-cols-2 gap-4 text-xs md:grid-cols-4">
                               <div className="space-y-1">
@@ -364,7 +351,7 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                                   })()}
                                 </div>
                                 <div className="mt-3 flex flex-wrap gap-2">
-                                  <Link href={`/wheel/${r.g.row.ticker}?${q}`} className="rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-teal-500">
+                                  <Link href={`/wheel/${r.g.row.ticker}?${q}`} className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-500">
                                     View details →
                                   </Link>
                                   <Link
@@ -382,7 +369,7 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                                       earnDays: b.daysToEarnings,
                                       spreadPct: b.spreadPct,
                                     })}
-                                    className="rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-teal-500"
+                                    className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-500"
                                   >
                                     Open payoff
                                   </Link>
@@ -421,10 +408,10 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
             {paged.map((r) => {
               const b = r.best;
               return (
-                <div key={r.g.row.ticker} className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-[#0F1A3A]">
+                <div key={r.g.row.ticker} className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-[#0f172a]">
                   <div className="flex items-start justify-between">
                     <div>
-                      <Link href={`/wheel/${r.g.row.ticker}?${q}`} className="text-sm font-bold text-slate-900 hover:text-teal-700 dark:text-white dark:hover:text-teal-300">
+                      <Link href={`/wheel/${r.g.row.ticker}?${q}`} className="text-sm font-bold text-slate-900 hover:text-emerald-700 dark:text-white dark:hover:text-emerald-300">
                         {r.g.row.ticker}
                       </Link>
                       <div className="max-w-[180px] truncate text-xs text-slate-500 dark:text-slate-400">{r.g.row.name}</div>
@@ -438,17 +425,33 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                   </div>
                   <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
                     <div>
-                      <div className="text-[10px] tracking-[0.12em] text-slate-500">PUT TO SELL</div>
+                      <div className="text-[10px] font-semibold tracking-[0.12em] text-slate-500">PUT TO SELL</div>
                       <div className="mt-1 font-semibold text-slate-900 dark:text-white">
                         {money(b.contract.strike)} P · {dateShort(b.contract.expiration)}
                       </div>
-                      <div className="text-slate-500">
-                        {b.dte}d · credit {money(b.credit)}
-                      </div>
+                      <div className="text-slate-500">{b.dte}d</div>
                     </div>
                     <div className="text-right">
-                      <div className="text-[10px] tracking-[0.12em] text-slate-500">SCORE</div>
+                      <div className="text-[10px] font-semibold tracking-[0.12em] text-slate-500">SCORE</div>
                       <div className={`mt-1 inline-flex rounded-md px-2 py-1 text-sm font-bold ring-1 ${scoreTone(b.score)}`}>{b.score.toFixed(1)}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-semibold tracking-[0.12em] text-slate-500">RETURN /YR</div>
+                      <div className="mt-0.5 font-mono font-semibold tabular-nums text-emerald-600 dark:text-emerald-400">{pct(b.annRoc, 1)}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-[10px] font-semibold tracking-[0.12em] text-slate-500">CREDIT</div>
+                      <div className="mt-0.5 font-mono tabular-nums text-slate-900 dark:text-white">{money(b.credit)}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-semibold tracking-[0.12em] text-slate-500">CUSHION</div>
+                      <div className="mt-0.5 font-mono tabular-nums text-slate-900 dark:text-white">{pct(b.breakevenCushion, 1)}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-[10px] font-semibold tracking-[0.12em] text-slate-500">DELTA</div>
+                      <div className="mt-0.5 font-mono tabular-nums">
+                        {b.contract.delta != null ? Math.abs(b.contract.delta).toFixed(2) : "N/A"}
+                      </div>
                     </div>
                   </div>
                   <div className="mt-3 flex flex-wrap gap-1">
@@ -471,14 +474,6 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                       </span>
                     )}
                   </div>
-                  <div className="mt-3 flex items-center justify-between text-xs">
-                    <span className="text-slate-500">
-                      Return/yr <b className="text-emerald-600 dark:text-emerald-400">{pct(b.annRoc, 1)}</b>
-                    </span>
-                    <span className="text-slate-500">
-                      Cushion <b className="text-slate-900 dark:text-white">{pct(b.breakevenCushion, 1)}</b>
-                    </span>
-                  </div>
                   <Link
                     href={calculatorHref({
                       tab: "payoff",
@@ -494,7 +489,7 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                       earnDays: b.daysToEarnings,
                       spreadPct: b.spreadPct,
                     })}
-                    className="mt-3 inline-flex text-xs font-medium text-teal-600 hover:underline dark:text-teal-300"
+                    className="mt-3 inline-flex text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-300"
                   >
                     Open payoff →
                   </Link>
