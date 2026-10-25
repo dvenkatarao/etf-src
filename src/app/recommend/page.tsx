@@ -138,7 +138,7 @@ export default async function RecommendPage({ searchParams }: { searchParams: Pr
           ) : (
             <div className="space-y-6">
               {groups.map((g) => (
-                <div key={g.name ?? "all"} className="overflow-x-auto">
+                <div key={g.name ?? "all"} className="cl-table-scroll cl-table-comfy overflow-x-auto">
                   {g.name && (
                     <h3 className="mb-1 text-sm font-semibold text-slate-800">
                       {g.name} <span className="text-xs font-normal text-slate-400">top {g.rows.length} of {g.total} ranked</span>

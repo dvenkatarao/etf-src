@@ -5,13 +5,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import { UNIVERSE } from "@/lib/universe";
 import { BASE_STOCK_UNIVERSE } from "@/lib/stock-universe";
+import { formatNyClock, usCashSession } from "@/lib/market-session";
 import { useTheme } from "@/components/ThemeProvider";
 import {
   CompareIcon,
   DashboardIcon,
   EtfLabIcon,
-  HelpIcon,
-  IconTile,
   InsightsIcon,
   NotificationsIcon,
   OptionsIcon,
@@ -20,27 +19,21 @@ import {
   ResearchIcon,
   ScreenerIcon,
   SearchIcon,
-  SettingsIcon,
-  StartIcon,
   ThemeIcon,
   WheelLabIcon,
 } from "@/components/icons/AppIcons";
 
 type NavLink = { href: string; label: string; desc: string; Icon: ComponentType<IconProps> };
 
-// ---------- Dropdown data ----------
 const ETF_LAB: readonly NavLink[] = [
-  { href: "/screener", label: "Screener", desc: "Filter 115 ETFs by cost, yield, return", Icon: ScreenerIcon },
+  { href: "/screener", label: "Screener", desc: "Filter ETFs by cost, yield, return", Icon: ScreenerIcon },
   { href: "/compare", label: "Compare", desc: "Up to 5 ETFs head-to-head", Icon: CompareIcon },
   { href: "/recommend", label: "Recommend", desc: "Goal-based ranked picks", Icon: ResearchIcon },
-  { href: "/coverage", label: "Coverage", desc: "How complete is the data?", Icon: SettingsIcon },
-  { href: "/sources", label: "Data Sources", desc: "Catalog & live health", Icon: HelpIcon },
 ];
 
 const WHEEL_LAB: readonly NavLink[] = [
   { href: "/wheel", label: "Wheel Screener", desc: "Cash-secured puts on A/A+ stocks", Icon: OptionsIcon },
   { href: "/wheel/calculator", label: "Payoff & cycle", desc: "P&L diagram, CSP→CC, expected move", Icon: ResearchIcon },
-  { href: "/wheel/guide", label: "Guide", desc: "15-step wheel manual", Icon: HelpIcon },
 ];
 
 const INSIGHTS: readonly NavLink[] = [
@@ -48,7 +41,6 @@ const INSIGHTS: readonly NavLink[] = [
   { href: "/news", label: "News & Events", desc: "Fed, SEC 8-K, headline feeds", Icon: NotificationsIcon },
 ];
 
-// ---------- Helpers ----------
 function isActive(pathname: string | null, href: string) {
   if (!pathname) return false;
   if (href === "/") return pathname === "/";
@@ -58,59 +50,121 @@ function labActive(pathname: string | null, links: readonly { href: string }[]) 
   return links.some((l) => isActive(pathname, l.href));
 }
 
-// ---------- Smart ticker search ----------
+function BrandMark() {
+  return (
+    <span
+      className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-teal-500/15 font-mono text-[11px] font-semibold tracking-tight text-teal-300 ring-1 ring-teal-400/30"
+      aria-hidden
+    >
+      CL
+    </span>
+  );
+}
+
+type Hit = { ticker: string; kind: "ETF" | "Stock" };
+
 function SmartTickerSearch({ onNavigate }: { onNavigate?: () => void }) {
   const router = useRouter();
   const [q, setQ] = useState("");
+  const [open, setOpen] = useState(false);
+  const [hi, setHi] = useState(0);
+  const wrap = useRef<HTMLFormElement>(null);
 
-  const etfSet = useMemo(() => new Set(UNIVERSE.map((s) => s.toUpperCase())), []);
-  const stockSet = useMemo(() => new Set(BASE_STOCK_UNIVERSE.map((s) => s.toUpperCase())), []);
+  const catalog = useMemo<Hit[]>(() => {
+    const etfs = UNIVERSE.map((t) => ({ ticker: t, kind: "ETF" as const }));
+    const stocks = BASE_STOCK_UNIVERSE.filter((t) => !UNIVERSE.includes(t)).map((t) => ({ ticker: t, kind: "Stock" as const }));
+    return [...etfs, ...stocks];
+  }, []);
 
-  function go(e?: React.FormEvent) {
-    e?.preventDefault();
-    const t = q.trim().toUpperCase().replace(/\s+/g, "");
-    if (!t) return;
-    if (!/^[A-Z0-9.\-]{1,10}$/.test(t)) {
-      router.push(`/etf/${encodeURIComponent(t)}`);
-      onNavigate?.();
-      return;
+  const needle = q.trim().toUpperCase();
+  const hits = useMemo(() => {
+    if (needle.length < 1) return [];
+    const starts = catalog.filter((h) => h.ticker.startsWith(needle));
+    const rest = catalog.filter((h) => !h.ticker.startsWith(needle) && h.ticker.includes(needle));
+    return [...starts, ...rest].slice(0, 8);
+  }, [catalog, needle]);
+
+  useEffect(() => setHi(0), [needle]);
+
+  useEffect(() => {
+    function onClick(e: MouseEvent) {
+      if (wrap.current && !wrap.current.contains(e.target as Node)) setOpen(false);
     }
-    if (etfSet.has(t)) {
-      router.push(`/etf/${encodeURIComponent(t)}`);
-    } else if (stockSet.has(t)) {
-      router.push(`/wheel/${encodeURIComponent(t)}`);
-    } else {
-      router.push(`/etf/${encodeURIComponent(t)}`);
-    }
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
+
+  function goTo(hit: Hit) {
+    router.push(hit.kind === "Stock" ? `/wheel/${encodeURIComponent(hit.ticker)}` : `/etf/${encodeURIComponent(hit.ticker)}`);
     setQ("");
+    setOpen(false);
     onNavigate?.();
   }
 
+  function submit(e?: React.FormEvent) {
+    e?.preventDefault();
+    if (hits[hi]) {
+      goTo(hits[hi]);
+      return;
+    }
+    const t = needle.replace(/\s+/g, "");
+    if (!t) return;
+    goTo({ ticker: t, kind: catalog.find((h) => h.ticker === t)?.kind ?? "ETF" });
+  }
+
   return (
-    <form onSubmit={go} className="flex items-center gap-1.5" role="search" aria-label="Search ticker">
-      <div className="relative">
-        <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 opacity-80">
-          <SearchIcon size={14} />
-        </span>
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="SCHD or AAPL…"
-          className="w-[170px] rounded-md border border-slate-300 bg-white py-1.5 pl-8 pr-8 text-sm uppercase tracking-wide text-slate-900 placeholder:normal-case placeholder:text-slate-500 placeholder:tracking-normal focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 dark:border-slate-700 dark:bg-slate-800 dark:text-white sm:w-[200px]"
-          maxLength={10}
-          aria-label="Search ETF or stock ticker"
-          autoCapitalize="characters"
-          autoCorrect="off"
-          spellCheck={false}
-        />
-        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-500">↵</span>
-      </div>
-      <button
-        type="submit"
-        className="rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-300"
-      >
-        Go
-      </button>
+    <form ref={wrap} onSubmit={submit} className="relative" role="search" aria-label="Jump to ticker">
+      <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400">
+        <SearchIcon size={14} />
+      </span>
+      <input
+        value={q}
+        onChange={(e) => {
+          setQ(e.target.value);
+          setOpen(true);
+        }}
+        onFocus={() => setOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowDown") {
+            e.preventDefault();
+            setHi((i) => Math.min(i + 1, Math.max(0, hits.length - 1)));
+          } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            setHi((i) => Math.max(i - 1, 0));
+          } else if (e.key === "Escape") {
+            setOpen(false);
+          }
+        }}
+        placeholder="Jump to ticker"
+        className="w-[200px] rounded-md border border-white/10 bg-white/5 py-1.5 pl-8 pr-3 font-mono text-sm uppercase tracking-wide text-white placeholder:font-sans placeholder:normal-case placeholder:tracking-normal placeholder:text-slate-500 focus:border-teal-400/60 focus:outline-none focus:ring-1 focus:ring-teal-400/40 sm:w-[240px]"
+        maxLength={10}
+        aria-label="Jump to ETF or stock ticker"
+        aria-autocomplete="list"
+        aria-expanded={open && hits.length > 0}
+        autoCapitalize="characters"
+        autoCorrect="off"
+        spellCheck={false}
+      />
+      {open && hits.length > 0 && (
+        <ul
+          className="absolute right-0 z-50 mt-1.5 w-[260px] overflow-hidden rounded-lg border border-white/10 bg-[#0F1A3A] py-1 shadow-xl shadow-black/40"
+          role="listbox"
+        >
+          {hits.map((h, i) => (
+            <li key={`${h.kind}-${h.ticker}`} role="option" aria-selected={i === hi}>
+              <button
+                type="button"
+                onMouseEnter={() => setHi(i)}
+                onClick={() => goTo(h)}
+                className={`flex w-full items-center justify-between px-3 py-1.5 text-left text-sm ${i === hi ? "bg-teal-500/15 text-white" : "text-slate-200 hover:bg-white/5"}`}
+              >
+                <span className="font-mono font-medium tracking-wide">{h.ticker}</span>
+                <span className="text-[10px] uppercase tracking-wider text-slate-500">{h.kind}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </form>
   );
 }
@@ -121,11 +175,7 @@ function ThemeToggle({ compact }: { compact?: boolean }) {
   return (
     <button
       onClick={toggle}
-      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-medium transition focus:outline-none focus:ring-2 focus:ring-indigo-400 ${
-        isDark
-          ? "border-slate-700 bg-slate-800 text-amber-300 hover:bg-slate-700"
-          : "border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100"
-      } ${compact ? "px-2 py-1.5" : ""}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-medium text-slate-200 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-teal-400/50 ${compact ? "px-2" : ""}`}
       aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
       title={`Currently ${isDark ? "dark" : "light"} — click to switch to ${isDark ? "light" : "dark"}`}
     >
@@ -135,19 +185,50 @@ function ThemeToggle({ compact }: { compact?: boolean }) {
   );
 }
 
-// ---------- Desktop dropdown ----------
+function MarketStatus({ compact }: { compact?: boolean }) {
+  const [now, setNow] = useState<Date | null>(null);
+  useEffect(() => {
+    setNow(new Date());
+    const id = setInterval(() => setNow(new Date()), 30_000);
+    return () => clearInterval(id);
+  }, []);
+  if (!now) {
+    return <span className="hidden h-5 w-40 rounded bg-white/5 xl:inline-block" aria-hidden />;
+  }
+  const s = usCashSession(now);
+  const clock = formatNyClock(now);
+  const dot =
+    s.session === "open" ? "bg-teal-400" : s.session === "closed" ? "bg-slate-500" : "bg-amber-400";
+  if (compact) {
+    return (
+      <div className="flex items-center gap-1.5 font-mono text-[10px] text-slate-300">
+        <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
+        <span className="text-white">{s.label}</span>
+      </div>
+    );
+  }
+  return (
+    <div className="hidden items-center gap-2 font-mono text-[11px] text-slate-300 xl:flex" title="US cash session. Quotes are delayed.">
+      <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
+      <span className="text-white">{s.label}</span>
+      <span className="text-slate-600">·</span>
+      <span>{clock}</span>
+      <span className="text-slate-600">·</span>
+      <span>US cash · Delayed</span>
+    </div>
+  );
+}
+
 function LabDropdown({
   label,
   Icon,
   links,
   pathname,
-  onCloseMobile,
 }: {
   label: string;
   Icon?: ComponentType<IconProps>;
   links: readonly NavLink[];
   pathname: string | null;
-  onCloseMobile?: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -175,46 +256,35 @@ function LabDropdown({
         onClick={() => setOpen((o) => !o)}
         onMouseEnter={() => setOpen(true)}
         className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[13px] font-medium transition ${
-          active
-            ? "bg-slate-900 text-white dark:bg-slate-800 dark:text-white"
-            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+          active ? "bg-teal-500/15 text-teal-200" : "text-slate-300 hover:bg-white/10 hover:text-white"
         }`}
         aria-expanded={open}
         aria-haspopup="true"
       >
-        {Icon && (
-          <IconTile size={20}>
-            <Icon size={12} />
-          </IconTile>
-        )}
+        {Icon && <Icon size={14} />}
         {label}
         <span className={`ml-0.5 text-[10px] transition ${open ? "rotate-180" : ""}`}>▾</span>
       </button>
       {open && (
         <div
           onMouseLeave={() => setOpen(false)}
-          className="absolute left-0 top-full z-40 mt-2 min-w-[300px] rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-black/10 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/30"
+          className="absolute left-0 top-full z-40 mt-2 min-w-[280px] rounded-xl border border-white/10 bg-[#0F1A3A] p-1.5 shadow-xl shadow-black/40"
         >
           <div className="px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-slate-500">{label}</div>
-          <div className="grid gap-1">
+          <div className="grid gap-0.5">
             {links.map((l) => {
               const a = isActive(pathname, l.href);
               return (
                 <Link
                   key={l.href}
                   href={l.href}
-                  onClick={() => {
-                    setOpen(false);
-                    onCloseMobile?.();
-                  }}
-                  className={`flex items-start gap-2.5 rounded-lg px-2.5 py-2 transition ${a ? "bg-indigo-600 text-white" : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white"}`}
+                  onClick={() => setOpen(false)}
+                  className={`flex items-start gap-2.5 rounded-lg px-2.5 py-2 transition ${a ? "bg-teal-500/15 text-white" : "text-slate-200 hover:bg-white/5"}`}
                 >
-                  <IconTile size={28} className={a ? "ring-white/20 dark:bg-white/10" : ""}>
-                    <l.Icon size={16} />
-                  </IconTile>
+                  <l.Icon size={16} />
                   <div className="min-w-0 pt-0.5">
                     <div className="text-sm font-medium leading-none">{l.label}</div>
-                    <div className={`mt-1 text-xs leading-none ${a ? "text-indigo-100" : "text-slate-500 dark:text-slate-400"}`}>{l.desc}</div>
+                    <div className={`mt-1 text-xs leading-none ${a ? "text-teal-200/80" : "text-slate-500"}`}>{l.desc}</div>
                   </div>
                 </Link>
               );
@@ -226,7 +296,11 @@ function LabDropdown({
   );
 }
 
-// ---------- Main Nav ----------
+const navLink = (active: boolean) =>
+  `inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[13px] font-medium transition ${
+    active ? "bg-teal-500/15 text-teal-200" : "text-slate-300 hover:bg-white/10 hover:text-white"
+  }`;
+
 export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileLabOpen, setMobileLabOpen] = useState<string | null>(null);
@@ -235,68 +309,39 @@ export default function Nav() {
   useEffect(() => setMobileOpen(false), [pathname]);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/90 dark:border-slate-800 dark:bg-slate-900/95 dark:supports-[backdrop-filter]:bg-slate-900/90">
+    <header className="sticky top-0 z-30 border-b border-white/10 bg-[#070D2A]/95 text-slate-100 backdrop-blur supports-[backdrop-filter]:bg-[#070D2A]/90">
       <div className="mx-auto flex max-w-[1600px] flex-wrap items-center gap-x-2 gap-y-2 px-4 py-2.5 sm:px-6 lg:px-8">
-        {/* Brand */}
-        <Link href="/" className="flex items-center gap-2 text-slate-900 dark:text-white shrink-0">
-          <IconTile size={32}>
-            <EtfLabIcon size={18} />
-          </IconTile>
+        <Link href="/" className="flex shrink-0 items-center gap-2 text-white">
+          <BrandMark />
           <span className="hidden text-[15px] font-semibold tracking-tight sm:inline">Capital Lab</span>
         </Link>
 
-        {/* Desktop primary */}
-        <nav className="hidden items-center gap-1 text-[13px] font-medium lg:flex">
-          <Link
-            href="/"
-            className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 transition ${isActive(pathname, "/") && pathname === "/" ? "bg-slate-900 text-white dark:bg-slate-800 dark:text-white" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"}`}
-          >
-            <IconTile size={20}>
-              <DashboardIcon size={12} />
-            </IconTile>
+        <nav className="hidden items-center gap-0.5 lg:flex">
+          <Link href="/" className={navLink(isActive(pathname, "/") && pathname === "/")}>
+            <DashboardIcon size={14} />
             Dashboard
           </Link>
-
-          {/* Start CTA */}
-          <Link
-            href="/onboarding"
-            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition ${isActive(pathname, "/onboarding") ? "bg-slate-900 text-white dark:bg-white dark:text-indigo-700" : "bg-indigo-600 text-white hover:bg-indigo-500"}`}
-          >
-            <StartIcon size={12} />
-            Start →
-          </Link>
-
           <LabDropdown label="ETF Lab" Icon={EtfLabIcon} links={ETF_LAB} pathname={pathname} />
           <LabDropdown label="Wheel Lab" Icon={WheelLabIcon} links={WHEEL_LAB} pathname={pathname} />
-
-          <Link
-            href="/portfolio"
-            className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 transition ${isActive(pathname, "/portfolio") ? "bg-slate-900 text-white dark:bg-slate-800 dark:text-white" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"}`}
-          >
-            <IconTile size={20}>
-              <PortfolioIcon size={12} />
-            </IconTile>
+          <Link href="/portfolio" className={navLink(isActive(pathname, "/portfolio"))}>
+            <PortfolioIcon size={14} />
             Portfolio
           </Link>
-
           <LabDropdown label="Insights" Icon={InsightsIcon} links={INSIGHTS} pathname={pathname} />
         </nav>
 
-        {/* Search + Theme — desktop */}
-        <div className="ml-auto hidden lg:flex items-center gap-3">
-          <div className="hidden xl:flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
-            <span className="hidden 2xl:inline">Search works on both — ETFs & wheel stocks</span>
-          </div>
+        <div className="ml-auto hidden items-center gap-3 lg:flex">
+          <MarketStatus />
           <SmartTickerSearch />
           <ThemeToggle />
         </div>
 
-        {/* Actions — mobile: theme + hamburger */}
         <div className="ml-auto flex items-center gap-2 lg:hidden">
+          <MarketStatus compact />
           <ThemeToggle compact />
           <button
             onClick={() => setMobileOpen((o) => !o)}
-            className="grid h-9 w-9 place-items-center rounded-md border border-slate-200 bg-slate-100 text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+            className="grid h-9 w-9 place-items-center rounded-md border border-white/10 bg-white/5 text-slate-200"
             aria-label="Toggle navigation"
             aria-expanded={mobileOpen}
           >
@@ -304,88 +349,73 @@ export default function Nav() {
           </button>
         </div>
 
-        {/* Mobile panel */}
         {mobileOpen && (
-          <div className="w-full lg:hidden border-t border-slate-200 pt-3 pb-2 space-y-3 dark:border-slate-800">
-            {/* Quick actions */}
-            <Link
-              href="/onboarding"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white"
-            >
-              <StartIcon size={14} />
-              Start in 60s — 3 questions →
-            </Link>
-
-            <div className="grid gap-2">
-              {/* Dashboard + Portfolio standalone */}
-              <div className="grid grid-cols-2 gap-1">
-                <Link href="/" onClick={() => setMobileOpen(false)} className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/") && pathname === "/" ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900" : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"}`}>
-                  <DashboardIcon size={14} /> Dashboard
-                </Link>
-                <Link href="/portfolio" onClick={() => setMobileOpen(false)} className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/portfolio") ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900" : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"}`}>
-                  <PortfolioIcon size={14} /> Portfolio
-                </Link>
-              </div>
-
-              {/* Labs - accordion */}
-              {[
-                { id: "etf", title: "ETF Lab", Icon: EtfLabIcon, links: ETF_LAB, desc: "Funds research" },
-                { id: "wheel", title: "Wheel Lab", Icon: WheelLabIcon, links: WHEEL_LAB, desc: "Options strategy" },
-                { id: "insights", title: "Insights", Icon: InsightsIcon, links: INSIGHTS, desc: "Context & health" },
-              ].map((sec) => {
-                const active = labActive(pathname, sec.links);
-                const expanded = mobileLabOpen === sec.id;
-                return (
-                  <div key={sec.id} className={`overflow-hidden rounded-lg border ${active ? "border-indigo-500/30 bg-indigo-50 dark:border-indigo-500/30 dark:bg-indigo-500/10" : "border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/50"}`}>
-                    <button
-                      onClick={() => setMobileLabOpen(expanded ? null : sec.id)}
-                      className="flex w-full items-center justify-between px-3 py-2.5 text-left"
-                      aria-expanded={expanded}
-                    >
-                      <div className="flex items-center gap-2">
-                        <IconTile size={28}>
-                          <sec.Icon size={16} />
-                        </IconTile>
-                        <span className={`text-sm font-semibold ${active ? "text-slate-900 dark:text-white" : "text-slate-700 dark:text-slate-200"}`}>{sec.title}</span>
-                        <span className="text-xs text-slate-500 dark:text-slate-400 hidden sm:inline">· {sec.desc}</span>
-                      </div>
-                      <span className={`text-xs text-slate-400 transition ${expanded ? "rotate-180" : ""}`}>▾</span>
-                    </button>
-                    {expanded && (
-                      <div className="border-t border-slate-200 bg-white px-1.5 py-1.5 space-y-1 dark:border-slate-700 dark:bg-slate-900">
-                        {sec.links.map((l) => (
-                          <Link
-                            key={l.href}
-                            href={l.href}
-                            onClick={() => setMobileOpen(false)}
-                            className={`flex items-center justify-between rounded-md px-3 py-2.5 ${isActive(pathname, l.href) ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"}`}
-                          >
-                            <span className="inline-flex items-center gap-2 text-sm font-medium">
-                              <l.Icon size={14} />
-                              {l.label}
-                            </span>
-                            <span className="text-xs text-slate-500 ml-2 truncate max-w-[160px] text-right hidden sm:block">{l.desc}</span>
-                            <span className={`ml-auto text-xs ${isActive(pathname, l.href) ? "text-white/70 dark:text-slate-600" : "text-slate-400 dark:text-slate-500"}`}>→</span>
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+          <div className="w-full space-y-3 border-t border-white/10 pb-2 pt-3 lg:hidden">
+            <div className="grid grid-cols-2 gap-1">
+              <Link
+                href="/"
+                onClick={() => setMobileOpen(false)}
+                className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/") && pathname === "/" ? "bg-teal-500/20 text-white" : "bg-white/5 text-slate-200"}`}
+              >
+                <DashboardIcon size={14} /> Dashboard
+              </Link>
+              <Link
+                href="/portfolio"
+                onClick={() => setMobileOpen(false)}
+                className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/portfolio") ? "bg-teal-500/20 text-white" : "bg-white/5 text-slate-200"}`}
+              >
+                <PortfolioIcon size={14} /> Portfolio
+              </Link>
             </div>
 
-            {/* Mobile search — always visible in panel */}
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800">
-              <div className="mb-2 inline-flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300">
+            {[
+              { id: "etf", title: "ETF Lab", Icon: EtfLabIcon, links: ETF_LAB, desc: "Funds research" },
+              { id: "wheel", title: "Wheel Lab", Icon: WheelLabIcon, links: WHEEL_LAB, desc: "Options strategy" },
+              { id: "insights", title: "Insights", Icon: InsightsIcon, links: INSIGHTS, desc: "Context" },
+            ].map((sec) => {
+              const active = labActive(pathname, sec.links);
+              const expanded = mobileLabOpen === sec.id;
+              return (
+                <div key={sec.id} className={`overflow-hidden rounded-lg border ${active ? "border-teal-500/30 bg-teal-500/10" : "border-white/10 bg-white/5"}`}>
+                  <button
+                    onClick={() => setMobileLabOpen(expanded ? null : sec.id)}
+                    className="flex w-full items-center justify-between px-3 py-2.5 text-left"
+                    aria-expanded={expanded}
+                  >
+                    <div className="flex items-center gap-2">
+                      <sec.Icon size={16} />
+                      <span className="text-sm font-semibold text-white">{sec.title}</span>
+                      <span className="hidden text-xs text-slate-500 sm:inline">· {sec.desc}</span>
+                    </div>
+                    <span className={`text-xs text-slate-400 transition ${expanded ? "rotate-180" : ""}`}>▾</span>
+                  </button>
+                  {expanded && (
+                    <div className="space-y-1 border-t border-white/10 bg-[#0F1A3A] px-1.5 py-1.5">
+                      {sec.links.map((l) => (
+                        <Link
+                          key={l.href}
+                          href={l.href}
+                          onClick={() => setMobileOpen(false)}
+                          className={`flex items-center justify-between rounded-md px-3 py-2.5 ${isActive(pathname, l.href) ? "bg-teal-500/20 text-white" : "text-slate-300 hover:bg-white/5"}`}
+                        >
+                          <span className="inline-flex items-center gap-2 text-sm font-medium">
+                            <l.Icon size={14} />
+                            {l.label}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+              <div className="mb-2 inline-flex items-center gap-2 text-xs font-medium text-slate-300">
                 <SearchIcon size={14} />
-                Search any ticker — ETF or stock
+                Jump to ticker
               </div>
               <SmartTickerSearch onNavigate={() => setMobileOpen(false)} />
-              <p className="mt-2 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
-                <span className="text-slate-700 dark:text-slate-300 font-medium">SCHD, VOO, BND</span> → ETF page &nbsp;·&nbsp; <span className="text-slate-700 dark:text-slate-300 font-medium">AAPL, NVDA, BRK-B</span> → Wheel page
-              </p>
             </div>
           </div>
         )}

@@ -3,7 +3,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 /* Semantic CSS variables — light = ETF light, dark = Wheel dark (user prefers dark) */
@@ -13,13 +14,13 @@
   --bg-card-subtle: #f8fafc;
   --bg-card-header: #f1f5f9;
   --bg-input: #ffffff;
-  --bg-nav: #0f172a;
+  --bg-nav: #070D2A;
   --border: #e2e8f0;
   --border-strong: #cbd5e1;
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #94a3b8;
-  --text-accent: #4f46e5;
+  --text-accent: #0f766e;
 }
 
 html.dark {
@@ -28,13 +29,13 @@ html.dark {
   --bg-card-subtle: #111C3E;
   --bg-card-header: #0D1632;
   --bg-input: #111C3E;
-  --bg-nav: #0f172a;
+  --bg-nav: #070D2A;
   --border: #1e293b;
   --border-strong: #334155;
   --text-primary: #f1f5f9;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
-  --text-accent: #818cf8;
+  --text-accent: #2dd4bf;
 }
 
 /* Base */
@@ -47,10 +48,29 @@ body {
   color: var(--text-primary);
 }
 a { text-underline-offset: 2px; }
-::selection { background: rgb(99 102 241 / 0.2); }
-:focus-visible { outline: 2px solid rgb(99 102 241); outline-offset: 2px; }
+::selection { background: rgb(20 184 166 / 0.22); }
+:focus-visible { outline: 2px solid rgb(20 184 166); outline-offset: 2px; }
 html.dark ::selection { background: rgb(45 212 191 / 0.25); }
-html.dark :focus-visible { outline-color: rgb(20 184 166); }
+html.dark :focus-visible { outline-color: rgb(45 212 191); }
+
+/* Research tables — sticky header, tabular figures, density */
+.cl-table-scroll {
+  overflow: auto;
+  max-height: min(72vh, 880px);
+}
+.cl-table-scroll thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--bg-card-header);
+  box-shadow: inset 0 -1px 0 var(--border);
+}
+.cl-table-scroll tbody td {
+  font-variant-numeric: tabular-nums;
+}
+.cl-table-comfy tbody td { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.cl-table-compact tbody td { padding-top: 0.22rem; padding-bottom: 0.22rem; font-size: 12px; }
+.cl-table-compact thead th { padding-top: 0.4rem; padding-bottom: 0.4rem; }
 
 /* Scrollbars — adapt to theme */
 *::-webkit-scrollbar { width: 8px; height: 8px; }

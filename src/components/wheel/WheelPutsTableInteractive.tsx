@@ -31,7 +31,7 @@ export default function WheelPutsTableInteractive({ puts, putErr, selectedStrike
     return <p className="text-sm text-slate-400">No put passes your filters.</p>;
   }
   return (
-    <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
+    <div className="cl-table-scroll cl-table-comfy overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
       <table className="min-w-full text-sm">
         <thead className="bg-slate-50 text-left text-[10px] uppercase tracking-[0.12em] text-slate-500 dark:bg-[#0D1632] dark:text-slate-400">
           <tr>{["Expiry", "Strike", "Credit", "Delta", "Return /yr", "Breakeven", "Cushion", "σ out", "Liquidity", "IV / HV", "Flags", "Acct", "Score"].map((h) => <th key={h} className={th}>{h}</th>)}</tr>

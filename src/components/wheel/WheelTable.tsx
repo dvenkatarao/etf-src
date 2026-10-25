@@ -10,6 +10,7 @@ import { calculatorHref } from "@/lib/wheel-cycle";
 import { vrpPp } from "@/lib/vol-metrics";
 import type { WheelResults } from "@/lib/wheel-service";
 import { gradeBadgeClasses } from "@/components/GradePill";
+import { DensityToggle, TableScroll } from "@/components/ui";
 
 type Props = {
   res: WheelResults;
@@ -61,7 +62,7 @@ function Pagination({ page, total, onChange }: { page: number; total: number; on
             <button
               key={p}
               onClick={() => onChange(p as number)}
-              className={`min-w-[32px] rounded-md px-2.5 py-1.5 text-xs font-medium ring-1 ${page === p ? "bg-indigo-600 text-white ring-indigo-600" : "bg-white text-slate-700 ring-slate-200 hover:bg-slate-50 dark:bg-[#0D1632] dark:text-slate-300 dark:ring-slate-700"}`}
+              className={`min-w-[32px] rounded-md px-2.5 py-1.5 text-xs font-medium ring-1 ${page === p ? "bg-teal-600 text-white ring-teal-600" : "bg-white text-slate-700 ring-slate-200 hover:bg-slate-50 dark:bg-[#0D1632] dark:text-slate-300 dark:ring-slate-700"}`}
             >
               {p}
             </button>
@@ -84,6 +85,7 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
   const [sort, setSort] = useState<"score" | "return" | "delta">("score");
   const [view, setView] = useState<"table" | "cards">("table");
   const [page, setPage] = useState(1);
+  const [density, setDensity] = useState<"comfortable" | "compact">("comfortable");
 
   useEffect(() => {
     if (window.innerWidth < 768) setView("cards");
@@ -113,8 +115,8 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2 text-sm text-slate-900 dark:text-white">
-          <span className="h-2 w-2 rounded-full bg-indigo-500" /> Filtered Stock Options{" "}
-          <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700 ring-1 ring-indigo-200 dark:bg-indigo-500/20 dark:text-indigo-300 dark:ring-indigo-500/30">
+          <span className="h-2 w-2 rounded-full bg-teal-500" /> Filtered Stock Options{" "}
+          <span className="rounded-full bg-teal-50 px-2 py-0.5 text-xs font-medium text-teal-800 ring-1 ring-teal-200 dark:bg-teal-500/20 dark:text-teal-300 dark:ring-teal-500/30">
             {rows.length} results
           </span>
           {rows.length > pageSize && (
@@ -134,16 +136,17 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
             <option value="return">Return /yr</option>
             <option value="delta">Delta (low→high)</option>
           </select>
+          {view === "table" && <DensityToggle value={density} onChange={setDensity} />}
           <div className="ml-2 inline-flex rounded-lg border border-slate-200 bg-white p-0.5 dark:border-slate-800 dark:bg-[#0F1A3A]">
             <button
               onClick={() => setView("table")}
-              className={`rounded-md px-3 py-1.5 text-xs font-medium ${view === "table" ? "bg-indigo-600 text-white" : "text-slate-500 dark:text-slate-400"}`}
+              className={`rounded-md px-3 py-1.5 text-xs font-medium ${view === "table" ? "bg-teal-600 text-white" : "text-slate-500 dark:text-slate-400"}`}
             >
               Table
             </button>
             <button
               onClick={() => setView("cards")}
-              className={`rounded-md px-3 py-1.5 text-xs font-medium ${view === "cards" ? "bg-indigo-600 text-white" : "text-slate-500 dark:text-slate-400"}`}
+              className={`rounded-md px-3 py-1.5 text-xs font-medium ${view === "cards" ? "bg-teal-600 text-white" : "text-slate-500 dark:text-slate-400"}`}
             >
               Cards
             </button>
@@ -156,7 +159,7 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
           <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400 md:hidden">
             <span>← swipe to see more</span> <span className="ml-auto">Cards recommended on phone — toggle above</span>
           </div>
-          <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-[#0F1A3A]">
+          <TableScroll density={density}>
             <table className="min-w-full text-sm">
               <thead className="bg-slate-50 text-left text-[10px] uppercase tracking-[0.12em] text-slate-500 dark:bg-[#0D1632] dark:text-slate-400">
                 <tr>
@@ -192,7 +195,7 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                       >
                         <td className="px-2 py-3 text-xs text-slate-500 dark:text-slate-400">{globalIdx + 1}</td>
                         <td className="px-3 py-3 sticky left-0 bg-white dark:bg-[#0F1A3A] md:bg-transparent dark:md:bg-transparent z-10">
-                          <Link href={`/wheel/${r.g.row.ticker}?${q}`} className="font-semibold text-slate-900 hover:text-indigo-700 dark:text-white dark:hover:text-indigo-300">
+                          <Link href={`/wheel/${r.g.row.ticker}?${q}`} className="font-semibold text-slate-900 hover:text-teal-700 dark:text-white dark:hover:text-teal-300">
                             {r.g.row.ticker}
                           </Link>
                           <div className="max-w-[150px] truncate text-xs text-slate-500 dark:text-slate-400">{r.g.row.name}</div>
@@ -361,7 +364,7 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                                   })()}
                                 </div>
                                 <div className="mt-3 flex flex-wrap gap-2">
-                                  <Link href={`/wheel/${r.g.row.ticker}?${q}`} className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-500">
+                                  <Link href={`/wheel/${r.g.row.ticker}?${q}`} className="rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-teal-500">
                                     View details →
                                   </Link>
                                   <Link
@@ -405,7 +408,7 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                 })}
               </tbody>
             </table>
-          </div>
+          </TableScroll>
           <Pagination page={curPage} total={totalPages} onChange={setPage} />
         </>
       ) : (
