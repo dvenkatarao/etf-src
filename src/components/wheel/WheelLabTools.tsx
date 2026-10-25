@@ -218,43 +218,45 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
 
       {tab === "payoff" && (
         <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-[#0F1A3A]">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div className="flex flex-wrap gap-1.5">
-              {PRESET_META.map((p) => (
-                <button
-                  key={p.id}
-                  onClick={() => applyPreset(p.id)}
-                  className={`rounded-full px-3 py-1.5 text-xs font-medium ${preset === p.id ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"}`}
-                  title={p.desc}
-                >
-                  {p.label}
-                </button>
-              ))}
-            </div>
-            <div className="flex flex-wrap items-end gap-6">
-              <div className="grid gap-1">
-                <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Example price</div>
-                <div className="font-mono text-xl font-semibold leading-8 tabular-nums text-slate-900 dark:text-white">{money(spot)}</div>
-              </div>
-              <div className="grid gap-1">
-                <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Model expiration</div>
-                <div className="font-mono text-xl font-semibold leading-8 tabular-nums text-slate-900 dark:text-white">{expiry || `${dte} DTE`}</div>
-              </div>
-              <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
-                Position size
-                <span className="inline-flex overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
-                  <button type="button" className="px-2 py-1 text-sm text-slate-600 dark:text-slate-300" onClick={() => setLegs((prev) => prev.map((l) => ({ ...l, qty: Math.max(1, l.qty - 1) })))}>
-                    −
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+              <div className="flex min-w-0 flex-wrap items-center gap-1.5 pb-0.5">
+                {PRESET_META.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => applyPreset(p.id)}
+                    className={`rounded-full px-3 py-1.5 text-xs font-medium ${preset === p.id ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"}`}
+                    title={p.desc}
+                  >
+                    {p.label}
                   </button>
-                  <span className="min-w-[2rem] bg-slate-50 px-2 py-1 text-center font-mono text-sm dark:bg-[#111C3E] dark:text-white">{legs[0]?.qty ?? 1}</span>
-                  <button type="button" className="px-2 py-1 text-sm text-slate-600 dark:text-slate-300" onClick={() => setLegs((prev) => prev.map((l) => ({ ...l, qty: l.qty + 1 })))}>
-                    +
-                  </button>
-                </span>
-              </label>
+                ))}
+              </div>
+              <div className="flex flex-wrap items-end gap-6">
+                <div className="grid gap-1">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Example price</div>
+                  <div className="flex h-8 items-center font-mono text-xl font-semibold tabular-nums text-slate-900 dark:text-white">{money(spot)}</div>
+                </div>
+                <div className="grid gap-1">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Model expiration</div>
+                  <div className="flex h-8 items-center font-mono text-base font-semibold tabular-nums text-slate-900 dark:text-white">{expiry || `${dte} DTE`}</div>
+                </div>
+                <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                  Position size
+                  <span className="inline-flex h-8 overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
+                    <button type="button" className="px-2.5 text-sm leading-none text-slate-600 dark:text-slate-300" onClick={() => setLegs((prev) => prev.map((l) => ({ ...l, qty: Math.max(1, l.qty - 1) })))}>
+                      −
+                    </button>
+                    <span className="flex min-w-[2rem] items-center justify-center bg-slate-50 px-2 font-mono text-sm tabular-nums dark:bg-[#111C3E] dark:text-white">{legs[0]?.qty ?? 1}</span>
+                    <button type="button" className="px-2.5 text-sm leading-none text-slate-600 dark:text-slate-300" onClick={() => setLegs((prev) => prev.map((l) => ({ ...l, qty: l.qty + 1 })))}>
+                      +
+                    </button>
+                  </span>
+                </label>
+              </div>
             </div>
+            <p className="text-xs text-slate-500">{PRESET_META.find((p) => p.id === preset)?.desc}</p>
           </div>
-          <p className="text-xs text-slate-500">{PRESET_META.find((p) => p.id === preset)?.desc}</p>
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             <Kpi label="Net credit" value={money(summary.netCredit)} tone={summary.netCredit >= 0 ? "up" : "down"} hint="Fees excluded" />
