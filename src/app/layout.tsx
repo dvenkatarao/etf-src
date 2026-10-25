@@ -4,12 +4,15 @@ import Link from "next/link";
 import Nav from "@/components/Nav";
 import { Disclaimer } from "@/components/ui";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import "@fontsource/ibm-plex-sans/400.css";
-import "@fontsource/ibm-plex-sans/500.css";
-import "@fontsource/ibm-plex-sans/600.css";
-import "@fontsource/ibm-plex-sans/700.css";
-import "@fontsource/ibm-plex-mono/400.css";
-import "@fontsource/ibm-plex-mono/500.css";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import "@fontsource/inter/600.css";
+import "@fontsource/inter/700.css";
+import "@fontsource/inter/800.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/500.css";
+import "@fontsource/jetbrains-mono/600.css";
+import "@fontsource/jetbrains-mono/700.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -36,13 +39,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <div className="flex flex-col gap-3 border-t border-[var(--border)] pt-4 sm:flex-row sm:items-start sm:justify-between">
               <Disclaimer />
               <nav className="flex shrink-0 flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500" aria-label="Help and data">
-                <Link href="/coverage" className="hover:text-teal-700 dark:hover:text-teal-300">
+                <Link href="/coverage" className="hover:text-emerald-700 dark:hover:text-emerald-400">
                   Coverage
                 </Link>
-                <Link href="/sources" className="hover:text-teal-700 dark:hover:text-teal-300">
+                <Link href="/sources" className="hover:text-emerald-700 dark:hover:text-emerald-400">
                   Data sources
                 </Link>
-                <Link href="/wheel/guide" className="hover:text-teal-700 dark:hover:text-teal-300">
+                <Link href="/wheel/guide" className="hover:text-emerald-700 dark:hover:text-emerald-400">
                   Wheel guide
                 </Link>
               </nav>

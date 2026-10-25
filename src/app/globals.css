@@ -3,39 +3,39 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-/* Semantic CSS variables — light = ETF light, dark = Wheel dark (user prefers dark) */
+/* Option-1 tokens: slate-950 canvas, emerald accent. Header stays dark. */
 :root {
-  --bg-canvas: #F8FAFC;
+  --bg-canvas: #f8fafc;
   --bg-card: #ffffff;
-  --bg-card-subtle: #f8fafc;
+  --bg-card-subtle: #f1f5f9;
   --bg-card-header: #f1f5f9;
   --bg-input: #ffffff;
-  --bg-nav: #070D2A;
+  --bg-nav: #020617;
   --border: #e2e8f0;
   --border-strong: #cbd5e1;
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #94a3b8;
-  --text-accent: #0f766e;
+  --text-accent: #059669;
 }
 
 html.dark {
-  --bg-canvas: #070D2A;
-  --bg-card: #0F1A3A;
-  --bg-card-subtle: #111C3E;
-  --bg-card-header: #0D1632;
-  --bg-input: #111C3E;
-  --bg-nav: #070D2A;
+  --bg-canvas: #020617;
+  --bg-card: #0f172a;
+  --bg-card-subtle: #111827;
+  --bg-card-header: #0b1220;
+  --bg-input: #0f172a;
+  --bg-nav: #020617;
   --border: #1e293b;
   --border-strong: #334155;
-  --text-primary: #f1f5f9;
+  --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
-  --text-accent: #2dd4bf;
+  --text-accent: #34d399;
 }
 
 /* Base */
@@ -52,10 +52,15 @@ a, button, [role="button"] {
   transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
 }
 tbody tr { transition: background-color 150ms ease; }
-::selection { background: rgb(20 184 166 / 0.22); }
-:focus-visible { outline: 2px solid rgb(20 184 166); outline-offset: 2px; }
-html.dark ::selection { background: rgb(45 212 191 / 0.25); }
-html.dark :focus-visible { outline-color: rgb(45 212 191); }
+::selection { background: rgb(16 185 129 / 0.22); }
+:focus-visible { outline: 2px solid rgb(16 185 129); outline-offset: 2px; }
+html.dark ::selection { background: rgb(52 211 153 / 0.28); color: #d1fae5; }
+html.dark :focus-visible { outline-color: rgb(52 211 153); }
+
+input[type="range"] {
+  accent-color: #10b981;
+  height: 0.35rem;
+}
 
 /* Research tables — sticky header, tabular figures, density */
 .cl-table-scroll {
@@ -103,8 +108,10 @@ html.dark .text-slate-700 { color: #cbd5e1 !important; }
 html.dark .text-slate-600 { color: var(--text-secondary) !important; }
 html.dark .text-slate-500 { color: var(--text-secondary) !important; }
 html.dark .text-slate-400 { color: var(--text-muted) !important; }
-html.dark .text-teal-700 { color: #a5b4fc !important; }
-html.dark .text-teal-600 { color: #818cf8 !important; }
+html.dark .text-teal-700 { color: #6ee7b7 !important; }
+html.dark .text-teal-600 { color: #34d399 !important; }
+html.dark .bg-teal-600 { background-color: #059669 !important; }
+html.dark .bg-teal-500 { background-color: #10b981 !important; }
 
 /* ───────────────────────────────────────────────── */
 /* Dark → Light (when light, wheel dark utilities become light) */
