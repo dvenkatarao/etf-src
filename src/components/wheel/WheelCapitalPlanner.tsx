@@ -12,7 +12,6 @@ export default function WheelCapitalPlanner({ rows }: { rows: WheelRow[] }) {
   const availableCash = cashInput ? Number(cashInput.replace(/[^0-9.]/g, "")) : NaN;
   const hasCash = Number.isFinite(availableCash) && availableCash > 0;
 
-  // Use top 6 best puts (user likely sells 3-6 at a time)
   const top = rows.slice(0, 6);
 
   const totalNeededTop = useMemo(() => top.reduce((s, r) => s + r.best.contract.strike * 100 * contractsPerName, 0), [top, contractsPerName]);
@@ -20,52 +19,55 @@ export default function WheelCapitalPlanner({ rows }: { rows: WheelRow[] }) {
   const reserveAfterTop = hasCash ? availableCash - totalNeededTop : null;
   const overTop = hasCash ? totalNeededTop > availableCash : false;
 
+  const field =
+    "rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-teal-500 focus:outline-none dark:border-slate-700 dark:bg-[#111C3E] dark:text-white dark:placeholder:text-slate-500";
+
   return (
-    <div className="rounded-xl border border-slate-800 bg-[#0F1A3A] p-5">
+    <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-[#0F1A3A]">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="text-sm font-semibold text-white">Capital & Assignment Planner</h3>
-          <p className="mt-0.5 max-w-2xl text-xs leading-relaxed text-slate-400">
-            Each cash-secured put must set aside <b className="text-slate-200">strike × 100 × contracts</b>. Below = cash needed if you sold the top-ranked puts together, and what assignment looks like.
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Capital & Assignment Planner</h3>
+          <p className="mt-0.5 max-w-2xl text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+            Each cash-secured put must set aside <b className="text-slate-700 dark:text-slate-200">strike × 100 × contracts</b>. Below = cash needed if you sold the top-ranked puts together, and what assignment looks like.
           </p>
         </div>
         <div className="flex flex-wrap items-end gap-3">
-          <label className="grid gap-1 text-[11px] font-semibold tracking-[0.08em] text-slate-400">
+          <label className="grid gap-1 text-[11px] font-semibold tracking-[0.08em] text-slate-500 dark:text-slate-400">
             AVAILABLE CASH
             <input
               value={cashInput}
               onChange={(e) => setCashInput(e.target.value)}
               placeholder="e.g. 50000"
               inputMode="numeric"
-              className="w-36 rounded-lg border border-slate-700 bg-[#111C3E] px-3 py-1.5 text-sm text-white placeholder:text-slate-500 focus:border-teal-500 focus:outline-none"
+              className={`w-36 ${field}`}
             />
           </label>
-          <label className="grid gap-1 text-[11px] font-semibold tracking-[0.08em] text-slate-400">
+          <label className="grid gap-1 text-[11px] font-semibold tracking-[0.08em] text-slate-500 dark:text-slate-400">
             CONTRACTS / NAME
             <input
               value={lotsInput}
               onChange={(e) => setLotsInput(e.target.value)}
               inputMode="numeric"
-              className="w-20 rounded-lg border border-slate-700 bg-[#111C3E] px-3 py-1.5 text-sm text-white focus:border-teal-500 focus:outline-none"
+              className={`w-20 ${field}`}
             />
           </label>
         </div>
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
-        <div className="rounded-xl bg-[#111C3E] p-3">
-          <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">If you sold top {top.length}</div>
-          <div className="mt-1 text-lg font-semibold tabular-nums text-white">{money(totalNeededTop)}</div>
-          <div className="text-[11px] text-slate-500">cash set aside · {top.length * contractsPerName} contract(s)</div>
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-transparent dark:bg-[#111C3E]">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">If you sold top {top.length}</div>
+          <div className="mt-1 font-mono text-lg font-semibold tabular-nums text-slate-900 dark:text-white">{money(totalNeededTop)}</div>
+          <div className="text-[11px] text-slate-500">{top.length * contractsPerName} contract(s) cash set aside</div>
         </div>
-        <div className="rounded-xl bg-[#111C3E] p-3">
-          <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">If you sold all {rows.length} shown</div>
-          <div className="mt-1 text-lg font-semibold tabular-nums text-white">{money(allNeeded)}</div>
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-transparent dark:bg-[#111C3E]">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">If you sold all {rows.length} shown</div>
+          <div className="mt-1 font-mono text-lg font-semibold tabular-nums text-slate-900 dark:text-white">{money(allNeeded)}</div>
           <div className="text-[11px] text-slate-500">worst-case simultaneous assignment</div>
         </div>
-        <div className={`rounded-xl p-3 ${overTop ? "bg-rose-500/10 ring-1 ring-rose-500/30" : hasCash ? "bg-emerald-500/10 ring-1 ring-emerald-500/20" : "bg-[#111C3E]"}`}>
-          <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">Reserve after top {top.length}</div>
-          <div className={`mt-1 text-lg font-semibold tabular-nums ${overTop ? "text-rose-300" : hasCash ? "text-emerald-300" : "text-slate-400"}`}>
+        <div className={`rounded-xl border p-3 ${overTop ? "border-rose-200 bg-rose-50 dark:border-rose-500/30 dark:bg-rose-500/10" : hasCash ? "border-emerald-200 bg-emerald-50 dark:border-emerald-500/20 dark:bg-emerald-500/10" : "border-slate-200 bg-slate-50 dark:border-transparent dark:bg-[#111C3E]"}`}>
+          <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Reserve after top {top.length}</div>
+          <div className={`mt-1 font-mono text-lg font-semibold tabular-nums ${overTop ? "text-rose-700 dark:text-rose-300" : hasCash ? "text-emerald-700 dark:text-emerald-300" : "text-slate-400"}`}>
             {hasCash ? money(reserveAfterTop!) : "—"}
           </div>
           <div className="text-[11px] text-slate-500">{hasCash ? (overTop ? `short ${money(Math.abs(reserveAfterTop!))}` : `covers ~${Math.floor(availableCash / (top[0]?.best.contract.strike * 100 || 1))} similar assignments`) : "enter cash above"}</div>
@@ -73,28 +75,28 @@ export default function WheelCapitalPlanner({ rows }: { rows: WheelRow[] }) {
       </div>
 
       {overTop && (
-        <p className="mt-3 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs leading-relaxed text-rose-200">
+        <p className="mt-3 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs leading-relaxed text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200">
           You don&apos;t have enough cash to fund assignment on all top puts at once. Sell fewer names, use smaller strikes, or keep 20-30% cash reserve — a gap down can assign several at the same time.
         </p>
       )}
 
-      <div className="mt-4 rounded-xl border border-slate-800 bg-[#0D1632] p-3">
-        <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">Assignment preview (per put)</div>
+      <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-[#0D1632]">
+        <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Assignment preview (per put)</div>
         <p className="mt-1 text-xs text-slate-500">If assigned you own 100 shares at the breakeven. Table shows paper loss vs your breakeven and vs analyst target if you were assigned now.</p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {top.slice(0, 6).map((r) => {
             const loss = assignmentLoss(r.best, r.ctx.price, r.g.row.fundamentals?.targetMean);
             const cash = r.best.contract.strike * 100 * contractsPerName;
             return (
-              <div key={r.g.row.ticker} className="rounded-lg border border-slate-700/60 bg-[#0F1A3A] p-3">
+              <div key={r.g.row.ticker} className="rounded-lg border border-slate-200 bg-white p-3 dark:border-slate-700/60 dark:bg-[#0F1A3A]">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-white">{r.g.row.ticker}</span>
-                  <span className="text-xs text-slate-400">{money(r.best.contract.strike)} P</span>
+                  <span className="text-xs font-bold text-slate-900 dark:text-white">{r.g.row.ticker}</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">{money(r.best.contract.strike)} P</span>
                 </div>
-                <div className="mt-1 text-xs text-slate-300">
-                  Cash: <b className="text-white">{money(cash)}</b> · breakeven {money(loss.breakeven)}
+                <div className="mt-1 text-xs text-slate-600 dark:text-slate-300">
+                  Cash: <b className="text-slate-900 dark:text-white">{money(cash)}</b> · breakeven {money(loss.breakeven)}
                 </div>
-                <div className={`mt-1 text-xs font-semibold tabular-nums ${loss.isLoss ? "text-rose-300" : "text-emerald-300"}`}>
+                <div className={`mt-1 text-xs font-semibold tabular-nums ${loss.isLoss ? "text-rose-700 dark:text-rose-300" : "text-emerald-700 dark:text-emerald-300"}`}>
                   vs now {pct(loss.lossPct, 1, true)} {loss.isLoss ? "paper loss" : "paper gain"}
                 </div>
                 {loss.vsTargetPct != null && <div className="text-[11px] text-slate-500">vs target {pct(loss.vsTargetPct, 1, true)}</div>}
