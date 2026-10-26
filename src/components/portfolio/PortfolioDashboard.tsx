@@ -103,7 +103,7 @@ export default function PortfolioDashboard({
               <select
                 value={selectedPortfolioId}
                 onChange={(e) => handleSelectPortfolio(e.target.value)}
-                className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-900 shadow-sm focus:border-teal-500 focus:outline-none"
+                className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none"
               >
                 <option value="all">
                   All Accounts Combined ({analytics.portfolioCount} brokers)
@@ -152,7 +152,7 @@ export default function PortfolioDashboard({
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-1.5 rounded-xl border border-teal-200 bg-teal-50 px-3.5 py-2 text-xs font-semibold text-teal-700 hover:bg-teal-100"
+            className="flex items-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2 text-xs font-semibold text-emerald-700 hover:bg-emerald-100"
           >
             <span>+ Add Holding</span>
           </button>
@@ -175,7 +175,7 @@ export default function PortfolioDashboard({
 
           <button
             onClick={() => setShowConnectModal(true)}
-            className="flex items-center gap-1.5 rounded-xl bg-teal-600 px-4 py-2 text-xs font-bold text-white shadow hover:bg-teal-500"
+            className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white shadow hover:bg-emerald-500"
           >
             <span>🔗 Connect Broker</span>
           </button>

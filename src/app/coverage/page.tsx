@@ -53,7 +53,7 @@ export default async function CoveragePage() {
         title="Data coverage audit"
         description="How many ETFs actually have each field populated in this database right now, and which planned features that supports. Nothing here is estimated. Percentages are of ETFs with stored metrics (or of live quotes received)."
         right={
-          <a href="/api/coverage" className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-teal-500">
+          <a href="/api/coverage" className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-emerald-500">
             View raw JSON
           </a>
         }

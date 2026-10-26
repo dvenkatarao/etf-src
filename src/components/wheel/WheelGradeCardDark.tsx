@@ -4,7 +4,7 @@ import { gradeBadgeClasses } from "@/components/GradePill";
 export default function WheelGradeCardDark({ quality, annReturn }: { quality: StockQuality; annReturn?: number | null }) {
   const g = quality.grade;
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-[#0F1A3A]">
+    <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-[#0f172a]">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Stock Quality Grade</h2>
@@ -17,7 +17,7 @@ export default function WheelGradeCardDark({ quality, annReturn }: { quality: St
       {quality.score != null && (
         <div className="mt-3">
           <div className="h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
-            <div className="h-full rounded-full bg-teal-500" style={{ width: `${Math.min(100, Math.max(0, quality.score))}%` }} />
+            <div className="h-full rounded-full bg-emerald-500" style={{ width: `${Math.min(100, Math.max(0, quality.score))}%` }} />
           </div>
           <div className="mt-1 flex flex-wrap justify-between gap-2 text-[11px] text-slate-500">
             <span>Score {quality.score.toFixed(0)}/100 · Coverage {Math.round(quality.coverage * 100)}%</span>
@@ -39,7 +39,7 @@ export default function WheelGradeCardDark({ quality, annReturn }: { quality: St
                 ? `${p.label}: ${p.score.toFixed(0)}/100 (${p.letter}) — ${p.detail} | Weight ${Math.round(p.weight * 100)}%`
                 : p.detail
             }
-            className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-[#0D1632] cursor-help transition hover:border-teal-200 dark:hover:border-teal-500/30"
+            className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-[#0b1220] cursor-help transition hover:border-emerald-200 dark:hover:border-emerald-500/30"
           >
             <div className="flex items-center justify-between">
               <div className="text-xs font-semibold text-slate-900 dark:text-white">{p.label}</div>

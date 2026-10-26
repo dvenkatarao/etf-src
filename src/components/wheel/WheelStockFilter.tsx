@@ -95,7 +95,7 @@ export default function WheelStockFilter({
       </p>
 
       {/* Threshold preview — explanatory, not editable in preset mode */}
-      <details className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-700 dark:bg-[#0D1632]" open={f.stockMode === "custom"}>
+      <details className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-700 dark:bg-[#0b1220]" open={f.stockMode === "custom"}>
         <summary className="cursor-pointer text-xs font-semibold text-slate-700 dark:text-slate-300">
           {f.stockMode === "custom" ? "Custom thresholds — edit values (null = no filter)" : `What ${f.stockPreset} means in fundamentals`}
         </summary>
@@ -130,43 +130,43 @@ export default function WheelStockFilter({
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
               <label className="flex flex-col gap-1">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Op Margin ≥ %</span>
-                <input name="opMin" defaultValue={thresholds.opMarginMin != null ? (thresholds.opMarginMin * 100).toString() : ""} placeholder="15" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-900 placeholder:text-slate-400 dark:border-slate-700 dark:bg-[#111C3E] dark:text-white" />
+                <input name="opMin" defaultValue={thresholds.opMarginMin != null ? (thresholds.opMarginMin * 100).toString() : ""} placeholder="15" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-900 placeholder:text-slate-400 dark:border-slate-700 dark:bg-[#111827] dark:text-white" />
               </label>
               <label className="flex flex-col gap-1">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">ROE ≥ %</span>
-                <input name="roeMin" defaultValue={thresholds.roeMin != null ? (thresholds.roeMin * 100).toString() : ""} placeholder="15" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-900 dark:border-slate-700 dark:bg-[#111C3E] dark:text-white" />
+                <input name="roeMin" defaultValue={thresholds.roeMin != null ? (thresholds.roeMin * 100).toString() : ""} placeholder="15" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-900 dark:border-slate-700 dark:bg-[#111827] dark:text-white" />
               </label>
               <label className="flex flex-col gap-1">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Debt/Eq ≤</span>
-                <input name="debtMax" defaultValue={thresholds.debtEquityMax ?? ""} placeholder="1.0" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111C3E] dark:text-white" />
+                <input name="debtMax" defaultValue={thresholds.debtEquityMax ?? ""} placeholder="1.0" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111827] dark:text-white" />
               </label>
               <label className="flex flex-col gap-1">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Fwd P/E ≤</span>
-                <input name="peMax" defaultValue={thresholds.forwardPEMax ?? ""} placeholder="20" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111C3E] dark:text-white" />
+                <input name="peMax" defaultValue={thresholds.forwardPEMax ?? ""} placeholder="20" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111827] dark:text-white" />
               </label>
               <label className="flex flex-col gap-1">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">PEG ≤</span>
-                <input name="pegMax" defaultValue={thresholds.pegMax ?? ""} placeholder="2.0" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111C3E] dark:text-white" />
+                <input name="pegMax" defaultValue={thresholds.pegMax ?? ""} placeholder="2.0" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111827] dark:text-white" />
               </label>
               <label className="flex flex-col gap-1">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">FCF Yield ≥ %</span>
-                <input name="fcyMin" defaultValue={thresholds.fcfYieldMin != null ? (thresholds.fcfYieldMin * 100).toString() : ""} placeholder="4" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111C3E] dark:text-white" />
+                <input name="fcyMin" defaultValue={thresholds.fcfYieldMin != null ? (thresholds.fcfYieldMin * 100).toString() : ""} placeholder="4" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111827] dark:text-white" />
               </label>
               <label className="flex flex-col gap-1">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Mkt Cap ≥ $B</span>
-                <input name="mktMin" defaultValue={thresholds.marketCapMin != null ? (thresholds.marketCapMin / 1e9).toString() : ""} placeholder="10" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111C3E] dark:text-white" />
+                <input name="mktMin" defaultValue={thresholds.marketCapMin != null ? (thresholds.marketCapMin / 1e9).toString() : ""} placeholder="10" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111827] dark:text-white" />
               </label>
               <label className="flex flex-col gap-1">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Beta ≤</span>
-                <input name="betaMax" defaultValue={thresholds.betaMax ?? ""} placeholder="1.3" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111C3E] dark:text-white" />
+                <input name="betaMax" defaultValue={thresholds.betaMax ?? ""} placeholder="1.3" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111827] dark:text-white" />
               </label>
               <label className="flex flex-col gap-1">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">DD ≤ %</span>
-                <input name="ddMax" defaultValue={thresholds.ddMax != null ? (thresholds.ddMax * 100).toString() : ""} placeholder="25" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111C3E] dark:text-white" />
+                <input name="ddMax" defaultValue={thresholds.ddMax != null ? (thresholds.ddMax * 100).toString() : ""} placeholder="25" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111827] dark:text-white" />
               </label>
               <label className="flex flex-col gap-1">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Rec ≤ (1=buy)</span>
-                <input name="recMax" defaultValue={thresholds.recMeanMax ?? ""} placeholder="2.3" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111C3E] dark:text-white" />
+                <input name="recMax" defaultValue={thresholds.recMeanMax ?? ""} placeholder="2.3" className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111827] dark:text-white" />
               </label>
               <label className="flex items-center gap-2 pt-5">
                 <input type="checkbox" name="opt" value="1" defaultChecked={f.optionableOnly} className="h-4 w-4 rounded border-slate-300 accent-emerald-600" />

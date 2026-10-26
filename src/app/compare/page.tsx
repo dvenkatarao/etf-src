@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 export const metadata = { title: "Compare ETFs · Capital Lab" };
 
-const COLORS = ["#0f766e", "#059669", "#d97706", "#db2777", "#0891b2"];
+const COLORS = ["#059669", "#059669", "#d97706", "#db2777", "#0891b2"];
 
 type Line = { label: string; group: string; value: (r: EtfRow, extra: { sharpe: number | null; beta: number | null }) => number | null; fmt: (x: number | null) => string; better?: "high" | "low" };
 

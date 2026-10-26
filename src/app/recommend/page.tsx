@@ -72,7 +72,7 @@ export default async function RecommendPage({ searchParams }: { searchParams: Pr
     ? CLASS_ORDER.filter((c) => eligible.some((r) => r.assetClass === c) && !scoredAll.some((x) => x.row.assetClass === c))
     : [];
   const spec = GOALS[goal];
-  const field = "rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-teal-500 focus:outline-none";
+  const field = "rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none";
 
   return (
     <div>
@@ -102,21 +102,21 @@ export default async function RecommendPage({ searchParams }: { searchParams: Pr
         </select>
         <div className="space-y-1.5">
           <label className="flex items-center gap-2 text-sm text-slate-700">
-            <input type="checkbox" name="lev" value="1" defaultChecked={includeLev} className="h-4 w-4 accent-teal-600" /> Include leveraged / inverse
+            <input type="checkbox" name="lev" value="1" defaultChecked={includeLev} className="h-4 w-4 accent-emerald-600" /> Include leveraged / inverse
           </label>
           <label className="flex items-center gap-2 text-sm text-slate-700">
-            <input type="checkbox" name="sev" value="1" defaultChecked={includeSevere} className="h-4 w-4 accent-teal-600" /> Income: include severe NAV erosion
+            <input type="checkbox" name="sev" value="1" defaultChecked={includeSevere} className="h-4 w-4 accent-emerald-600" /> Income: include severe NAV erosion
           </label>
           <label className="flex items-center gap-2 text-sm text-slate-700">
-            <input type="checkbox" name="lowq" value="1" defaultChecked={showLow} className="h-4 w-4 accent-teal-600" /> Show low-grade funds (D/F)
+            <input type="checkbox" name="lowq" value="1" defaultChecked={showLow} className="h-4 w-4 accent-emerald-600" /> Show low-grade funds (D/F)
           </label>
         </div>
-        <button className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500">Rank ETFs</button>
+        <button className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500">Rank ETFs</button>
 
         <details open={useCustom} className="rounded-lg border border-slate-200 bg-slate-50 p-3 sm:col-span-2 lg:col-span-6">
-          <summary className="cursor-pointer text-sm font-medium text-slate-700">Edit weights {customActive ? <span className="ml-1 text-xs font-normal text-teal-600">(custom in use)</span> : null}</summary>
+          <summary className="cursor-pointer text-sm font-medium text-slate-700">Edit weights {customActive ? <span className="ml-1 text-xs font-normal text-emerald-600">(custom in use)</span> : null}</summary>
           <label className="mt-3 flex items-center gap-2 text-sm text-slate-700">
-            <input type="checkbox" name="custom" value="1" defaultChecked={useCustom} className="h-4 w-4 accent-teal-600" /> Use my weights instead of the goal&apos;s defaults
+            <input type="checkbox" name="custom" value="1" defaultChecked={useCustom} className="h-4 w-4 accent-emerald-600" /> Use my weights instead of the goal&apos;s defaults
           </label>
           <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             {METRIC_KEYS.map((m) => (

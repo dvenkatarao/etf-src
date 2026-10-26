@@ -104,7 +104,7 @@ export default function WheelPositionsTracker() {
   }, [positions]);
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-[#0F1A3A] p-5">
+    <div className="rounded-xl border border-slate-800 bg-[#0f172a] p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 className="text-sm font-semibold text-white">My Wheel Positions (local, no broker link)</h3>
@@ -114,22 +114,22 @@ export default function WheelPositionsTracker() {
         </div>
         <button
           onClick={() => setOpen((o) => !o)}
-          className="rounded-lg bg-[#1B2540] px-3 py-1.5 text-xs font-medium text-teal-300 ring-1 ring-teal-500/20 hover:bg-[#24304F]"
+          className="rounded-lg bg-emerald-950/40 px-3 py-1.5 text-xs font-medium text-emerald-300 ring-1 ring-emerald-500/20 hover:bg-emerald-900/40"
         >
           {open ? "Hide log" : `Open ledger (${positions.length})`}
         </button>
       </div>
 
       <div className="mt-3 grid grid-cols-3 gap-3">
-        <div className="rounded-lg bg-[#111C3E] p-3">
+        <div className="rounded-lg bg-[#111827] p-3">
           <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">Open positions</div>
           <div className="mt-1 text-lg font-semibold text-white">{summary.openCount}</div>
         </div>
-        <div className="rounded-lg bg-[#111C3E] p-3">
+        <div className="rounded-lg bg-[#111827] p-3">
           <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">Cash secured</div>
           <div className="mt-1 text-lg font-semibold text-white">{money(summary.cashSecured)}</div>
         </div>
-        <div className="rounded-lg bg-[#111C3E] p-3">
+        <div className="rounded-lg bg-[#111827] p-3">
           <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">Premium collected</div>
           <div className="mt-1 text-lg font-semibold text-emerald-300">{money(summary.collected)}</div>
         </div>
@@ -137,18 +137,18 @@ export default function WheelPositionsTracker() {
 
       {open && (
         <>
-          <div className="mt-4 grid gap-3 rounded-xl border border-slate-700/50 bg-[#111C3E] p-4 md:grid-cols-7">
-            <input value={ticker} onChange={(e) => setTicker(e.target.value.toUpperCase())} placeholder="Ticker" className="rounded-lg border border-slate-700 bg-[#0F1A3A] px-2 py-1.5 text-xs text-white placeholder:text-slate-500" />
-            <select value={side} onChange={(e) => setSide(e.target.value as any)} className="rounded-lg border border-slate-700 bg-[#0F1A3A] px-2 py-1.5 text-xs text-white">
+          <div className="mt-4 grid gap-3 rounded-xl border border-slate-700/50 bg-[#111827] p-4 md:grid-cols-7">
+            <input value={ticker} onChange={(e) => setTicker(e.target.value.toUpperCase())} placeholder="Ticker" className="rounded-lg border border-slate-700 bg-[#0f172a] px-2 py-1.5 text-xs text-white placeholder:text-slate-500" />
+            <select value={side} onChange={(e) => setSide(e.target.value as any)} className="rounded-lg border border-slate-700 bg-[#0f172a] px-2 py-1.5 text-xs text-white">
               <option value="put_sold">Put sold</option>
               <option value="assigned">Assigned</option>
               <option value="call_sold">Call sold</option>
             </select>
-            <input value={strike} onChange={(e) => setStrike(e.target.value)} placeholder="Strike" inputMode="decimal" className="rounded-lg border border-slate-700 bg-[#0F1A3A] px-2 py-1.5 text-xs text-white placeholder:text-slate-500" />
-            <input value={expiration} onChange={(e) => setExpiration(e.target.value)} type="date" className="rounded-lg border border-slate-700 bg-[#0F1A3A] px-2 py-1.5 text-xs text-white" />
-            <input value={premium} onChange={(e) => setPremium(e.target.value)} placeholder="Premium $/share" inputMode="decimal" className="rounded-lg border border-slate-700 bg-[#0F1A3A] px-2 py-1.5 text-xs text-white placeholder:text-slate-500" />
-            <input value={qty} onChange={(e) => setQty(e.target.value)} placeholder="Contracts" inputMode="numeric" className="w-20 rounded-lg border border-slate-700 bg-[#0F1A3A] px-2 py-1.5 text-xs text-white" />
-            <button onClick={add} className="rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-teal-500">Add</button>
+            <input value={strike} onChange={(e) => setStrike(e.target.value)} placeholder="Strike" inputMode="decimal" className="rounded-lg border border-slate-700 bg-[#0f172a] px-2 py-1.5 text-xs text-white placeholder:text-slate-500" />
+            <input value={expiration} onChange={(e) => setExpiration(e.target.value)} type="date" className="rounded-lg border border-slate-700 bg-[#0f172a] px-2 py-1.5 text-xs text-white" />
+            <input value={premium} onChange={(e) => setPremium(e.target.value)} placeholder="Premium $/share" inputMode="decimal" className="rounded-lg border border-slate-700 bg-[#0f172a] px-2 py-1.5 text-xs text-white placeholder:text-slate-500" />
+            <input value={qty} onChange={(e) => setQty(e.target.value)} placeholder="Contracts" inputMode="numeric" className="w-20 rounded-lg border border-slate-700 bg-[#0f172a] px-2 py-1.5 text-xs text-white" />
+            <button onClick={add} className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-500">Add</button>
           </div>
           {formError && <p className="mt-2 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs text-rose-200">{formError}</p>}
 

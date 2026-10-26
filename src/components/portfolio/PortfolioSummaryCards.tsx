@@ -54,7 +54,7 @@ export default function PortfolioSummaryCards({
   ];
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-[#0F1A3A]">
+    <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-[#0f172a]">
       <div className="flex min-w-[760px] divide-x divide-slate-200 dark:divide-slate-800">
         {cells.map((c) => (
           <div key={c.label} className="flex-1 px-4 py-3">

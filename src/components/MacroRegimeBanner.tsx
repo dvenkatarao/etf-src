@@ -39,7 +39,7 @@ export function MacroRegimeBanner({ regime }: { regime: Regime | null }) {
         </div>
         <Link
           href="/macro"
-          className="shrink-0 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-slate-700 ring-1 ring-black/5 hover:bg-slate-50 dark:bg-[#1B2540] dark:text-teal-300 dark:ring-teal-500/20 dark:hover:bg-[#24304F] dark:hover:text-white"
+          className="shrink-0 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-slate-700 ring-1 ring-black/5 hover:bg-slate-50 dark:bg-emerald-950/40 dark:text-emerald-300 dark:ring-emerald-500/20 dark:hover:bg-emerald-900/40 dark:hover:text-white"
         >
           View macro →
         </Link>

@@ -28,10 +28,10 @@ export default function FirstRunBanner() {
   }
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-teal-500/25 bg-teal-500/10 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">
       <p>Three questions → a starter screen you can edit. No trades, no advice.</p>
       <div className="flex items-center gap-3">
-        <Link href="/onboarding" className="font-medium text-teal-800 hover:underline dark:text-teal-300">
+        <Link href="/onboarding" className="font-medium text-emerald-800 hover:underline dark:text-emerald-300">
           Get started
         </Link>
         <button type="button" onClick={dismiss} className="text-xs text-slate-500 hover:text-slate-800 dark:hover:text-white">

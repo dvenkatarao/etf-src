@@ -20,7 +20,7 @@ export default function WheelKeyLevelsDark({ t, livePrice }: { t: Technicals; li
   const r = rsiState(t.rsi14);
   const m = t.macd;
   return (
-    <div className="rounded-xl border border-slate-800 bg-[#0F1A3A] p-5">
+    <div className="rounded-xl border border-slate-800 bg-[#0f172a] p-5">
       <h2 className="text-sm font-semibold text-white">Key levels & indicators</h2>
       <p className="text-xs text-slate-400">Computed from daily bars through {t.asOf}. States, not predictions.</p>
       <div className="mt-4 grid gap-6 md:grid-cols-2">

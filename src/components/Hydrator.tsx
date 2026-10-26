@@ -54,7 +54,7 @@ export default function Hydrator({ remaining, total }: { remaining: number; tota
       {!done ? (
         <>
           <span className="h-1 w-32 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
-            <span className="block h-full rounded-full bg-teal-500" style={{ width: `${pct}%` }} />
+            <span className="block h-full rounded-full bg-emerald-500" style={{ width: `${pct}%` }} />
           </span>
           <span>Updating {total - left} of {total} funds…</span>
         </>

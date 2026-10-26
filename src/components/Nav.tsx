@@ -68,7 +68,7 @@ function labActive(pathname: string | null, links: readonly { href: string }[]) 
 function BrandMark() {
   return (
     <span
-      className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-700 font-mono text-[11px] font-extrabold tracking-tight text-slate-950 ring-1 ring-emerald-400/40"
+      className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-cyan-700 font-mono text-[11px] font-extrabold tracking-tight text-slate-950 ring-1 ring-emerald-400/40"
       aria-hidden
     >
       CL
@@ -162,7 +162,7 @@ function SmartTickerSearch({ onNavigate }: { onNavigate?: () => void }) {
       />
       {open && hits.length > 0 && (
         <ul
-          className="absolute right-0 z-50 mt-1.5 w-[260px] overflow-hidden rounded-lg border border-white/10 bg-[#0F1A3A] py-1 shadow-xl shadow-black/40"
+          className="absolute right-0 z-50 mt-1.5 w-[260px] overflow-hidden rounded-lg border border-white/10 bg-[#0f172a] py-1 shadow-xl shadow-black/40"
           role="listbox"
         >
           {hits.map((h, i) => (
@@ -268,7 +268,7 @@ function LabDropdown({
       </button>
       {open && (
         <div className="absolute left-0 top-full z-40 pt-2">
-          <div className="min-w-[280px] rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-black/10 dark:border-white/10 dark:bg-[#0F1A3A] dark:shadow-black/40">
+          <div className="min-w-[280px] rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-black/10 dark:border-white/10 dark:bg-[#0f172a] dark:shadow-black/40">
             <div className="px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-slate-500">{label}</div>
             <div className="grid gap-0.5">
               {links.map((l) => {
@@ -325,7 +325,8 @@ export default function Nav() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-white/10 bg-[#020617]/95 text-slate-100 backdrop-blur supports-[backdrop-filter]:bg-[#020617]/90">
+    <header className="sticky top-0 z-30 border-b border-emerald-500/20 bg-[#020617]/95 text-slate-100 backdrop-blur supports-[backdrop-filter]:bg-[#020617]/90">
+      <div className="h-0.5 bg-gradient-to-r from-emerald-500 via-cyan-500/80 to-emerald-700" aria-hidden />
       <div className="mx-auto flex max-w-[1600px] flex-wrap items-center gap-x-2 gap-y-2 px-4 py-2.5 sm:px-6 lg:px-8">
         <Link href="/" className="flex shrink-0 items-center gap-2 text-white">
           <BrandMark />
@@ -430,7 +431,7 @@ export default function Nav() {
                     <span className={`text-xs text-slate-400 transition ${expanded ? "rotate-180" : ""}`}>▾</span>
                   </button>
                   {expanded && (
-                    <div className="space-y-1 border-t border-white/10 bg-[#0F1A3A] px-1.5 py-1.5">
+                    <div className="space-y-1 border-t border-white/10 bg-[#0f172a] px-1.5 py-1.5">
                       {sec.links.map((l) => (
                         <Link
                           key={l.href}
