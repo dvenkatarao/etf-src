@@ -4,44 +4,37 @@ import type { RegimeChipData } from "@/components/RegimeChip";
 import { getQuotes } from "@/lib/etf-service";
 import { getFomcCalendar, getMacroSnapshot, getPolicyRates, getYieldCurve } from "@/lib/macro";
 import { deriveRegime } from "@/lib/macro-regime";
-import { MARKET_INDEXES } from "@/lib/universe";
 
-const SHORT: Record<string, { ticker: string; kind: "index" | "vol" }> = {
-  "^GSPC": { ticker: "SPX", kind: "index" },
-  "^DJI": { ticker: "DJI", kind: "index" },
-  "^IXIC": { ticker: "COMP", kind: "index" },
-  "^RUT": { ticker: "RUT", kind: "index" },
-  "^VIX": { ticker: "VIX", kind: "vol" },
-};
+const TAPE: { symbol: string; ticker: string; kind: TapeItem["kind"] }[] = [
+  { symbol: "SPY", ticker: "SPY", kind: "index" },
+  { symbol: "QQQ", ticker: "QQQ", kind: "index" },
+  { symbol: "^VIX", ticker: "VIX", kind: "vol" },
+  { symbol: "SCHD", ticker: "SCHD", kind: "index" },
+];
 
 export default async function AppChrome() {
-  let items: TapeItem[] = MARKET_INDEXES.map((i) => ({
-    ticker: SHORT[i.symbol]?.ticker ?? i.label,
-    price: null,
-    changePct: null,
-    kind: SHORT[i.symbol]?.kind ?? "index",
-  }));
+  let items: TapeItem[] = TAPE.map((t) => ({ ticker: t.ticker, price: null, changePct: null, kind: t.kind }));
   let regime: RegimeChipData | null = null;
   let nextFomcDays: number | null = null;
 
   try {
     const [idx, snap, curve, policy, fomc] = await Promise.all([
-      getQuotes(MARKET_INDEXES.map((i) => i.symbol)),
+      getQuotes(TAPE.map((t) => t.symbol)),
       getMacroSnapshot(),
       getYieldCurve(),
       getPolicyRates(),
       getFomcCalendar(),
     ]);
-    items = MARKET_INDEXES.map((i) => {
-      const q = idx.quotes.get(i.symbol);
-      const meta = SHORT[i.symbol];
-      return {
-        ticker: meta?.ticker ?? i.label,
-        price: q?.price ?? null,
-        changePct: q?.changePct ?? null,
-        kind: meta?.kind ?? "index",
-      };
+    items = TAPE.map((t) => {
+      const q = idx.quotes.get(t.symbol);
+      return { ticker: t.ticker, price: q?.price ?? null, changePct: q?.changePct ?? null, kind: t.kind };
     });
+    const dgs = snap?.data?.find((p) => p.def.id === "DGS10");
+    if (dgs) {
+      const prev = dgs.history.length >= 2 ? dgs.history[dgs.history.length - 2]?.value : null;
+      const chg = dgs.latest != null && prev != null && prev !== 0 ? ((dgs.latest - prev) / prev) * 100 : null;
+      items.splice(3, 0, { ticker: "US10Y", price: dgs.latest, changePct: chg, kind: "rate" });
+    }
     const r = deriveRegime({ snap: snap?.data ?? null, curve: curve?.data ?? null, policy: policy?.data ?? null });
     if (r) regime = { title: r.title, summary: r.summary, asOf: r.asOf, label: r.label };
     const today = new Date().toISOString().slice(0, 10);

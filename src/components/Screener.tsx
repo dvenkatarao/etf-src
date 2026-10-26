@@ -384,7 +384,14 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
         ) : (
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {filtered.map((r) => (
-              <article key={r.ticker} className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-[#0f172a]">
+              <article
+                key={r.ticker}
+                className={`rounded-xl border p-4 shadow-lg ${
+                  r.erosion === "Severe"
+                    ? "border-rose-400 bg-rose-50 dark:border-rose-500/50 dark:bg-rose-950/40"
+                    : "border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900"
+                }`}
+              >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
@@ -395,26 +402,37 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
                         className="h-4 w-4 accent-emerald-600"
                         aria-label={`Select ${r.ticker} for comparison`}
                       />
-                      <Link href={`/etf/${r.ticker}`} className="font-semibold text-emerald-800 hover:underline dark:text-emerald-300">
+                      <Link href={`/etf/${r.ticker}`} className="font-mono text-2xl font-extrabold tracking-tight text-slate-900 hover:text-emerald-700 dark:text-white dark:hover:text-emerald-300">
                         {r.ticker}
                       </Link>
                     </div>
                     <div className="mt-0.5 max-w-[240px] truncate text-xs text-slate-500" title={r.name ?? ""}>
                       {r.name ?? "N/A"}
                     </div>
-                    <div className="mt-1 truncate text-[10px] uppercase tracking-[0.08em] text-slate-500">{r.category ?? "N/A"}</div>
+                    <div className="mt-1 truncate text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">{r.category ?? "N/A"}</div>
                   </div>
                   <div className="flex flex-col items-end gap-1">
                     <GradeBadge grade={r.quality} />
                     <RateBadge tag={r.rateTag} label={r.rateLabel} />
+                    <span className="font-mono text-[11px] text-slate-500">{r.qualityScore == null ? "Quality N/A" : `${Math.round(r.qualityScore)}/100`}</span>
                   </div>
                 </div>
-                <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-xs">
+                <div className="mt-3 grid grid-cols-3 gap-x-3 gap-y-2 text-xs">
+                  <div>
+                    <div className={labelCls}>Price</div>
+                    <div className="mt-0.5 font-mono tabular-nums text-slate-900 dark:text-white">{r.price == null ? "N/A" : `$${r.price.toFixed(2)}`}</div>
+                  </div>
+                  <div>
+                    <div className={labelCls}>Day</div>
+                    <div className={`mt-0.5 font-mono tabular-nums ${colorOf(r.changePct)}`}>
+                      {r.changePct == null ? "N/A" : `${r.changePct > 0 ? "+" : ""}${r.changePct.toFixed(2)}%`}
+                    </div>
+                  </div>
                   <div>
                     <div className={labelCls}>Yield TTM</div>
                     <div className="mt-0.5 font-mono tabular-nums text-slate-900 dark:text-white">{pctFmt(r.yieldTtm)}</div>
                   </div>
-                  <div className="text-right">
+                  <div>
                     <div className={labelCls}>Expense</div>
                     <div className="mt-0.5 font-mono tabular-nums">{pctFmt(r.expense)}</div>
                   </div>
@@ -422,23 +440,40 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
                     <div className={labelCls}>AUM</div>
                     <div className="mt-0.5 font-mono tabular-nums">{aumFmt(r.aum)}</div>
                   </div>
-                  <div className="text-right">
+                  <div>
                     <div className={labelCls}>YTD</div>
                     <div className={`mt-0.5 font-mono tabular-nums ${colorOf(r.ytd)}`}>{pctFmt(r.ytd, 1, true)}</div>
                   </div>
                   <div>
-                    <div className={labelCls}>Price</div>
-                    <div className="mt-0.5 font-mono tabular-nums">{r.price == null ? "N/A" : `$${r.price.toFixed(2)}`}</div>
+                    <div className={labelCls}>1Y</div>
+                    <div className={`mt-0.5 font-mono tabular-nums ${colorOf(r.r1y)}`}>{pctFmt(r.r1y, 1, true)}</div>
                   </div>
-                  <div className="text-right">
-                    <div className={labelCls}>Day</div>
-                    <div className={`mt-0.5 font-mono tabular-nums ${colorOf(r.changePct)}`}>
-                      {r.changePct == null ? "N/A" : `${r.changePct > 0 ? "+" : ""}${r.changePct.toFixed(2)}%`}
-                    </div>
+                  <div>
+                    <div className={labelCls}>3Y ann.</div>
+                    <div className={`mt-0.5 font-mono tabular-nums ${colorOf(r.r3y)}`}>{pctFmt(r.r3y, 1, true)}</div>
+                  </div>
+                  <div>
+                    <div className={labelCls}>5Y ann.</div>
+                    <div className={`mt-0.5 font-mono tabular-nums ${colorOf(r.r5y)}`}>{pctFmt(r.r5y, 1, true)}</div>
+                  </div>
+                  <div>
+                    <div className={labelCls}>Vol 3Y</div>
+                    <div className="mt-0.5 font-mono tabular-nums">{pctFmt(r.vol3y, 1)}</div>
+                  </div>
+                  <div>
+                    <div className={labelCls}>Max DD 3Y</div>
+                    <div className="mt-0.5 font-mono tabular-nums">{pctFmt(r.dd3y, 1)}</div>
+                  </div>
+                  <div>
+                    <div className={labelCls}>Sharpe 3Y</div>
+                    <div className="mt-0.5 font-mono tabular-nums">{r.sharpe == null ? "N/A" : r.sharpe.toFixed(2)}</div>
                   </div>
                 </div>
-                <div className="mt-3">
-                  <Badge className={erosionStyle[r.erosion] ?? erosionStyle["n/a"]}>{r.erosion}</Badge>
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <Badge className={erosionStyle[r.erosion] ?? erosionStyle["n/a"]}>Erosion {r.erosion}</Badge>
+                  <Link href={`/etf/${r.ticker}`} className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
+                    Deep dive →
+                  </Link>
                 </div>
               </article>
             ))}
