@@ -94,7 +94,7 @@ export default function PositionsTable({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search positions, tickers or brokers…"
-            className="w-64 rounded-lg border border-slate-300 py-1.5 pl-8 pr-3 text-xs focus:border-teal-500 focus:outline-none dark:border-slate-700 dark:bg-[#0F1A3A]"
+            className="w-64 rounded-lg border border-slate-300 py-1.5 pl-8 pr-3 text-xs focus:border-emerald-500 focus:outline-none dark:border-slate-700 dark:bg-[#0f172a]"
           />
         </div>
         <DensityToggle value={density} onChange={setDensity} />
@@ -206,7 +206,7 @@ export default function PositionsTable({
                     <td className="px-4 py-3">
                       <Link
                         href={`/etf/${pos.ticker}`}
-                        className="font-bold text-teal-700 hover:underline"
+                        className="font-bold text-emerald-700 hover:underline"
                       >
                         {pos.ticker}
                       </Link>

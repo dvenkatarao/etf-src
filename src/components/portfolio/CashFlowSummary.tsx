@@ -47,7 +47,7 @@ export default function CashFlowSummary({ analytics }: { analytics: PortfolioAna
             <div className={`mt-1 text-sm font-semibold tabular-nums ${gainColor}`}>{da?.gainVsDeposits != null ? `${da.gainVsDeposits > 0 ? "+" : ""}${money(da.gainVsDeposits)}` : `${analytics.totalUnrealizedGain > 0 ? "+" : ""}${money(analytics.totalUnrealizedGain)}`}</div>
             <div className="text-[10px] text-slate-500">{da?.gainVsDepositsPct != null ? pct(da.gainVsDepositsPct, 1, true) + " vs contributions" : pct(analytics.totalUnrealizedGainPct, 1, true) + " vs cost"}</div>
           </div>
-          <div className="col-span-2 rounded-xl border border-teal-100 bg-teal-50/40 p-3">
+          <div className="col-span-2 rounded-xl border border-emerald-100 bg-emerald-50/40 p-3">
             <div className="text-[10px] font-medium uppercase tracking-wider text-slate-500">Money-Weighted Return (IRR)</div>
             <div className={`mt-1 text-sm font-semibold tabular-nums ${mwr != null ? (mwr > 0 ? "text-emerald-700" : mwr < 0 ? "text-rose-600" : "text-slate-700") : "text-slate-500"}`}>{mwr != null ? pct(mwr, 2, true) + " annualized" : "N/A"}</div>
             <div className="text-[10px] leading-relaxed text-slate-500">{mwrText}</div>

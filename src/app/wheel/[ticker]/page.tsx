@@ -38,12 +38,12 @@ export default async function WheelStockPage({ params, searchParams }: { params:
   if (!row || !row.fundamentals || !row.technicals) {
     return (
       <div className="space-y-4">
-        <div className="rounded-xl border border-slate-800 bg-[#0F1A3A] p-6">
+        <div className="rounded-xl border border-slate-800 bg-[#0f172a] p-6">
           <h1 className="text-xl font-semibold text-white">{ticker}</h1>
           <p className="mt-1 text-sm text-slate-400">This stock has not been analysed yet.</p>
           <p className="mt-2 text-xs text-slate-500">{row?.lastError ?? "Open the Wheel Screener first so the stock universe can load, or add the ticker with WHEEL_EXTRA_SYMBOLS."}</p>
         </div>
-        <Link href="/wheel" className="text-sm font-medium text-teal-300 hover:text-white">← Wheel Screener</Link>
+        <Link href="/wheel" className="text-sm font-medium text-emerald-300 hover:text-white">← Wheel Screener</Link>
       </div>
     );
   }
@@ -120,8 +120,8 @@ export default async function WheelStockPage({ params, searchParams }: { params:
         badges={g.grade ? <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold ring-1 ring-emerald-200 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 dark:ring-emerald-500/30">{g.grade}</span> : null}
         actions={
           <div className="flex flex-wrap gap-2">
-            <Link href={calcHref} className="rounded-md bg-teal-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-teal-500">Payoff & cycle</Link>
-            <Link href={`/wheel?${q}`} className="rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#0F1A3A] dark:text-slate-200">Screener</Link>
+            <Link href={calcHref} className="rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-500">Payoff & cycle</Link>
+            <Link href={`/wheel?${q}`} className="rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#0f172a] dark:text-slate-200">Screener</Link>
           </div>
         }
       />
@@ -160,7 +160,7 @@ export default async function WheelStockPage({ params, searchParams }: { params:
                     <td className="px-3 py-2 font-medium text-white">{b.label}</td>
                     <td className="px-3 py-2 tabular-nums text-slate-300">{b.n}</td>
                     <td className="px-3 py-2 tabular-nums text-slate-200">{b.medianCredit != null ? money(b.medianCredit) : "—"}</td>
-                    <td className="px-3 py-2 tabular-nums text-teal-300">{b.creditPerDay != null ? money(b.creditPerDay, 3) : "—"}</td>
+                    <td className="px-3 py-2 tabular-nums text-emerald-300">{b.creditPerDay != null ? money(b.creditPerDay, 3) : "—"}</td>
                     <td className="px-3 py-2 tabular-nums text-slate-300">{b.medianIv != null ? pct(b.medianIv, 1) : "—"}</td>
                     <td className="px-3 py-2 tabular-nums text-slate-300">{b.medianOi != null ? Math.round(b.medianOi).toLocaleString() : "—"}</td>
                   </tr>
@@ -189,8 +189,8 @@ export default async function WheelStockPage({ params, searchParams }: { params:
         <form method="GET" className="mb-3 flex flex-wrap items-end gap-3 text-sm">
           {Object.entries({ dteMin: p.dteMin, dteMax: p.dteMax, dMin: p.deltaMin, dMax: p.deltaMax, oi: p.minOi, spread: Math.round(p.maxSpreadPct * 100), ret: Math.round(p.minAnnReturn * 100) }).map(([k, v]) => <input key={k} type="hidden" name={k} value={String(v)} />)}
           {p.allowEarnings && <input type="hidden" name="earn" value="1" />}
-          <label className="grid gap-1 text-xs text-slate-400">Your cost basis per share<input name="basis" defaultValue={basis ?? ""} placeholder={ctx ? num(ctx.price, 2) : ""} className="w-32 rounded-lg border border-slate-700 bg-[#111C3E] px-2 py-1.5 text-sm text-white placeholder:text-slate-500 focus:border-teal-500 focus:outline-none" /></label>
-          <button className="rounded-lg bg-teal-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-teal-500">Find calls</button>
+          <label className="grid gap-1 text-xs text-slate-400">Your cost basis per share<input name="basis" defaultValue={basis ?? ""} placeholder={ctx ? num(ctx.price, 2) : ""} className="w-32 rounded-lg border border-slate-700 bg-[#111827] px-2 py-1.5 text-sm text-white placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none" /></label>
+          <button className="rounded-lg bg-emerald-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-emerald-500">Find calls</button>
         </form>
         {basis == null ? (
           <p className="text-sm text-slate-400">Enter a cost basis above. The guide explains how to work it out after an assignment.</p>
@@ -201,9 +201,9 @@ export default async function WheelStockPage({ params, searchParams }: { params:
             <p className="text-sm text-slate-400">No call at or above {money(basis)} passes your filters.<RejectsDark rejected={calls.rejected} evaluated={calls.evaluated} />{ctx && basis > ctx.price * 1.1 && <span className="text-xs text-amber-300"> The stock is well below your cost; strikes at your cost may be too far out to pay much. Consider waiting or a longer expiry.</span>}</p>
           ) : (
             <div className="overflow-x-auto rounded-lg border border-slate-800">
-              <div className="border-b border-slate-800 bg-[#0D1632] px-3 py-2"><SourceBadgeDark source={calls.source} fallbackReason={calls.fallbackReason} /></div>
+              <div className="border-b border-slate-800 bg-[#0b1220] px-3 py-2"><SourceBadgeDark source={calls.source} fallbackReason={calls.fallbackReason} /></div>
               <table className="min-w-full text-sm">
-                <thead className="bg-[#0D1632] text-left text-[10px] uppercase tracking-[0.12em] text-slate-400"><tr>{["Expiry", "Strike", "Credit", "Delta", "Yield on cost /yr", "If called", "Upside to strike", "Liquidity", "Flags", "Score"].map((h) => <th key={h} className={th}>{h}</th>)}</tr></thead>
+                <thead className="bg-[#0b1220] text-left text-[10px] uppercase tracking-[0.12em] text-slate-400"><tr>{["Expiry", "Strike", "Credit", "Delta", "Yield on cost /yr", "If called", "Upside to strike", "Liquidity", "Flags", "Score"].map((h) => <th key={h} className={th}>{h}</th>)}</tr></thead>
                 <tbody className="divide-y divide-slate-800/60">
                   {calls.candidates.slice(0, 15).map((c) => (
                     <tr key={c.contract.strike + c.contract.expiration} className="align-top hover:bg-white/[0.03]">
@@ -226,7 +226,7 @@ export default async function WheelStockPage({ params, searchParams }: { params:
                   ))}
                 </tbody>
               </table>
-              <div className="border-t border-slate-800 bg-[#0D1632] px-3 py-2">
+              <div className="border-t border-slate-800 bg-[#0b1220] px-3 py-2">
                 <RejectsDark rejected={calls.rejected} evaluated={calls.evaluated} />
               </div>
             </div>

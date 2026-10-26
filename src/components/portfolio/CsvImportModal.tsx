@@ -134,7 +134,7 @@ export default function CsvImportModal({
               <select
                 value={targetPortId}
                 onChange={(e) => setTargetPortId(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs focus:border-teal-500 focus:outline-none"
+                className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs focus:border-emerald-500 focus:outline-none"
               >
                 {portfolios.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -149,7 +149,7 @@ export default function CsvImportModal({
               <select
                 value={brokerType}
                 onChange={(e) => setBrokerType(e.target.value as BrokerType)}
-                className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs focus:border-teal-500 focus:outline-none"
+                className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs focus:border-emerald-500 focus:outline-none"
               >
                 {Object.values(SUPPORTED_BROKERS).map((b) => (
                   <option key={b.id} value={b.id}>
@@ -168,7 +168,7 @@ export default function CsvImportModal({
               <button
                 type="button"
                 onClick={handleLoadSample}
-                className="text-xs font-semibold text-teal-600 hover:underline"
+                className="text-xs font-semibold text-emerald-600 hover:underline"
               >
                 Load {SUPPORTED_BROKERS[brokerType].name} Sample Data
               </button>
@@ -188,7 +188,7 @@ export default function CsvImportModal({
               onChange={(e) => setCsvContent(e.target.value)}
               placeholder="Paste raw CSV text here..."
               rows={7}
-              className="mt-2 w-full font-mono rounded-xl border border-slate-300 p-3 text-xs leading-relaxed focus:border-teal-500 focus:outline-none"
+              className="mt-2 w-full font-mono rounded-xl border border-slate-300 p-3 text-xs leading-relaxed focus:border-emerald-500 focus:outline-none"
             />
           </div>
 
@@ -203,7 +203,7 @@ export default function CsvImportModal({
             <button
               type="submit"
               disabled={loading || !csvContent.trim()}
-              className="rounded-xl bg-teal-600 px-5 py-2 text-xs font-semibold text-white shadow hover:bg-teal-500 disabled:opacity-50"
+              className="rounded-xl bg-emerald-600 px-5 py-2 text-xs font-semibold text-white shadow hover:bg-emerald-500 disabled:opacity-50"
             >
               {loading ? "Importing & Resolving Prices…" : "Import Positions"}
             </button>

@@ -13,14 +13,14 @@ export default function PeerCompareCta({ ticker, peers }: { ticker: string; peer
         {peers.slice(0, 4).map((p) => (
           <li key={p.ticker} className="flex items-center justify-between py-2">
             <div>
-              <Link href={`/etf/${p.ticker}`} className="font-semibold text-teal-700 hover:underline">{p.ticker}</Link>
+              <Link href={`/etf/${p.ticker}`} className="font-semibold text-emerald-700 hover:underline">{p.ticker}</Link>
               <span className="ml-2 text-xs text-slate-500 truncate max-w-[160px] inline-block align-middle">{p.name ?? ""}</span>
             </div>
             <span className="text-xs tabular-nums text-slate-600">{p.expense != null ? `${(p.expense * 100).toFixed(2)}%` : "—"} · {p.yieldTtm != null ? `${(p.yieldTtm * 100).toFixed(2)}%` : "—"}</span>
           </li>
         ))}
       </ul>
-      <Link href={`/compare?t=${tickers}`} className="mt-3 inline-flex rounded-lg bg-teal-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-teal-500">Compare {tickers.split(",").length} together →</Link>
+      <Link href={`/compare?t=${tickers}`} className="mt-3 inline-flex rounded-lg bg-emerald-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-emerald-500">Compare {tickers.split(",").length} together →</Link>
       <p className="mt-2 text-[11px] text-slate-400">Comparison uses price history + holdings; no fee to compare.</p>
     </div>
   );

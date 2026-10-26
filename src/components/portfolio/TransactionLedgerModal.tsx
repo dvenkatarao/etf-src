@@ -133,7 +133,7 @@ export default function TransactionLedgerModal({
             <select
               value={activePortId}
               onChange={(e) => setActivePortId(e.target.value)}
-              className="rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-xs focus:border-teal-500 focus:outline-none"
+              className="rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-xs focus:border-emerald-500 focus:outline-none"
             >
               {portfolios.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -187,7 +187,7 @@ export default function TransactionLedgerModal({
             <a href={`data:text/csv;charset=utf-8,${encodeURIComponent("date,type,ticker,quantity,price,amount,fee,notes\n2024-01-15,DEPOSIT,, , ,10000,0,Initial funding\n2024-02-10,BUY,VOO,10,500,5000,1,DCA\n2024-03-20,SELL,VOO,5,520,2600,1,Trim\n")}`} download="transactions-sample.csv" className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50">Sample CSV</a>
             <button
               onClick={() => setShowAddForm(!showAddForm)}
-              className="rounded-xl bg-teal-50 px-3 py-1.5 text-xs font-semibold text-teal-700 hover:bg-teal-100"
+              className="rounded-xl bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 hover:bg-emerald-100"
             >
               {showAddForm ? "Hide Form" : "+ Log Transaction"}
             </button>
@@ -203,7 +203,7 @@ export default function TransactionLedgerModal({
         {showAddForm && (
           <form
             onSubmit={handleRecordTransaction}
-            className="mt-4 rounded-2xl border border-teal-100 bg-teal-50/40 p-4 text-xs"
+            className="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50/40 p-4 text-xs"
           >
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               <div>
@@ -301,7 +301,7 @@ export default function TransactionLedgerModal({
               <button
                 type="submit"
                 disabled={submitting}
-                className="rounded-lg bg-teal-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-teal-500"
+                className="rounded-lg bg-emerald-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-emerald-500"
               >
                 {submitting ? "Saving…" : "Record"}
               </button>

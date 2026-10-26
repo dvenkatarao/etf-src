@@ -12,7 +12,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
       <button
         type="button"
         onClick={() => reset()}
-        className="mt-6 rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500"
+        className="mt-6 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500"
       >
         Try again
       </button>

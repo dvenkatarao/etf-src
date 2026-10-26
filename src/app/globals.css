@@ -95,8 +95,8 @@ html.dark *::-webkit-scrollbar-track { background: transparent; }
 /* ───────────────────────────────────────────────── */
 html.dark .bg-white { background-color: var(--bg-card) !important; }
 html.dark .bg-slate-50 { background-color: var(--bg-card-subtle) !important; }
-html.dark .bg-slate-50\/80 { background-color: rgb(15 26 58 / 0.8) !important; }
-html.dark .bg-slate-100 { background-color: #0D1632 !important; }
+html.dark .bg-slate-50\/80 { background-color: rgb(15 23 42 / 0.8) !important; }
+html.dark .bg-slate-100 { background-color: #0b1220 !important; }
 html.dark .bg-\[\#F8FAFC\] { background-color: var(--bg-canvas) !important; }
 html.dark .border-slate-200 { border-color: var(--border) !important; }
 html.dark .border-slate-200\/60 { border-color: rgb(30 41 59 / 0.6) !important; }
@@ -108,51 +108,42 @@ html.dark .text-slate-700 { color: #cbd5e1 !important; }
 html.dark .text-slate-600 { color: var(--text-secondary) !important; }
 html.dark .text-slate-500 { color: var(--text-secondary) !important; }
 html.dark .text-slate-400 { color: var(--text-muted) !important; }
-html.dark .text-teal-700 { color: #6ee7b7 !important; }
-html.dark .text-teal-600 { color: #34d399 !important; }
-html.dark .bg-teal-600 { background-color: #059669 !important; }
-html.dark .bg-teal-500 { background-color: #10b981 !important; }
+html.dark .text-teal-700, html.dark .text-emerald-700 { color: #6ee7b7 !important; }
+html.dark .text-teal-600, html.dark .text-emerald-600 { color: #34d399 !important; }
+html.dark .bg-teal-600, html.dark .bg-emerald-600 { background-color: #059669 !important; }
+html.dark .bg-teal-500, html.dark .bg-emerald-500 { background-color: #10b981 !important; }
 
 /* ───────────────────────────────────────────────── */
-/* Dark → Light (when light, wheel dark utilities become light) */
+/* Dark → Light (hardcoded dark cards stay readable) */
 /* ───────────────────────────────────────────────── */
-html:not(.dark) .bg-\[\#080E28\] { background-color: var(--bg-canvas) !important; }
-html:not(.dark) .bg-\[\#0F1A3A\] { background-color: var(--bg-card) !important; }
-html:not(.dark) .bg-\[\#0D1632\] { background-color: var(--bg-card-header) !important; }
-html:not(.dark) .bg-\[\#111C3E\] { background-color: var(--bg-card-subtle) !important; }
-html:not(.dark) .bg-\[\#16224A\] { background-color: #f1f5f9 !important; }
-html:not(.dark) .bg-\[\#1B2540\] { background-color: #eef2ff !important; color: #4338ca !important; }
-html:not(.dark) .bg-\[\#24304F\] { background-color: #e0e7ff !important; }
+html:not(.dark) .bg-\[\#0f172a\] { background-color: var(--bg-card) !important; }
+html:not(.dark) .bg-\[\#0b1220\] { background-color: var(--bg-card-header) !important; }
+html:not(.dark) .bg-\[\#111827\] { background-color: var(--bg-card-subtle) !important; }
+html:not(.dark) .bg-\[\#1e293b\] { background-color: #f1f5f9 !important; }
 html:not(.dark) .bg-slate-800\/30 { background-color: rgba(241,245,249,0.6) !important; }
 html:not(.dark) .bg-slate-800\/40 { background-color: #f8fafc !important; }
 html:not(.dark) .bg-slate-800\/50 { background-color: #f8fafc !important; }
 html:not(.dark) .border-slate-800 { border-color: var(--border) !important; }
 html:not(.dark) .border-slate-700 { border-color: #e2e8f0 !important; }
-/* Text overrides — scoped to wheel dark cards only (not global, so colored CTAs stay white on blue) */
-html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#080E28\], .bg-\[\#0D1632\], .bg-\[\#111C3E\]) .text-white,
-html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#080E28\], .bg-\[\#0D1632\]) .text-slate-100 { color: #0f172a !important; }
-html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#080E28\], .bg-\[\#0D1632\]) .text-slate-200 { color: #1e293b !important; }
-html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#080E28\], .bg-\[\#0D1632\]) .text-slate-300 { color: #334155 !important; }
-html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#080E28\]) .text-slate-400,
-html:not(.dark) .bg-\[\#0D1632\] .text-slate-400 { color: #64748b !important; }
-html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#080E28\], .bg-\[\#111C3E\]) .text-teal-300 { color: #0f766e !important; }
-html:not(.dark) :is(.bg-\[\#0F1A3A\], .bg-\[\#111C3E\]) .text-teal-200 { color: #4338ca !important; }
-/* Colored CTAs must keep white text in light — exception to scoped rules */
+html:not(.dark) :is(.bg-\[\#0f172a\], .bg-\[\#0b1220\], .bg-\[\#111827\]) .text-white,
+html:not(.dark) :is(.bg-\[\#0f172a\], .bg-\[\#0b1220\]) .text-slate-100 { color: #0f172a !important; }
+html:not(.dark) :is(.bg-\[\#0f172a\], .bg-\[\#0b1220\]) .text-slate-200 { color: #1e293b !important; }
+html:not(.dark) :is(.bg-\[\#0f172a\], .bg-\[\#0b1220\]) .text-slate-300 { color: #334155 !important; }
+html:not(.dark) :is(.bg-\[\#0f172a\], .bg-\[\#0b1220\]) .text-slate-400 { color: #64748b !important; }
+html:not(.dark) :is(.bg-\[\#0f172a\], .bg-\[\#111827\]) .text-emerald-300 { color: #047857 !important; }
+/* Colored CTAs keep white text in light */
 html:not(.dark) .bg-teal-500.text-white,
 html:not(.dark) .bg-teal-600.text-white,
-html:not(.dark) .bg-\[\#4F6BFF\].text-white,
-html:not(.dark) .bg-\[\#4F6BFF\] .text-white,
+html:not(.dark) .bg-emerald-500.text-white,
+html:not(.dark) .bg-emerald-600.text-white,
 html:not(.dark) .bg-violet-500\/40.text-white,
 html:not(.dark) .bg-white\/10.text-white { color: white !important; }
 html:not(.dark) .hover\:bg-white\/\[0\.03\]:hover { background-color: rgba(15,23,42,0.03) !important; }
 html:not(.dark) .hover\:bg-white\/5:hover { background-color: rgba(15,23,42,0.05) !important; }
-html:not(.dark) .hover\:bg-\[\#16224A\]:hover { background-color: #f1f5f9 !important; }
-html:not(.dark) .hover\:bg-\[\#24304F\]:hover { background-color: #e0e7ff !important; }
 
-/* Inputs light overrides — wheel filters use dark bg, must stay readable when light */
-html:not(.dark) input.bg-\[\#111C3E\] { background-color: #ffffff !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
-html:not(.dark) select.bg-\[\#111C3E\] { background-color: #ffffff !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
-html:not(.dark) .bg-\[\#111C3E\].border-slate-700 { background-color: #ffffff !important; }
+html:not(.dark) input.bg-\[\#111827\] { background-color: #ffffff !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
+html:not(.dark) select.bg-\[\#111827\] { background-color: #ffffff !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
+html:not(.dark) .bg-\[\#111827\].border-slate-700 { background-color: #ffffff !important; }
 
 /* Footer */
 html.dark footer .border-slate-200 { border-color: var(--border) !important; }

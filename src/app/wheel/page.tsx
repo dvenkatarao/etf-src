@@ -59,7 +59,7 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
           <div className="flex items-center gap-3">
             <IconTile size={40}><WheelLabIcon size={22} /></IconTile>
             <h1 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-white">Wheel Strategy Screener</h1>
-            <span className="rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1 text-[11px] font-medium text-teal-700 dark:border-teal-500/30 dark:bg-teal-500/10 dark:text-teal-300">Two-step filter · Grade always computed</span>
+            <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">Two-step filter · Grade always computed</span>
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-500 dark:text-slate-400">
             <b className="text-slate-700 dark:text-slate-200">Step 1: stocks (preset A = A and better)</b> then <b className="text-slate-700 dark:text-slate-200">Step 2: options</b> — grade is always computed (5-pillar weighted + caps), tooltips explain why even when return is high.
@@ -67,10 +67,10 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link href="/wheel/calculator" className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-500">
+          <Link href="/wheel/calculator" className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500">
             Payoff & cycle →
           </Link>
-          <Link href="/wheel/guide" className="rounded-lg border border-teal-200 bg-teal-50 px-4 py-2 text-sm font-medium text-teal-700 hover:bg-teal-100 dark:border-teal-500/20 dark:bg-[#1B2540] dark:text-teal-300 dark:hover:bg-[#24304F] dark:hover:text-white">
+          <Link href="/wheel/guide" className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100 dark:border-emerald-500/20 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-900/40 dark:hover:text-white">
             How to use this tool →
           </Link>
         </div>
@@ -143,7 +143,7 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
       )}
 
       {res.rows.length === 0 ? (
-        <div className="rounded-xl border border-slate-200 bg-white p-8 text-center dark:border-slate-800 dark:bg-[#0F1A3A]">
+        <div className="rounded-xl border border-slate-200 bg-white p-8 text-center dark:border-slate-800 dark:bg-[#0f172a]">
           <div className="mx-auto max-w-lg text-sm text-slate-500 dark:text-slate-400">
             {res.info.scanned === 0
               ? "No option chains have been scanned yet. If the progress bar above has finished, check the Data Sources page and your Alpaca keys; failed scans are listed above."
@@ -171,7 +171,7 @@ export default async function WheelPage({ searchParams }: { searchParams: Promis
       )}
 
       {res.info.failed.length > 0 && (
-        <details className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-xs text-slate-500 dark:border-slate-800 dark:bg-[#0F1A3A] dark:text-slate-400">
+        <details className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-xs text-slate-500 dark:border-slate-800 dark:bg-[#0f172a] dark:text-slate-400">
           <summary className="cursor-pointer font-medium text-slate-700 dark:text-slate-300">{res.info.failed.length} option scan(s) failed (left out, not guessed)</summary>
           <ul className="mt-2 list-disc space-y-1 pl-5">
             {res.info.failed.slice(0, 20).map((x) => (

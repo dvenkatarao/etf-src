@@ -15,7 +15,7 @@ export default function EtfTakeaway({ t, ticker }: { t: Takeaway; ticker: string
           <p className="mt-2 text-xs"><span className="font-medium text-slate-800">Suits:</span> <span className="text-slate-600">{t.suitable}</span></p>
           <p className="mt-1 text-xs"><span className="font-medium text-slate-800">Watch:</span> <span className="text-slate-600">{t.watch}</span></p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <Link href={`/compare?t=${ticker}`} className="rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-teal-700 ring-1 ring-slate-200 hover:bg-teal-50">Compare peers →</Link>
+            <Link href={`/compare?t=${ticker}`} className="rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-emerald-700 ring-1 ring-slate-200 hover:bg-emerald-50">Compare peers →</Link>
             <Link href={`/screener`} className="rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-white hover:ring-1 hover:ring-slate-200">Screen more like this →</Link>
           </div>
           <p className="mt-2 text-[11px] text-slate-500">One-line synthesis, not advice. Based on price history, distributions and provider fields shown below.</p>

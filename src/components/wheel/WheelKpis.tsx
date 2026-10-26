@@ -34,7 +34,7 @@ export default function WheelKpis({ res }: Props) {
         return (
           <div
             key={t.label}
-            className="rounded-xl border border-slate-200 bg-white px-4 py-4 text-center shadow-sm dark:border-slate-800 dark:bg-[#0F1A3A]"
+            className="rounded-xl border border-slate-200 bg-white px-4 py-4 text-center shadow-sm dark:border-slate-800 dark:bg-[#0f172a]"
           >
             <div className="mx-auto mb-1 grid h-7 w-7 place-items-center rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
               <Icon size={14} />

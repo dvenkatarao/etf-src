@@ -68,7 +68,7 @@ export default function PayoffChart({
         <div className="relative h-80 min-w-0 flex-1">
           <svg viewBox={`0 0 ${w} ${h}`} className="h-full w-full" preserveAspectRatio="none" role="img" aria-label="Expiration payoff diagram">
             {emLow != null && emHigh != null && emHigh > emLow && (
-              <rect x={x(emLow)} y={pad.t} width={Math.max(0, x(emHigh) - x(emLow))} height={h - pad.t - pad.b} fill="#14b8a6" opacity={0.08} />
+              <rect x={x(emLow)} y={pad.t} width={Math.max(0, x(emHigh) - x(emLow))} height={h - pad.t - pad.b} fill="#10b981" opacity={0.08} />
             )}
             <line x1={pad.l} y1={zeroY} x2={w - pad.r} y2={zeroY} stroke="#64748b" strokeWidth="1" vectorEffect="non-scaling-stroke" />
             {maxProfit != null && Number.isFinite(maxProfit) && (

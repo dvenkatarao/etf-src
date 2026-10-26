@@ -44,7 +44,7 @@ export function IconTile({
 }) {
   return (
     <span
-      className={`inline-grid shrink-0 place-items-center rounded-[22%] bg-white shadow-[0_4px_14px_rgba(15,23,42,0.08),0_1px_2px_rgba(15,23,42,0.04)] ring-1 ring-slate-200/80 dark:bg-[#161E3A] dark:shadow-[0_10px_24px_rgba(0,0,0,0.35)] dark:ring-white/5 ${className}`}
+      className={`inline-grid shrink-0 place-items-center rounded-[22%] bg-white shadow-[0_4px_14px_rgba(15,23,42,0.08),0_1px_2px_rgba(15,23,42,0.04)] ring-1 ring-slate-200/80 dark:bg-[#1e293b] dark:shadow-[0_10px_24px_rgba(0,0,0,0.35)] dark:ring-white/5 ${className}`}
       style={{ width: size, height: size }}
       aria-hidden={label ? undefined : true}
       title={label}
@@ -70,8 +70,8 @@ export function DashboardIcon({ size = 24, className, title }: IconProps) {
     <Svg size={size} className={className} title={title ?? "Dashboard"}>
       <defs>
         <linearGradient id={g} x1="4" y1="3" x2="20" y2="22">
-          <stop offset="0%" stopColor="#5EEAD4" />
-          <stop offset="100%" stopColor="#0D9488" />
+          <stop offset="0%" stopColor="#6EE7B7" />
+          <stop offset="100%" stopColor="#059669" />
         </linearGradient>
       </defs>
       <path
@@ -89,8 +89,8 @@ export function StartIcon({ size = 24, className, title }: IconProps) {
     <Svg size={size} className={className} title={title ?? "Start"}>
       <defs>
         <linearGradient id={g} x1="6" y1="4" x2="20" y2="20">
-          <stop offset="0%" stopColor="#5EEAD4" />
-          <stop offset="100%" stopColor="#0D9488" />
+          <stop offset="0%" stopColor="#6EE7B7" />
+          <stop offset="100%" stopColor="#059669" />
         </linearGradient>
       </defs>
       <path
@@ -138,7 +138,7 @@ export function WheelLabIcon({ size = 24, className, title }: IconProps) {
     <Svg size={size} className={className} title={title ?? "Wheel Lab"}>
       <defs>
         <linearGradient id={g1} x1="4" y1="4" x2="20" y2="20">
-          <stop offset="0%" stopColor="#5EEAD4" />
+          <stop offset="0%" stopColor="#6EE7B7" />
           <stop offset="100%" stopColor="#14B8A6" />
         </linearGradient>
         <linearGradient id={g2} x1="20" y1="4" x2="4" y2="20">
@@ -159,8 +159,8 @@ export function PortfolioIcon({ size = 24, className, title }: IconProps) {
     <Svg size={size} className={className} title={title ?? "Portfolio"}>
       <defs>
         <linearGradient id={g} x1="4" y1="4" x2="20" y2="20">
-          <stop offset="0%" stopColor="#5EEAD4" />
-          <stop offset="100%" stopColor="#0D9488" />
+          <stop offset="0%" stopColor="#6EE7B7" />
+          <stop offset="100%" stopColor="#059669" />
         </linearGradient>
       </defs>
       <path
@@ -202,8 +202,8 @@ export function ScreenerIcon({ size = 24, className, title }: IconProps) {
     <Svg size={size} className={className} title={title ?? "Screener"}>
       <defs>
         <linearGradient id={g} x1="4" y1="3" x2="20" y2="21">
-          <stop offset="0%" stopColor="#5EEAD4" />
-          <stop offset="100%" stopColor="#0D9488" />
+          <stop offset="0%" stopColor="#6EE7B7" />
+          <stop offset="100%" stopColor="#059669" />
         </linearGradient>
       </defs>
       <circle cx="10.5" cy="10.5" r="6.3" stroke={`url(#${g})`} strokeWidth="2.4" />
@@ -219,7 +219,7 @@ export function ResearchIcon({ size = 24, className, title }: IconProps) {
       <defs>
         <linearGradient id={g} x1="3" y1="4" x2="21" y2="20">
           <stop offset="0%" stopColor="#99F6E4" />
-          <stop offset="100%" stopColor="#0D9488" />
+          <stop offset="100%" stopColor="#059669" />
         </linearGradient>
       </defs>
       <rect x="3.2" y="14.2" width="3.2" height="6.3" rx="0.9" fill={`url(#${g})`} opacity={0.7} />
@@ -255,12 +255,12 @@ export function CompareIcon({ size = 24, className, title }: IconProps) {
     <Svg size={size} className={className} title={title ?? "Compare"}>
       <defs>
         <linearGradient id={g1} x1="3" y1="6" x2="15" y2="20">
-          <stop offset="0%" stopColor="#5EEAD4" />
+          <stop offset="0%" stopColor="#6EE7B7" />
           <stop offset="100%" stopColor="#14B8A6" />
         </linearGradient>
         <linearGradient id={g2} x1="9" y1="3" x2="21" y2="16">
-          <stop offset="0%" stopColor="#5EEAD4" />
-          <stop offset="100%" stopColor="#0D9488" />
+          <stop offset="0%" stopColor="#6EE7B7" />
+          <stop offset="100%" stopColor="#059669" />
         </linearGradient>
       </defs>
       <rect x="2.8" y="7.2" width="11.6" height="11.6" rx="2.6" fill={`url(#${g1})`} />
@@ -277,7 +277,7 @@ export function FiltersIcon({ size = 24, className, title }: IconProps) {
     <Svg size={size} className={className} title={title ?? "Filters"}>
       <defs>
         <linearGradient id={g} x1="6" y1="3" x2="18" y2="22">
-          <stop offset="0%" stopColor="#5EEAD4" />
+          <stop offset="0%" stopColor="#6EE7B7" />
           <stop offset="100%" stopColor="#0F766E" />
         </linearGradient>
       </defs>
@@ -312,8 +312,8 @@ export function ImportExportIcon({ size = 24, className, title }: IconProps) {
     <Svg size={size} className={className} title={title ?? "Import / Export"}>
       <defs>
         <linearGradient id={g} x1="6" y1="2" x2="18" y2="22">
-          <stop offset="0%" stopColor="#5EEAD4" />
-          <stop offset="100%" stopColor="#0D9488" />
+          <stop offset="0%" stopColor="#6EE7B7" />
+          <stop offset="100%" stopColor="#059669" />
         </linearGradient>
       </defs>
       <path
@@ -367,8 +367,8 @@ export function HelpIcon({ size = 24, className, title }: IconProps) {
     <Svg size={size} className={className} title={title ?? "Help"}>
       <defs>
         <linearGradient id={g} x1="4" y1="3" x2="20" y2="21">
-          <stop offset="0%" stopColor="#5EEAD4" />
-          <stop offset="100%" stopColor="#0D9488" />
+          <stop offset="0%" stopColor="#6EE7B7" />
+          <stop offset="100%" stopColor="#059669" />
         </linearGradient>
       </defs>
       <circle cx="12" cy="12" r="9.2" stroke={`url(#${g})`} strokeWidth="2.2" />
@@ -389,8 +389,8 @@ export function AccountIcon({ size = 24, className, title }: IconProps) {
     <Svg size={size} className={className} title={title ?? "Account"}>
       <defs>
         <linearGradient id={g} x1="6" y1="3" x2="18" y2="22">
-          <stop offset="0%" stopColor="#5EEAD4" />
-          <stop offset="100%" stopColor="#0D9488" />
+          <stop offset="0%" stopColor="#6EE7B7" />
+          <stop offset="100%" stopColor="#059669" />
         </linearGradient>
       </defs>
       <circle cx="12" cy="8" r="3.6" fill={`url(#${g})`} />
