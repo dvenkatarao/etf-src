@@ -152,8 +152,8 @@ function SmartTickerSearch({ onNavigate }: { onNavigate?: () => void }) {
             setOpen(false);
           }
         }}
-        placeholder="Search ETF / Wheel stock…"
-        className="w-48 rounded-lg border border-slate-800 bg-slate-900/90 py-1.5 pl-8 pr-3 font-mono text-xs uppercase tracking-wide text-slate-200 placeholder:font-sans placeholder:normal-case placeholder:tracking-normal placeholder:text-slate-500 focus:border-emerald-500/60 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 xl:w-64"
+        placeholder="Ticker"
+        className="w-28 rounded-lg border border-slate-800 bg-slate-900/90 py-1.5 pl-8 pr-2 font-mono text-xs uppercase tracking-wide text-slate-200 placeholder:font-sans placeholder:normal-case placeholder:tracking-normal placeholder:text-slate-500 focus:border-emerald-500/60 focus:outline-none focus:ring-1 focus:ring-emerald-500/40"
         maxLength={10}
         aria-label="Jump to ETF or stock ticker"
         aria-autocomplete="list"
@@ -164,7 +164,7 @@ function SmartTickerSearch({ onNavigate }: { onNavigate?: () => void }) {
       />
       {open && hits.length > 0 && (
         <ul
-          className="absolute right-0 z-50 mt-1.5 w-[260px] overflow-hidden rounded-lg border border-white/10 bg-[#0f172a] py-1 shadow-xl shadow-black/40"
+          className="absolute right-0 z-50 mt-1.5 w-44 overflow-hidden rounded-lg border border-white/10 bg-[#0f172a] py-1 shadow-xl shadow-black/40"
           role="listbox"
         >
           {hits.map((h, i) => (
@@ -380,7 +380,7 @@ export default function Nav({ regime }: { regime?: RegimeChipData | null }) {
             />
           </nav>
 
-          <div className="hidden items-center gap-3 lg:flex">
+          <div className="hidden shrink-0 items-center gap-2 lg:flex">
             <SmartTickerSearch />
             <RegimeChip regime={regime ?? null} />
             <ThemeToggle />
