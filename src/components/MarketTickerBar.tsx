@@ -18,20 +18,20 @@ export default function MarketTickerBar({
   const open = s.session === "open";
 
   return (
-    <div className="border-b border-slate-800 bg-slate-900/90 text-xs text-slate-300 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center gap-6 overflow-x-auto px-4 py-2 sm:px-6 lg:px-8">
+    <div className="w-full border-b border-slate-800 bg-slate-900/90 text-xs text-slate-300 backdrop-blur-md">
+      <div className="flex w-full items-center gap-4 overflow-x-auto px-4 py-2 sm:px-6 lg:px-8">
         <div className="flex shrink-0 items-center gap-1.5 border-r border-slate-700/60 pr-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
           <span className={`h-2 w-2 rounded-full ${open ? "bg-emerald-500" : "bg-slate-500"}`} />
           <span>US markets</span>
           <span className="font-normal normal-case tracking-normal text-slate-500">· delayed</span>
         </div>
 
-        <div className="flex min-w-max items-center gap-6">
+        <div className="flex min-w-0 flex-1 items-center justify-between gap-4">
           {items.map((item) => {
             const up = item.changePct != null && item.changePct > 0;
             const down = item.changePct != null && item.changePct < 0;
             return (
-              <div key={item.ticker} className="flex items-center gap-2">
+              <div key={item.ticker} className="flex shrink-0 items-center gap-2">
                 <span className="font-mono font-bold text-slate-200">{item.ticker}</span>
                 <span className="font-mono text-slate-400">
                   {item.price == null ? "N/A" : item.kind === "vol" ? item.price.toFixed(2) : item.price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}

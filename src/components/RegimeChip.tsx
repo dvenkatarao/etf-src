@@ -26,7 +26,7 @@ export default function RegimeChip({ regime }: { regime: RegimeChipData | null }
     <Link
       href="/macro"
       title={tip}
-      className={`hidden max-w-[240px] items-center gap-2 rounded-lg border px-3 py-1.5 font-mono text-xs transition lg:flex ${cls}`}
+      className={`hidden max-w-[160px] items-center gap-1.5 rounded-lg border px-2.5 py-1.5 font-mono text-[11px] transition lg:flex ${cls}`}
     >
       <span className="shrink-0 text-slate-500">Regime</span>
       <span className="min-w-0 truncate font-semibold">{title}</span>
