@@ -100,7 +100,7 @@ export default function WheelChartWithPuts({ ticker, bars, technicals, puts, put
               events={events}
               fundTarget={fundTarget}
             />
-            <div className="mt-3 rounded-lg bg-slate-50 px-3 py-2 dark:bg-[#0b1220] border border-slate-200 dark:border-slate-800">
+            <div className="mt-3 rounded-lg bg-slate-50 px-3 py-2 dark:bg-[#020617] border border-slate-200 dark:border-slate-800">
               <RejectsInline rejected={puts.rejected} evaluated={puts.evaluated} />
               <p className="mt-1 text-[11px] text-slate-500">Cash needed per contract = strike × 100. Credit is an estimated limit fill (25% from bid to ask). Place a limit order, never a market order.</p>
             </div>

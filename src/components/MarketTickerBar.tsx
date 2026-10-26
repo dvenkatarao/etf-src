@@ -22,7 +22,7 @@ export default function MarketTickerBar({
     <div className="w-full border-b border-slate-800 bg-slate-900/90 text-xs text-slate-300 backdrop-blur-md">
       <div className="flex w-full items-center gap-4 overflow-x-auto px-4 py-2 sm:px-6 lg:px-8">
         <div className="flex shrink-0 items-center gap-1.5 border-r border-slate-700/60 pr-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-          <Activity className="h-3.5 w-3.5 text-emerald-400" />
+          <Activity className="h-3.5 w-3.5 animate-pulse text-emerald-400 motion-reduce:animate-none" />
           <span>US markets</span>
           <span className="font-normal normal-case tracking-normal text-slate-500">· delayed</span>
         </div>

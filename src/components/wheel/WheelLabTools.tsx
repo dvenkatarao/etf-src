@@ -212,7 +212,7 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
       >
         <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
           Ticker
-          <input value={ticker} onChange={(e) => setTicker(e.target.value.toUpperCase())} placeholder="AAPL" maxLength={10} className="w-28 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-sm dark:border-slate-700 dark:bg-[#111827] dark:text-white" />
+          <input value={ticker} onChange={(e) => setTicker(e.target.value.toUpperCase())} placeholder="AAPL" maxLength={10} className="w-28 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-sm dark:border-slate-700 dark:bg-[#020617] dark:text-white" />
         </label>
         <button type="submit" disabled={loading} className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-50">
           {loading ? "Loading…" : "Load live chain"}
@@ -229,19 +229,19 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
       <div className="flex flex-wrap gap-3">
         <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
           DTE
-          <input type="number" value={dte} onChange={(e) => setDte(Number(e.target.value) || 0)} className="w-24 rounded-lg border border-slate-700 bg-[#111827] px-2.5 py-1.5 text-sm text-white" />
+          <input type="number" value={dte} onChange={(e) => setDte(Number(e.target.value) || 0)} className="w-24 rounded-lg border border-slate-700 bg-[#020617] px-2.5 py-1.5 text-sm text-white" />
         </label>
         <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
           IV (decimal)
-          <input type="number" step="0.01" value={iv} onChange={(e) => setIv(Number(e.target.value) || 0)} className="w-24 rounded-lg border border-slate-700 bg-[#111827] px-2.5 py-1.5 text-sm text-white" />
+          <input type="number" step="0.01" value={iv} onChange={(e) => setIv(Number(e.target.value) || 0)} className="w-24 rounded-lg border border-slate-700 bg-[#020617] px-2.5 py-1.5 text-sm text-white" />
         </label>
         <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
           HV30 (decimal)
-          <input type="number" step="0.01" value={hv} onChange={(e) => setHv(Number(e.target.value) || 0)} className="w-24 rounded-lg border border-slate-700 bg-[#111827] px-2.5 py-1.5 text-sm text-white" />
+          <input type="number" step="0.01" value={hv} onChange={(e) => setHv(Number(e.target.value) || 0)} className="w-24 rounded-lg border border-slate-700 bg-[#020617] px-2.5 py-1.5 text-sm text-white" />
         </label>
         <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
           Spot
-          <input type="number" step="0.01" value={spot} onChange={(e) => setSpot(Number(e.target.value) || 0)} className="w-28 rounded-lg border border-slate-700 bg-[#111827] px-2.5 py-1.5 text-sm text-white" />
+          <input type="number" step="0.01" value={spot} onChange={(e) => setSpot(Number(e.target.value) || 0)} className="w-28 rounded-lg border border-slate-700 bg-[#020617] px-2.5 py-1.5 text-sm text-white" />
         </label>
       </div>
       <Conditions iv={iv} hv={hv} dteEarn={dteEarn} spreadPct={spreadPct} />
@@ -285,7 +285,7 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
                     <button type="button" className="px-2.5 text-sm leading-none text-slate-600 dark:text-slate-300" onClick={() => setLegs((prev) => prev.map((l) => ({ ...l, qty: Math.max(1, l.qty - 1) })))}>
                       −
                     </button>
-                    <span className="flex min-w-[2rem] items-center justify-center bg-slate-50 px-2 font-mono text-sm tabular-nums dark:bg-[#111827] dark:text-white">{legs[0]?.qty ?? 1}</span>
+                    <span className="flex min-w-[2rem] items-center justify-center bg-slate-50 px-2 font-mono text-sm tabular-nums dark:bg-[#020617] dark:text-white">{legs[0]?.qty ?? 1}</span>
                     <button type="button" className="px-2.5 text-sm leading-none text-slate-600 dark:text-slate-300" onClick={() => setLegs((prev) => prev.map((l) => ({ ...l, qty: l.qty + 1 })))}>
                       +
                     </button>
@@ -325,7 +325,7 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
             <summary className="cursor-pointer px-3 py-2 text-sm font-semibold text-slate-800 dark:text-slate-100">Position legs · {legs.length}</summary>
             <div className="overflow-x-auto border-t border-slate-200 dark:border-slate-800">
               <table className="min-w-full text-sm">
-                <thead className="bg-slate-50 text-left text-[10px] uppercase tracking-[0.12em] text-slate-500 dark:bg-[#0b1220]">
+                <thead className="bg-slate-50 text-left text-[10px] uppercase tracking-[0.12em] text-slate-500 dark:bg-[#020617]">
                   <tr>
                     {["Side", "Type", "Strike", "Premium / sh", "Qty"].map((h) => (
                       <th key={h} className="px-3 py-2 font-medium">
@@ -338,7 +338,7 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
                   {legs.map((l) => (
                     <tr key={l.id}>
                       <td className="px-3 py-2">
-                        <select value={l.side} onChange={(e) => updateLeg(l.id, { side: e.target.value as Leg["side"] })} className="rounded border border-slate-300 bg-white px-2 py-1 text-xs dark:border-slate-700 dark:bg-[#111827] dark:text-white">
+                        <select value={l.side} onChange={(e) => updateLeg(l.id, { side: e.target.value as Leg["side"] })} className="rounded border border-slate-300 bg-white px-2 py-1 text-xs dark:border-slate-700 dark:bg-[#020617] dark:text-white">
                           <option value="sell">Sell</option>
                           <option value="buy">Buy</option>
                         </select>
@@ -348,14 +348,14 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
                         {l.right === "stock" ? (
                           <span className="text-slate-500">—</span>
                         ) : (
-                          <input type="number" value={l.strike ?? 0} onChange={(e) => updateLeg(l.id, { strike: Number(e.target.value) })} className="w-24 rounded border border-slate-300 bg-white px-2 py-1 font-mono text-xs dark:border-slate-700 dark:bg-[#111827] dark:text-white" />
+                          <input type="number" value={l.strike ?? 0} onChange={(e) => updateLeg(l.id, { strike: Number(e.target.value) })} className="w-24 rounded border border-slate-300 bg-white px-2 py-1 font-mono text-xs dark:border-slate-700 dark:bg-[#020617] dark:text-white" />
                         )}
                       </td>
                       <td className="px-3 py-2">
-                        <input type="number" step="0.01" value={l.premium} onChange={(e) => updateLeg(l.id, { premium: Number(e.target.value) })} className="w-24 rounded border border-slate-300 bg-white px-2 py-1 font-mono text-xs dark:border-slate-700 dark:bg-[#111827] dark:text-white" />
+                        <input type="number" step="0.01" value={l.premium} onChange={(e) => updateLeg(l.id, { premium: Number(e.target.value) })} className="w-24 rounded border border-slate-300 bg-white px-2 py-1 font-mono text-xs dark:border-slate-700 dark:bg-[#020617] dark:text-white" />
                       </td>
                       <td className="px-3 py-2">
-                        <input type="number" min={1} value={l.qty} onChange={(e) => updateLeg(l.id, { qty: Math.max(1, Number(e.target.value) || 1) })} className="w-16 rounded border border-slate-300 bg-white px-2 py-1 font-mono text-xs dark:border-slate-700 dark:bg-[#111827] dark:text-white" />
+                        <input type="number" min={1} value={l.qty} onChange={(e) => updateLeg(l.id, { qty: Math.max(1, Number(e.target.value) || 1) })} className="w-16 rounded border border-slate-300 bg-white px-2 py-1 font-mono text-xs dark:border-slate-700 dark:bg-[#020617] dark:text-white" />
                       </td>
                     </tr>
                   ))}
@@ -372,15 +372,15 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
               Put strike
-              <input type="number" value={putStrike} onChange={(e) => setPutStrike(Number(e.target.value) || 0)} className="rounded-lg border border-slate-700 bg-[#111827] px-2.5 py-1.5 text-sm text-white" />
+              <input type="number" value={putStrike} onChange={(e) => setPutStrike(Number(e.target.value) || 0)} className="rounded-lg border border-slate-700 bg-[#020617] px-2.5 py-1.5 text-sm text-white" />
             </label>
             <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
               Put credit / sh
-              <input type="number" step="0.01" value={putCredit} onChange={(e) => setPutCredit(Number(e.target.value) || 0)} className="rounded-lg border border-slate-700 bg-[#111827] px-2.5 py-1.5 text-sm text-white" />
+              <input type="number" step="0.01" value={putCredit} onChange={(e) => setPutCredit(Number(e.target.value) || 0)} className="rounded-lg border border-slate-700 bg-[#020617] px-2.5 py-1.5 text-sm text-white" />
             </label>
             <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
               Contracts
-              <input type="number" min={1} value={contracts} onChange={(e) => setContracts(Math.max(1, Number(e.target.value) || 1))} className="rounded-lg border border-slate-700 bg-[#111827] px-2.5 py-1.5 text-sm text-white" />
+              <input type="number" min={1} value={contracts} onChange={(e) => setContracts(Math.max(1, Number(e.target.value) || 1))} className="rounded-lg border border-slate-700 bg-[#020617] px-2.5 py-1.5 text-sm text-white" />
             </label>
             <label className="flex items-center gap-2 pt-5 text-sm text-slate-300">
               <input type="checkbox" checked={includeCall} onChange={(e) => setIncludeCall(e.target.checked)} className="accent-emerald-600" />
@@ -390,15 +390,15 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
               <>
                 <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
                   Call strike
-                  <input type="number" value={callStrike} onChange={(e) => setCallStrike(Number(e.target.value) || 0)} className="rounded-lg border border-slate-700 bg-[#111827] px-2.5 py-1.5 text-sm text-white" />
+                  <input type="number" value={callStrike} onChange={(e) => setCallStrike(Number(e.target.value) || 0)} className="rounded-lg border border-slate-700 bg-[#020617] px-2.5 py-1.5 text-sm text-white" />
                 </label>
                 <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
                   Call credit / sh
-                  <input type="number" step="0.01" value={callCredit} onChange={(e) => setCallCredit(Number(e.target.value) || 0)} className="rounded-lg border border-slate-700 bg-[#111827] px-2.5 py-1.5 text-sm text-white" />
+                  <input type="number" step="0.01" value={callCredit} onChange={(e) => setCallCredit(Number(e.target.value) || 0)} className="rounded-lg border border-slate-700 bg-[#020617] px-2.5 py-1.5 text-sm text-white" />
                 </label>
                 <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
                   Call DTE
-                  <input type="number" value={callDte} onChange={(e) => setCallDte(Number(e.target.value) || 0)} className="rounded-lg border border-slate-700 bg-[#111827] px-2.5 py-1.5 text-sm text-white" />
+                  <input type="number" value={callDte} onChange={(e) => setCallDte(Number(e.target.value) || 0)} className="rounded-lg border border-slate-700 bg-[#020617] px-2.5 py-1.5 text-sm text-white" />
                 </label>
               </>
             )}
@@ -428,15 +428,15 @@ export default function WheelLabTools({ initial }: { initial: ToolsInit }) {
           <div className="grid gap-3 sm:grid-cols-3">
             <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
               Monthly target $
-              <input type="number" value={monthly} onChange={(e) => setMonthly(Number(e.target.value) || 0)} className="rounded-lg border border-slate-700 bg-[#111827] px-2.5 py-1.5 text-sm text-white" />
+              <input type="number" value={monthly} onChange={(e) => setMonthly(Number(e.target.value) || 0)} className="rounded-lg border border-slate-700 bg-[#020617] px-2.5 py-1.5 text-sm text-white" />
             </label>
             <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
               ROC per cycle %
-              <input type="number" step="0.1" value={rocCycle} onChange={(e) => setRocCycle(Number(e.target.value) || 0)} className="rounded-lg border border-slate-700 bg-[#111827] px-2.5 py-1.5 text-sm text-white" />
+              <input type="number" step="0.1" value={rocCycle} onChange={(e) => setRocCycle(Number(e.target.value) || 0)} className="rounded-lg border border-slate-700 bg-[#020617] px-2.5 py-1.5 text-sm text-white" />
             </label>
             <label className="grid gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
               DTE
-              <input type="number" value={dte} onChange={(e) => setDte(Number(e.target.value) || 0)} className="rounded-lg border border-slate-700 bg-[#111827] px-2.5 py-1.5 text-sm text-white" />
+              <input type="number" value={dte} onChange={(e) => setDte(Number(e.target.value) || 0)} className="rounded-lg border border-slate-700 bg-[#020617] px-2.5 py-1.5 text-sm text-white" />
             </label>
           </div>
           {income ? (

@@ -49,7 +49,7 @@ function Pagination({ page, total, onChange }: { page: number; total: number; on
         <button
           onClick={() => onChange(Math.max(1, page - 1))}
           disabled={page === 1}
-          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-40 dark:border-slate-700 dark:bg-[#0b1220] dark:text-slate-200"
+          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-40 dark:border-slate-700 dark:bg-[#020617] dark:text-slate-200"
         >
           ← Prev
         </button>
@@ -62,7 +62,7 @@ function Pagination({ page, total, onChange }: { page: number; total: number; on
             <button
               key={p}
               onClick={() => onChange(p as number)}
-              className={`min-w-[32px] rounded-md px-2.5 py-1.5 text-xs font-medium ring-1 ${page === p ? "bg-emerald-600 text-white ring-emerald-600" : "bg-white text-slate-700 ring-slate-200 hover:bg-slate-50 dark:bg-[#0b1220] dark:text-slate-300 dark:ring-slate-700"}`}
+              className={`min-w-[32px] rounded-md px-2.5 py-1.5 text-xs font-medium ring-1 ${page === p ? "bg-emerald-600 text-white ring-emerald-600" : "bg-white text-slate-700 ring-slate-200 hover:bg-slate-50 dark:bg-[#020617] dark:text-slate-300 dark:ring-slate-700"}`}
             >
               {p}
             </button>
@@ -71,7 +71,7 @@ function Pagination({ page, total, onChange }: { page: number; total: number; on
         <button
           onClick={() => onChange(Math.min(total, page + 1))}
           disabled={page === total}
-          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-40 dark:border-slate-700 dark:bg-[#0b1220] dark:text-slate-200"
+          className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-40 dark:border-slate-700 dark:bg-[#020617] dark:text-slate-200"
         >
           Next →
         </button>
@@ -148,10 +148,10 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
           </div>
           <TableScroll density={density}>
             <table className="min-w-full text-sm">
-              <thead className="bg-slate-50 text-left text-[10px] uppercase tracking-[0.12em] text-slate-500 dark:bg-[#0b1220] dark:text-slate-400">
+              <thead className="bg-slate-50 text-left text-[10px] uppercase tracking-[0.12em] text-slate-500 dark:bg-[#020617] dark:text-slate-400">
                 <tr>
                   <th className="whitespace-nowrap px-2 py-2 font-medium">#</th>
-                  <th className="whitespace-nowrap px-3 py-2 font-medium sticky left-0 bg-slate-50 dark:bg-[#0b1220] z-10">STOCK</th>
+                  <th className="whitespace-nowrap px-3 py-2 font-medium sticky left-0 bg-slate-50 dark:bg-[#020617] z-10">STOCK</th>
                   <th className="whitespace-nowrap px-3 py-2 font-medium hidden sm:table-cell">GRADE</th>
                   <th className="whitespace-nowrap px-3 py-2 font-medium hidden lg:table-cell">ACCT</th>
                   <th className="whitespace-nowrap px-3 py-2 font-medium hidden xl:table-cell">PRICE</th>
@@ -301,7 +301,7 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                         </td>
                       </tr>
                       {isOpen && (
-                        <tr className="bg-slate-50 dark:bg-[#0b1220]">
+                        <tr className="bg-slate-50 dark:bg-[#020617]">
                           <td colSpan={16} className="px-4 py-4">
                             <div className="grid grid-cols-2 gap-4 text-xs md:grid-cols-4">
                               <div className="space-y-1">

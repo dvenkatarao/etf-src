@@ -75,7 +75,7 @@ const YIELD_MAX = 15;
 const EXP_MAX = 2.5;
 const labelCls = "text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400";
 const field =
-  "rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none dark:border-slate-700 dark:bg-[#0f172a]";
+  "rounded-lg border not-dark:border-slate-300 not-dark:bg-white px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200 dark:placeholder:text-slate-500 dark:focus:border-emerald-500/60 dark:focus:ring-1 dark:focus:ring-emerald-500/40";
 
 function RateBadge({ tag, label }: { tag: ScreenRow["rateTag"]; label: string }) {
   return (
@@ -485,7 +485,7 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
           <p className="mb-2 hidden text-xs text-slate-500 md:block">Hover column headers for definitions.</p>
           <TableScroll density={density} className="shadow-sm">
             <table className="min-w-full text-sm">
-              <thead className="bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500 dark:bg-[#0b1220] dark:text-slate-400">
+              <thead className="bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500 dark:bg-[#020617] dark:text-slate-400">
                 <tr>
                   <th className="w-8 px-3 py-3" />
                   {COLUMNS.map((c) => (

@@ -39,7 +39,7 @@ export default function WheelGradeCardDark({ quality, annReturn }: { quality: St
                 ? `${p.label}: ${p.score.toFixed(0)}/100 (${p.letter}) — ${p.detail} | Weight ${Math.round(p.weight * 100)}%`
                 : p.detail
             }
-            className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-[#0b1220] cursor-help transition hover:border-emerald-200 dark:hover:border-emerald-500/30"
+            className="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-[#020617] cursor-help transition hover:border-emerald-200 dark:hover:border-emerald-500/30"
           >
             <div className="flex items-center justify-between">
               <div className="text-xs font-semibold text-slate-900 dark:text-white">{p.label}</div>

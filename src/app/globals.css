@@ -26,9 +26,9 @@
 html.dark {
   --bg-canvas: #020617;
   --bg-card: #0f172a;
-  --bg-card-subtle: #111827;
-  --bg-card-header: #0b1220;
-  --bg-input: #0f172a;
+  --bg-card-subtle: #020617;
+  --bg-card-header: #020617;
+  --bg-input: #020617;
   --bg-nav: #020617;
   --border: #1e293b;
   --border-strong: #334155;
@@ -81,13 +81,46 @@ input[type="range"] {
 .cl-table-compact tbody td { padding-top: 0.22rem; padding-bottom: 0.22rem; font-size: 12px; }
 .cl-table-compact thead th { padding-top: 0.4rem; padding-bottom: 0.4rem; }
 
-/* Scrollbars — adapt to theme */
-*::-webkit-scrollbar { width: 8px; height: 8px; }
-*::-webkit-scrollbar-thumb { background: rgb(203 213 225); border-radius: 999px; }
+/* Scrollbars — thin Option-1 style, adapt to theme */
+*::-webkit-scrollbar { width: 6px; height: 6px; }
+*::-webkit-scrollbar-thumb { background: rgb(203 213 225); border-radius: 4px; }
 *::-webkit-scrollbar-thumb:hover { background: rgb(148 163 184); }
-html.dark *::-webkit-scrollbar-thumb { background: rgb(51 65 85); }
-html.dark *::-webkit-scrollbar-thumb:hover { background: rgb(71 85 105); }
-html.dark *::-webkit-scrollbar-track { background: transparent; }
+html.dark *::-webkit-scrollbar-thumb { background: #1e293b; }
+html.dark *::-webkit-scrollbar-thumb:hover { background: #334155; }
+html.dark *::-webkit-scrollbar-track { background: #020617; }
+
+/* ───────────────────────────────────────────────── */
+/* Option-1 look and feel                            */
+/* ───────────────────────────────────────────────── */
+
+/* Slow spinner used on the wheel icon in hero CTAs (Option-1 signature) */
+@keyframes cl-spin-slow {
+  to { transform: rotate(360deg); }
+}
+@utility animate-spin-slow {
+  animation: cl-spin-slow 8s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-spin-slow { animation: none; }
+}
+
+/* Research tables: mono uppercase header on a slate-950 band, slate hover rows */
+.cl-table-scroll thead th {
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+html.dark .cl-table-scroll {
+  background-color: rgb(15 23 42 / 0.9);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
+}
+html.dark .cl-table-scroll thead th {
+  background: rgb(2 6 23 / 0.95);
+  color: #94a3b8;
+}
+html.dark .cl-table-scroll tbody tr:hover {
+  background-color: rgb(30 41 59 / 0.6);
+}
 
 /* ───────────────────────────────────────────────── */
 /* THEME OVERRIDES — make existing hardcoded classes theme-aware */
@@ -96,7 +129,7 @@ html.dark *::-webkit-scrollbar-track { background: transparent; }
 html.dark .bg-white { background-color: var(--bg-card) !important; }
 html.dark .bg-slate-50 { background-color: var(--bg-card-subtle) !important; }
 html.dark .bg-slate-50\/80 { background-color: rgb(15 23 42 / 0.8) !important; }
-html.dark .bg-slate-100 { background-color: #0b1220 !important; }
+html.dark .bg-slate-100 { background-color: #020617 !important; }
 html.dark .bg-\[\#F8FAFC\] { background-color: var(--bg-canvas) !important; }
 html.dark .border-slate-200 { border-color: var(--border) !important; }
 html.dark .border-slate-200\/60 { border-color: rgb(30 41 59 / 0.6) !important; }
@@ -117,20 +150,19 @@ html.dark .bg-teal-500, html.dark .bg-emerald-500 { background-color: #10b981 !i
 /* Dark → Light (hardcoded dark cards stay readable) */
 /* ───────────────────────────────────────────────── */
 html:not(.dark) .bg-\[\#0f172a\] { background-color: var(--bg-card) !important; }
-html:not(.dark) .bg-\[\#0b1220\] { background-color: var(--bg-card-header) !important; }
-html:not(.dark) .bg-\[\#111827\] { background-color: var(--bg-card-subtle) !important; }
+html:not(.dark) .bg-\[\#020617\] { background-color: var(--bg-card-subtle) !important; }
 html:not(.dark) .bg-\[\#1e293b\] { background-color: #f1f5f9 !important; }
 html:not(.dark) .bg-slate-800\/30 { background-color: rgba(241,245,249,0.6) !important; }
 html:not(.dark) .bg-slate-800\/40 { background-color: #f8fafc !important; }
 html:not(.dark) .bg-slate-800\/50 { background-color: #f8fafc !important; }
 html:not(.dark) .border-slate-800 { border-color: var(--border) !important; }
 html:not(.dark) .border-slate-700 { border-color: #e2e8f0 !important; }
-html:not(.dark) :is(.bg-\[\#0f172a\], .bg-\[\#0b1220\], .bg-\[\#111827\]) .text-white,
-html:not(.dark) :is(.bg-\[\#0f172a\], .bg-\[\#0b1220\]) .text-slate-100 { color: #0f172a !important; }
-html:not(.dark) :is(.bg-\[\#0f172a\], .bg-\[\#0b1220\]) .text-slate-200 { color: #1e293b !important; }
-html:not(.dark) :is(.bg-\[\#0f172a\], .bg-\[\#0b1220\]) .text-slate-300 { color: #334155 !important; }
-html:not(.dark) :is(.bg-\[\#0f172a\], .bg-\[\#0b1220\]) .text-slate-400 { color: #64748b !important; }
-html:not(.dark) :is(.bg-\[\#0f172a\], .bg-\[\#111827\]) .text-emerald-300 { color: #047857 !important; }
+html:not(.dark) :is(.bg-\[\#0f172a\], .bg-\[\#020617\]) .text-white,
+html:not(.dark) :is(.bg-\[\#0f172a\], .bg-\[\#020617\]) .text-slate-100 { color: #0f172a !important; }
+html:not(.dark) :is(.bg-\[\#0f172a\], .bg-\[\#020617\]) .text-slate-200 { color: #1e293b !important; }
+html:not(.dark) :is(.bg-\[\#0f172a\], .bg-\[\#020617\]) .text-slate-300 { color: #334155 !important; }
+html:not(.dark) :is(.bg-\[\#0f172a\], .bg-\[\#020617\]) .text-slate-400 { color: #64748b !important; }
+html:not(.dark) :is(.bg-\[\#0f172a\], .bg-\[\#020617\]) .text-emerald-300 { color: #047857 !important; }
 /* Colored CTAs keep white text in light */
 html:not(.dark) .bg-teal-500.text-white,
 html:not(.dark) .bg-teal-600.text-white,
@@ -141,9 +173,9 @@ html:not(.dark) .bg-white\/10.text-white { color: white !important; }
 html:not(.dark) .hover\:bg-white\/\[0\.03\]:hover { background-color: rgba(15,23,42,0.03) !important; }
 html:not(.dark) .hover\:bg-white\/5:hover { background-color: rgba(15,23,42,0.05) !important; }
 
-html:not(.dark) input.bg-\[\#111827\] { background-color: #ffffff !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
-html:not(.dark) select.bg-\[\#111827\] { background-color: #ffffff !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
-html:not(.dark) .bg-\[\#111827\].border-slate-700 { background-color: #ffffff !important; }
+html:not(.dark) input.bg-\[\#020617\] { background-color: #ffffff !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
+html:not(.dark) select.bg-\[\#020617\] { background-color: #ffffff !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
+html:not(.dark) .bg-\[\#020617\].border-slate-700 { background-color: #ffffff !important; }
 
 /* Footer */
 html.dark footer .border-slate-200 { border-color: var(--border) !important; }

@@ -25,7 +25,7 @@ export default function WheelSectorWarning({ rows }: { rows: WheelRow[] }) {
             className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs ${
               b.pct >= 0.3
                 ? "border-amber-300 bg-amber-100 text-amber-900 dark:border-amber-400/40 dark:bg-amber-500/10 dark:text-amber-200"
-                : "border-slate-200 bg-white text-slate-700 dark:border-slate-700 dark:bg-[#111827] dark:text-slate-300"
+                : "border-slate-200 bg-white text-slate-700 dark:border-slate-700 dark:bg-[#020617] dark:text-slate-300"
             }`}
           >
             <span className="h-2 w-2 rounded-full bg-emerald-500" /> {b.sector}: {b.count} ({Math.round(b.pct * 100)}%)
