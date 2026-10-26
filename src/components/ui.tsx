@@ -6,7 +6,7 @@ import { gradeBadgeClasses } from "@/components/GradePill";
 
 export function Card({ title, subtitle, right, children, className = "" }: { title?: ReactNode; subtitle?: ReactNode; right?: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <section className={`rounded-xl border border-slate-200/70 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_4px_12px_rgba(15,23,42,0.06)] dark:border-slate-800 dark:bg-[#0f172a] ${className}`}>
+    <section className={`rounded-xl border border-slate-200/70 bg-white p-5 shadow-md dark:border-slate-800 dark:bg-slate-900/90 ${className}`}>
       {(title || right) && (
         <header className="mb-4 flex flex-wrap items-start justify-between gap-2">
           <div>
@@ -129,7 +129,7 @@ export function PageHeader({ title, description, right, icon }: { title: string;
       <div>
         <div className="flex items-center gap-3">
           {icon}
-          <h1 className="text-[22px] font-semibold tracking-tight text-slate-900 sm:text-2xl dark:text-white">{title}</h1>
+          <h1 className="text-lg font-bold tracking-tight text-slate-900 sm:text-2xl dark:text-white">{title}</h1>
         </div>
         {description && <p className={`mt-1.5 max-w-3xl text-[13px] leading-5 text-slate-500 ${icon ? "sm:pl-[52px]" : ""}`}>{description}</p>}
       </div>
