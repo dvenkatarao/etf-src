@@ -7,6 +7,7 @@ import { UNIVERSE } from "@/lib/universe";
 import { BASE_STOCK_UNIVERSE } from "@/lib/stock-universe";
 import { formatNyClock, usCashSession } from "@/lib/market-session";
 import { useTheme } from "@/components/ThemeProvider";
+import RegimeChip, { type RegimeChipData } from "@/components/RegimeChip";
 import {
   CompareIcon,
   DashboardIcon,
@@ -306,7 +307,7 @@ const navLink = (active: boolean) =>
     active ? "bg-emerald-600 font-semibold text-white shadow-md shadow-emerald-600/30" : "text-slate-400 hover:bg-slate-800/50 hover:text-slate-200"
   }`;
 
-export default function Nav({ regimeTitle }: { regimeTitle?: string | null }) {
+export default function Nav({ regime }: { regime?: RegimeChipData | null }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileLabOpen, setMobileLabOpen] = useState<string | null>(null);
   const [openLab, setOpenLab] = useState<string | null>(null);
@@ -344,7 +345,7 @@ export default function Nav({ regimeTitle }: { regimeTitle?: string | null }) {
           <nav className="hidden items-center gap-1 rounded-xl border border-slate-800/80 bg-slate-900/80 p-1 lg:flex" onMouseLeave={() => setOpenLab(null)}>
             <Link href="/" className={navLink(isActive(pathname, "/") && pathname === "/")}>
               <DashboardIcon size={14} />
-              Dashboard
+              Mission Control
             </Link>
             <LabDropdown
               label="ETF Lab"
@@ -381,12 +382,7 @@ export default function Nav({ regimeTitle }: { regimeTitle?: string | null }) {
 
           <div className="hidden items-center gap-3 lg:flex">
             <SmartTickerSearch />
-            {regimeTitle && (
-              <div className="hidden items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 font-mono text-xs xl:flex">
-                <span className="text-slate-400">Regime:</span>
-                <span className="font-semibold text-cyan-300">{regimeTitle}</span>
-              </div>
-            )}
+            <RegimeChip regime={regime ?? null} />
             <ThemeToggle />
           </div>
 
@@ -406,7 +402,7 @@ export default function Nav({ regimeTitle }: { regimeTitle?: string | null }) {
 
         <div className="flex gap-1 overflow-x-auto border-t border-slate-800/60 py-2 lg:hidden">
           <Link href="/" className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium ${isActive(pathname, "/") && pathname === "/" ? "bg-emerald-600 text-white" : "text-slate-400 hover:bg-slate-800"}`}>
-            Dashboard
+            Mission Control
           </Link>
           <Link href="/screener" className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium ${labActive(pathname, ETF_LAB) ? "bg-emerald-600 text-white" : "text-slate-400 hover:bg-slate-800"}`}>
             ETF Lab
@@ -430,7 +426,7 @@ export default function Nav({ regimeTitle }: { regimeTitle?: string | null }) {
                 onClick={() => setMobileOpen(false)}
                 className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/") && pathname === "/" ? "bg-emerald-500/20 text-white" : "bg-white/5 text-slate-200"}`}
               >
-                <DashboardIcon size={14} /> Dashboard
+                <DashboardIcon size={14} /> Mission Control
               </Link>
               <Link
                 href="/portfolio"

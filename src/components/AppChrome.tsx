@@ -1,5 +1,6 @@
 import MarketTickerBar, { type TapeItem } from "@/components/MarketTickerBar";
 import Nav from "@/components/Nav";
+import type { RegimeChipData } from "@/components/RegimeChip";
 import { getQuotes } from "@/lib/etf-service";
 import { getFomcCalendar, getMacroSnapshot, getPolicyRates, getYieldCurve } from "@/lib/macro";
 import { deriveRegime } from "@/lib/macro-regime";
@@ -20,7 +21,7 @@ export default async function AppChrome() {
     changePct: null,
     kind: SHORT[i.symbol]?.kind ?? "index",
   }));
-  let regimeTitle: string | null = null;
+  let regime: RegimeChipData | null = null;
   let nextFomcDays: number | null = null;
 
   try {
@@ -41,8 +42,8 @@ export default async function AppChrome() {
         kind: meta?.kind ?? "index",
       };
     });
-    const regime = deriveRegime({ snap: snap?.data ?? null, curve: curve?.data ?? null, policy: policy?.data ?? null });
-    regimeTitle = regime?.title ?? null;
+    const r = deriveRegime({ snap: snap?.data ?? null, curve: curve?.data ?? null, policy: policy?.data ?? null });
+    if (r) regime = { title: r.title, summary: r.summary, asOf: r.asOf, label: r.label };
     const today = new Date().toISOString().slice(0, 10);
     const next = fomc?.data.find((m) => m.end >= today);
     if (next) {
@@ -55,7 +56,7 @@ export default async function AppChrome() {
   return (
     <>
       <MarketTickerBar items={items} nextFomcDays={nextFomcDays} />
-      <Nav regimeTitle={regimeTitle} />
+      <Nav regime={regime} />
     </>
   );
 }
