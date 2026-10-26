@@ -70,7 +70,7 @@ export default function OnboardingWizard({ prices }: { prices: Record<string, nu
     }
   }
 
-  const field = "w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:border-emerald-500 focus:outline-none";
+  const field = "w-full rounded-lg border not-dark:border-slate-300 not-dark:bg-white px-3 py-2.5 text-sm focus:border-emerald-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200 dark:placeholder:text-slate-500 dark:focus:border-emerald-500/60 dark:focus:ring-1 dark:focus:ring-emerald-500/40";
 
   return (
     <div className="space-y-6">

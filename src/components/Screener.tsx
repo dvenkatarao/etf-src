@@ -75,7 +75,7 @@ const YIELD_MAX = 15;
 const EXP_MAX = 2.5;
 const labelCls = "text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400";
 const field =
-  "rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none dark:border-slate-700 dark:bg-[#0f172a]";
+  "rounded-lg border not-dark:border-slate-300 not-dark:bg-white px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200 dark:placeholder:text-slate-500 dark:focus:border-emerald-500/60 dark:focus:ring-1 dark:focus:ring-emerald-500/40";
 
 function RateBadge({ tag, label }: { tag: ScreenRow["rateTag"]; label: string }) {
   return (

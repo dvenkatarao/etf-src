@@ -99,7 +99,7 @@ export default async function Dashboard() {
                 href="/wheel"
                 className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800/90 px-5 py-2.5 text-sm font-semibold text-slate-100 hover:bg-slate-700"
               >
-                <RotateCw className="h-4 w-4" /> Wheel screener
+                <RotateCw className="h-4 w-4 animate-spin-slow" /> Wheel screener
               </Link>
               <Link
                 href="/portfolio"

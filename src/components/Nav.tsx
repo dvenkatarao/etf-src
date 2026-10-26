@@ -241,8 +241,10 @@ function LabDropdown({
   open,
   onOpen,
   onClose,
+  live,
 }: {
   label: string;
+  live?: boolean;
   Icon?: ComponentType<{ size?: number; className?: string }>;
   links: readonly NavLink[];
   pathname: string | null;
@@ -266,6 +268,12 @@ function LabDropdown({
       >
         {Icon && <Icon size={14} className="h-4 w-4" />}
         {label}
+        {live && (
+          <span className="relative flex h-2 w-2" aria-hidden>
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75 motion-reduce:animate-none" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+          </span>
+        )}
         <span className={`ml-0.5 text-[10px] transition ${open ? "rotate-180" : ""}`}>▾</span>
       </button>
       {open && (
@@ -357,6 +365,7 @@ export default function Nav({ regime }: { regime?: RegimeChipData | null }) {
             <LabDropdown
               label="Wheel Lab"
               Icon={RotateCw}
+              live
               links={WHEEL_LAB}
               pathname={pathname}
               open={openLab === "wheel"}

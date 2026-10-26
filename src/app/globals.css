@@ -81,13 +81,46 @@ input[type="range"] {
 .cl-table-compact tbody td { padding-top: 0.22rem; padding-bottom: 0.22rem; font-size: 12px; }
 .cl-table-compact thead th { padding-top: 0.4rem; padding-bottom: 0.4rem; }
 
-/* Scrollbars — adapt to theme */
-*::-webkit-scrollbar { width: 8px; height: 8px; }
-*::-webkit-scrollbar-thumb { background: rgb(203 213 225); border-radius: 999px; }
+/* Scrollbars — thin Option-1 style, adapt to theme */
+*::-webkit-scrollbar { width: 6px; height: 6px; }
+*::-webkit-scrollbar-thumb { background: rgb(203 213 225); border-radius: 4px; }
 *::-webkit-scrollbar-thumb:hover { background: rgb(148 163 184); }
-html.dark *::-webkit-scrollbar-thumb { background: rgb(51 65 85); }
-html.dark *::-webkit-scrollbar-thumb:hover { background: rgb(71 85 105); }
-html.dark *::-webkit-scrollbar-track { background: transparent; }
+html.dark *::-webkit-scrollbar-thumb { background: #1e293b; }
+html.dark *::-webkit-scrollbar-thumb:hover { background: #334155; }
+html.dark *::-webkit-scrollbar-track { background: #020617; }
+
+/* ───────────────────────────────────────────────── */
+/* Option-1 look and feel                            */
+/* ───────────────────────────────────────────────── */
+
+/* Slow spinner used on the wheel icon in hero CTAs (Option-1 signature) */
+@keyframes cl-spin-slow {
+  to { transform: rotate(360deg); }
+}
+@utility animate-spin-slow {
+  animation: cl-spin-slow 8s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-spin-slow { animation: none; }
+}
+
+/* Research tables: mono uppercase header on a slate-950 band, slate hover rows */
+.cl-table-scroll thead th {
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+html.dark .cl-table-scroll {
+  background-color: rgb(15 23 42 / 0.9);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
+}
+html.dark .cl-table-scroll thead th {
+  background: rgb(2 6 23 / 0.95);
+  color: #94a3b8;
+}
+html.dark .cl-table-scroll tbody tr:hover {
+  background-color: rgb(30 41 59 / 0.6);
+}
 
 /* ───────────────────────────────────────────────── */
 /* THEME OVERRIDES — make existing hardcoded classes theme-aware */

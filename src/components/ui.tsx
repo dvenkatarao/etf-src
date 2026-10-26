@@ -23,8 +23,8 @@ export function Card({ title, subtitle, right, children, className = "" }: { tit
 
 export function Stat({ label, value, sub, valueClass = "text-slate-900", hint }: { label: string; value: ReactNode; sub?: ReactNode; valueClass?: string; hint?: string }) {
   return (
-    <div className="rounded-xl border border-slate-200/60 bg-slate-50/80 px-4 py-3.5 backdrop-blur-[1px] dark:border-slate-800 dark:bg-[#0f172a]" title={hint}>
-      <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">{label}</div>
+    <div className="rounded-xl border border-slate-200/60 bg-slate-50/80 px-4 py-3.5 backdrop-blur-[1px] dark:border-slate-800 dark:bg-slate-900/90" title={hint}>
+      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">{label}</div>
       <div className={`mt-1.5 font-mono text-[22px] font-semibold leading-none tracking-tight tabular-nums ${valueClass} dark:text-white`}>{value}</div>
       {sub && <div className="mt-1 text-xs leading-4 text-slate-500 dark:text-slate-400">{sub}</div>}
     </div>
@@ -72,7 +72,7 @@ export function SourceNote({ source, asOf, fetchedAt, stale, error, href }: { so
 
 export function Unavailable({ what, why, action }: { what: string; why?: string; action?: ReactNode }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-[#0b1220]">
+    <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900/90">
       <div className="font-medium text-slate-700 dark:text-slate-200">{what} unavailable</div>
       {why && <div className="mt-1 text-xs leading-relaxed">{why}</div>}
       {action && <div className="mt-3">{action}</div>}
@@ -129,9 +129,9 @@ export function PageHeader({ title, description, right, icon }: { title: string;
       <div>
         <div className="flex items-center gap-3">
           {icon}
-          <h1 className="text-lg font-bold tracking-tight text-slate-900 sm:text-2xl dark:text-white">{title}</h1>
+          <h1 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl dark:text-white">{title}</h1>
         </div>
-        {description && <p className={`mt-1.5 max-w-3xl text-[13px] leading-5 text-slate-500 ${icon ? "sm:pl-[52px]" : ""}`}>{description}</p>}
+        {description && <p className={`mt-1.5 max-w-3xl text-xs leading-5 text-slate-500 sm:text-sm dark:text-slate-400 ${icon ? "sm:pl-[52px]" : ""}`}>{description}</p>}
       </div>
       {right}
     </div>
@@ -198,13 +198,13 @@ export function DensityToggle({
     <button
       type="button"
       onClick={() => onChange(id)}
-      className={`rounded px-2 py-1 text-[11px] font-medium ${value === id ? "bg-emerald-600 text-white" : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"}`}
+      className={`rounded px-2 py-1 text-[11px] font-medium transition ${value === id ? "not-dark:bg-emerald-600 not-dark:text-white dark:bg-slate-800 dark:font-semibold dark:text-emerald-400" : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"}`}
     >
       {label}
     </button>
   );
   return (
-    <div className="inline-flex rounded-md border border-slate-200 bg-white p-0.5 dark:border-slate-700 dark:bg-[#0b1220]" role="group" aria-label="Table density">
+    <div className="inline-flex rounded-lg border border-slate-200 bg-white p-0.5 dark:border-slate-800 dark:bg-slate-900" role="group" aria-label="Table density">
       {btn("comfortable", "Comfortable")}
       {btn("compact", "Compact")}
     </div>
@@ -222,13 +222,13 @@ export function ViewToggle({
     <button
       type="button"
       onClick={() => onChange(id)}
-      className={`rounded-md px-3 py-1.5 text-xs font-medium ${value === id ? "bg-emerald-600 text-white" : "text-slate-500 dark:text-slate-400"}`}
+      className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${value === id ? "not-dark:bg-emerald-600 not-dark:text-white dark:bg-slate-800 dark:font-semibold dark:text-emerald-400" : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"}`}
     >
       {label}
     </button>
   );
   return (
-    <div className="inline-flex rounded-lg border border-slate-200 bg-white p-0.5 dark:border-slate-800 dark:bg-[#0f172a]" role="group" aria-label="Result layout">
+    <div className="inline-flex rounded-lg border border-slate-200 bg-white p-1 dark:border-slate-800 dark:bg-slate-900" role="group" aria-label="Result layout">
       {btn("table", "Table")}
       {btn("cards", "Cards")}
     </div>
