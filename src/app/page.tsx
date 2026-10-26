@@ -37,24 +37,66 @@ export default async function Dashboard() {
   const nextFomc = fomc?.data.find((m) => m.end >= today);
   const snap = (macro?.data ?? []).filter((p) => SNAP_IDS.includes(p.def.id));
 
+  const spx = idx.quotes.get("^GSPC");
+  const vix = idx.quotes.get("^VIX");
+
   return (
-    <div className="space-y-6">
-      <section className="flex flex-col gap-4 border-b border-slate-200 pb-5 dark:border-slate-800 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-emerald-600 dark:text-emerald-400">Capital Lab</p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">Markets</h1>
-          <p className="mt-1 max-w-xl text-sm text-slate-500">US cash session. Every figure is provider data or math on it, stamped with source and time. Quotes delayed.</p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Link href="/screener" className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-500">
-            <ScreenerIcon size={14} /> Screener
-          </Link>
-          <Link href="/wheel" className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#0f172a] dark:text-slate-100">
-            <OptionsIcon size={14} /> Wheel
-          </Link>
-          <Link href="/portfolio" className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#0f172a] dark:text-slate-100">
-            Portfolio
-          </Link>
+    <div className="space-y-8 pb-8">
+      <section className="relative overflow-hidden rounded-2xl border border-slate-800 bg-gradient-to-r from-slate-900 via-slate-900 to-emerald-950/40 p-6 shadow-2xl md:p-8">
+        <div className="pointer-events-none absolute -right-20 -top-20 h-96 w-96 rounded-full bg-emerald-500/10 blur-3xl" />
+        <div className="relative z-10 flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
+          <div className="max-w-3xl">
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400">
+              Delayed US cash quotes · source-stamped
+            </div>
+            <h1 className="text-2xl font-extrabold leading-tight tracking-tight text-white sm:text-3xl">
+              Screen <span className="bg-gradient-to-r from-emerald-400 to-cyan-300 bg-clip-text text-transparent">ETFs</span> and harvest{" "}
+              <span className="bg-gradient-to-r from-amber-300 to-orange-400 bg-clip-text text-transparent">wheel</span> premium — every figure has a source.
+            </h1>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300">
+              US cash session. Quotes delayed. Nothing is guessed: missing data shows N/A.
+            </p>
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              <Link href="/screener" className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-slate-950 shadow-lg shadow-emerald-500/20 hover:bg-emerald-500">
+                <ScreenerIcon size={14} /> ETF screener
+              </Link>
+              <Link href="/wheel" className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800/90 px-4 py-2.5 text-xs font-semibold text-slate-200 hover:bg-slate-700">
+                <OptionsIcon size={14} /> Wheel screener
+              </Link>
+              <Link href="/portfolio" className="inline-flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-800/50 px-4 py-2.5 text-xs font-medium text-slate-300 hover:bg-slate-700/60">
+                Portfolio
+              </Link>
+            </div>
+          </div>
+
+          <div className="w-full rounded-xl border border-slate-800/90 bg-slate-950/80 p-4 shadow-xl lg:w-80">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <span className="text-xs font-medium text-slate-400">Live tape (delayed)</span>
+              <span className="font-mono text-xs font-bold text-emerald-400">Yahoo</span>
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-3">
+              <div className="rounded-lg border border-slate-800 bg-slate-900/90 p-2.5">
+                <span className="block font-mono text-[10px] uppercase text-slate-400">S&amp;P 500</span>
+                <span className="mt-0.5 block font-mono text-base font-bold text-white">{spx?.price != null ? num(spx.price, 2) : "N/A"}</span>
+                <span className={`text-[10px] font-mono ${colorFor(spx?.changePct)}`}>{spx?.changePct != null ? `${spx.changePct > 0 ? "+" : ""}${spx.changePct.toFixed(2)}%` : "N/A"}</span>
+              </div>
+              <div className="rounded-lg border border-slate-800 bg-slate-900/90 p-2.5">
+                <span className="block font-mono text-[10px] uppercase text-slate-400">VIX</span>
+                <span className="mt-0.5 block font-mono text-base font-bold text-cyan-400">{vix?.price != null ? num(vix.price, 2) : "N/A"}</span>
+                <span className={`text-[10px] font-mono ${colorFor(vix?.changePct)}`}>{vix?.changePct != null ? `${vix.changePct > 0 ? "+" : ""}${vix.changePct.toFixed(2)}%` : "N/A"}</span>
+              </div>
+              <div className="rounded-lg border border-slate-800 bg-slate-900/90 p-2.5">
+                <span className="block font-mono text-[10px] uppercase text-slate-400">Fed funds</span>
+                <span className="mt-0.5 block font-mono text-base font-bold text-white">{policy?.data.effr?.targetFrom != null ? `${policy.data.effr.targetFrom.toFixed(2)}–${policy.data.effr.targetTo?.toFixed(2)}%` : "N/A"}</span>
+                <span className="text-[10px] text-slate-500">NY Fed target</span>
+              </div>
+              <div className="rounded-lg border border-slate-800 bg-slate-900/90 p-2.5">
+                <span className="block font-mono text-[10px] uppercase text-slate-400">EFFR / SOFR</span>
+                <span className="mt-0.5 block font-mono text-base font-bold text-white">{policy?.data.effr ? `${policy.data.effr.rate.toFixed(2)}%` : "N/A"}</span>
+                <span className="text-[10px] text-slate-500">SOFR {policy?.data.sofr ? `${policy.data.sofr.rate.toFixed(2)}%` : "N/A"}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -65,16 +107,16 @@ export default async function Dashboard() {
         {MARKET_INDEXES.map((i) => {
           const q = idx.quotes.get(i.symbol);
           return (
-            <div key={i.symbol} className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm dark:border-slate-800 dark:bg-[#0f172a]">
+            <div key={i.symbol} className="rounded-xl border border-slate-800 bg-slate-900/90 px-4 py-3 shadow-md dark:border-slate-800">
               <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">{i.label}</div>
-              <div className="mt-1.5 font-mono text-lg font-semibold tabular-nums">{q?.price != null ? num(q.price, 2) : "N/A"}</div>
+              <div className="mt-1.5 font-mono text-lg font-semibold tabular-nums text-white">{q?.price != null ? num(q.price, 2) : "N/A"}</div>
               <div className={`text-xs font-medium tabular-nums ${colorFor(q?.changePct)}`}>{q?.changePct != null ? `${q.changePct > 0 ? "+" : ""}${q.changePct.toFixed(2)}%` : "N/A"}</div>
             </div>
           );
         })}
-            <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm dark:border-slate-800 dark:bg-[#0f172a]">
+        <div className="rounded-xl border border-slate-800 bg-slate-900/90 px-4 py-3 shadow-md">
           <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Fed funds target</div>
-          <div className="mt-1.5 font-mono text-lg font-semibold tabular-nums">{policy?.data.effr?.targetFrom != null ? `${policy.data.effr.targetFrom.toFixed(2)}–${policy.data.effr.targetTo?.toFixed(2)}%` : "N/A"}</div>
+          <div className="mt-1.5 font-mono text-lg font-semibold tabular-nums text-white">{policy?.data.effr?.targetFrom != null ? `${policy.data.effr.targetFrom.toFixed(2)}–${policy.data.effr.targetTo?.toFixed(2)}%` : "N/A"}</div>
           <div className="text-xs text-slate-500">EFFR {policy?.data.effr ? `${policy.data.effr.rate.toFixed(2)}%` : "N/A"} · SOFR {policy?.data.sofr ? `${policy.data.sofr.rate.toFixed(2)}%` : "N/A"}</div>
         </div>
       </div>

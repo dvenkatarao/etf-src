@@ -59,6 +59,7 @@ function isActive(pathname: string | null, href: string) {
 }
 function labActive(pathname: string | null, links: readonly { href: string }[]) {
   if (!pathname) return false;
+  if (links.some((l) => l.href === "/screener") && pathname.startsWith("/etf")) return true;
   if (links.some((l) => l.href === "/wheel" || l.href.startsWith("/wheel/"))) {
     return pathname === "/wheel" || pathname.startsWith("/wheel/");
   }
@@ -68,7 +69,7 @@ function labActive(pathname: string | null, links: readonly { href: string }[]) 
 function BrandMark() {
   return (
     <span
-      className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-cyan-700 font-mono text-[11px] font-extrabold tracking-tight text-slate-950 ring-1 ring-emerald-400/40"
+      className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-700 font-mono text-[11px] font-extrabold tracking-tight text-slate-950 shadow-lg shadow-emerald-500/20 ring-1 ring-emerald-400/40"
       aria-hidden
     >
       CL
@@ -150,8 +151,8 @@ function SmartTickerSearch({ onNavigate }: { onNavigate?: () => void }) {
             setOpen(false);
           }
         }}
-        placeholder="Jump to ticker"
-        className="w-[200px] rounded-lg border border-slate-800 bg-slate-900/90 py-1.5 pl-8 pr-3 font-mono text-xs uppercase tracking-wide text-slate-200 placeholder:font-sans placeholder:normal-case placeholder:tracking-normal placeholder:text-slate-500 focus:border-emerald-500/60 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 sm:w-[240px]"
+        placeholder="Search ETF / Wheel stock…"
+        className="w-48 rounded-lg border border-slate-800 bg-slate-900/90 py-1.5 pl-8 pr-3 font-mono text-xs uppercase tracking-wide text-slate-200 placeholder:font-sans placeholder:normal-case placeholder:tracking-normal placeholder:text-slate-500 focus:border-emerald-500/60 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 xl:w-64"
         maxLength={10}
         aria-label="Jump to ETF or stock ticker"
         aria-autocomplete="list"
@@ -256,8 +257,10 @@ function LabDropdown({
     <div className="relative" onMouseEnter={onOpen}>
       <button
         onClick={() => (open ? onClose() : onOpen())}
-        className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[13px] font-medium ${
-          open || active ? "bg-emerald-500/15 text-emerald-200" : "text-slate-300 hover:bg-white/10 hover:text-white"
+        className={`inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-medium transition-all ${
+          open || active
+            ? "bg-emerald-600 font-semibold text-white shadow-md shadow-emerald-600/30"
+            : "text-slate-400 hover:bg-slate-800/50 hover:text-slate-200"
         }`}
         aria-expanded={open}
         aria-haspopup="true"
@@ -268,7 +271,7 @@ function LabDropdown({
       </button>
       {open && (
         <div className="absolute left-0 top-full z-40 pt-2">
-          <div className="min-w-[280px] rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-black/10 dark:border-white/10 dark:bg-[#0f172a] dark:shadow-black/40">
+          <div className="min-w-[280px] rounded-xl border border-slate-800 bg-slate-900 p-1.5 shadow-xl shadow-black/40">
             <div className="px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-slate-500">{label}</div>
             <div className="grid gap-0.5">
               {links.map((l) => {
@@ -279,15 +282,13 @@ function LabDropdown({
                     href={l.href}
                     onClick={onClose}
                     className={`flex items-start gap-2.5 rounded-lg px-2.5 py-2 ${
-                      a
-                        ? "bg-emerald-50 text-emerald-950 dark:bg-emerald-500/15 dark:text-white"
-                        : "text-slate-800 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-white/5"
+                      a ? "bg-emerald-500/15 text-white" : "text-slate-200 hover:bg-slate-800/80"
                     }`}
                   >
                     <l.Icon size={16} />
                     <div className="min-w-0 pt-0.5">
                       <div className="text-sm font-medium leading-none">{l.label}</div>
-                      <div className={`mt-1 text-xs leading-none ${a ? "text-emerald-800 dark:text-emerald-200/80" : "text-slate-500"}`}>{l.desc}</div>
+                      <div className={`mt-1 text-xs leading-none ${a ? "text-emerald-200/80" : "text-slate-500"}`}>{l.desc}</div>
                     </div>
                   </Link>
                 );
@@ -301,11 +302,11 @@ function LabDropdown({
 }
 
 const navLink = (active: boolean) =>
-  `inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[13px] font-medium transition ${
-    active ? "bg-emerald-500/15 text-emerald-200" : "text-slate-300 hover:bg-white/10 hover:text-white"
+  `inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-medium transition-all ${
+    active ? "bg-emerald-600 font-semibold text-white shadow-md shadow-emerald-600/30" : "text-slate-400 hover:bg-slate-800/50 hover:text-slate-200"
   }`;
 
-export default function Nav() {
+export default function Nav({ regimeTitle }: { regimeTitle?: string | null }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileLabOpen, setMobileLabOpen] = useState<string | null>(null);
   const [openLab, setOpenLab] = useState<string | null>(null);
@@ -325,73 +326,104 @@ export default function Nav() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-emerald-500/20 bg-[#020617]/95 text-slate-100 backdrop-blur supports-[backdrop-filter]:bg-[#020617]/90">
-      <div className="h-0.5 bg-gradient-to-r from-emerald-500 via-cyan-500/80 to-emerald-700" aria-hidden />
-      <div className="mx-auto flex max-w-[1600px] flex-wrap items-center gap-x-2 gap-y-2 px-4 py-2.5 sm:px-6 lg:px-8">
-        <Link href="/" className="flex shrink-0 items-center gap-2 text-white">
-          <BrandMark />
-          <span className="hidden text-[15px] font-semibold tracking-tight sm:inline">Capital Lab</span>
-        </Link>
-
-        <nav className="hidden items-center gap-0.5 lg:flex" onMouseLeave={() => setOpenLab(null)}>
-          <Link href="/" className={navLink(isActive(pathname, "/") && pathname === "/")}>
-            <DashboardIcon size={14} />
-            Dashboard
+    <header className="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/90 text-slate-100 backdrop-blur-xl">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between gap-4">
+          <Link href="/" className="flex shrink-0 items-center gap-3">
+            <BrandMark />
+            <span className="hidden sm:block">
+              <span className="flex items-center gap-2">
+                <span className="bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-lg font-extrabold tracking-tight text-transparent">
+                  Capital Lab
+                </span>
+              </span>
+              <span className="block text-[11px] font-normal text-slate-400">US ETF &amp; options wheel research</span>
+            </span>
           </Link>
-          <LabDropdown
-            label="ETF Lab"
-            Icon={EtfLabIcon}
-            links={ETF_LAB}
-            pathname={pathname}
-            open={openLab === "etf"}
-            onOpen={() => setOpenLab("etf")}
-            onClose={() => setOpenLab(null)}
-          />
-          <LabDropdown
-            label="Wheel Lab"
-            Icon={WheelLabIcon}
-            links={WHEEL_LAB}
-            pathname={pathname}
-            open={openLab === "wheel"}
-            onOpen={() => setOpenLab("wheel")}
-            onClose={() => setOpenLab(null)}
-          />
-          <Link href="/portfolio" className={navLink(isActive(pathname, "/portfolio"))}>
-            <PortfolioIcon size={14} />
-            Portfolio
-          </Link>
-          <LabDropdown
-            label="Insights"
-            Icon={InsightsIcon}
-            links={INSIGHTS}
-            pathname={pathname}
-            open={openLab === "insights"}
-            onOpen={() => setOpenLab("insights")}
-            onClose={() => setOpenLab(null)}
-          />
-        </nav>
 
-        <div className="ml-auto hidden items-center gap-3 lg:flex">
-          <MarketStatus />
-          <SmartTickerSearch />
-          <ThemeToggle />
+          <nav className="hidden items-center gap-1 rounded-xl border border-slate-800/80 bg-slate-900/80 p-1 lg:flex" onMouseLeave={() => setOpenLab(null)}>
+            <Link href="/" className={navLink(isActive(pathname, "/") && pathname === "/")}>
+              <DashboardIcon size={14} />
+              Dashboard
+            </Link>
+            <LabDropdown
+              label="ETF Lab"
+              Icon={EtfLabIcon}
+              links={ETF_LAB}
+              pathname={pathname}
+              open={openLab === "etf"}
+              onOpen={() => setOpenLab("etf")}
+              onClose={() => setOpenLab(null)}
+            />
+            <LabDropdown
+              label="Wheel Lab"
+              Icon={WheelLabIcon}
+              links={WHEEL_LAB}
+              pathname={pathname}
+              open={openLab === "wheel"}
+              onOpen={() => setOpenLab("wheel")}
+              onClose={() => setOpenLab(null)}
+            />
+            <Link href="/portfolio" className={navLink(isActive(pathname, "/portfolio"))}>
+              <PortfolioIcon size={14} />
+              Portfolio
+            </Link>
+            <LabDropdown
+              label="Insights"
+              Icon={InsightsIcon}
+              links={INSIGHTS}
+              pathname={pathname}
+              open={openLab === "insights"}
+              onOpen={() => setOpenLab("insights")}
+              onClose={() => setOpenLab(null)}
+            />
+          </nav>
+
+          <div className="hidden items-center gap-3 lg:flex">
+            <SmartTickerSearch />
+            {regimeTitle && (
+              <div className="hidden items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 font-mono text-xs xl:flex">
+                <span className="text-slate-400">Regime:</span>
+                <span className="font-semibold text-cyan-300">{regimeTitle}</span>
+              </div>
+            )}
+            <ThemeToggle />
+          </div>
+
+          <div className="flex items-center gap-2 lg:hidden">
+            <MarketStatus compact />
+            <ThemeToggle />
+            <button
+              onClick={() => setMobileOpen((o) => !o)}
+              className="grid h-9 w-9 place-items-center rounded-lg border border-slate-800 bg-slate-900 text-slate-200"
+              aria-label="Toggle navigation"
+              aria-expanded={mobileOpen}
+            >
+              {mobileOpen ? <CloseIcon size={16} /> : <MenuIcon size={16} />}
+            </button>
+          </div>
         </div>
 
-        <div className="ml-auto flex items-center gap-2 lg:hidden">
-          <MarketStatus compact />
-          <ThemeToggle />
-          <button
-            onClick={() => setMobileOpen((o) => !o)}
-            className="grid h-9 w-9 place-items-center rounded-md border border-white/10 bg-white/5 text-slate-200"
-            aria-label="Toggle navigation"
-            aria-expanded={mobileOpen}
-          >
-            {mobileOpen ? <CloseIcon size={16} /> : <MenuIcon size={16} />}
-          </button>
+        <div className="flex gap-1 overflow-x-auto border-t border-slate-800/60 py-2 lg:hidden">
+          <Link href="/" className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium ${isActive(pathname, "/") && pathname === "/" ? "bg-emerald-600 text-white" : "text-slate-400 hover:bg-slate-800"}`}>
+            Dashboard
+          </Link>
+          <Link href="/screener" className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium ${labActive(pathname, ETF_LAB) ? "bg-emerald-600 text-white" : "text-slate-400 hover:bg-slate-800"}`}>
+            ETF Lab
+          </Link>
+          <Link href="/wheel" className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium ${labActive(pathname, WHEEL_LAB) || (pathname?.startsWith("/wheel") ?? false) ? "bg-emerald-600 text-white" : "text-slate-400 hover:bg-slate-800"}`}>
+            Wheel Lab
+          </Link>
+          <Link href="/portfolio" className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium ${isActive(pathname, "/portfolio") ? "bg-emerald-600 text-white" : "text-slate-400 hover:bg-slate-800"}`}>
+            Portfolio
+          </Link>
+          <Link href="/macro" className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium ${labActive(pathname, INSIGHTS) ? "bg-emerald-600 text-white" : "text-slate-400 hover:bg-slate-800"}`}>
+            Insights
+          </Link>
         </div>
 
         {mobileOpen && (
-          <div className="w-full space-y-3 border-t border-white/10 pb-2 pt-3 lg:hidden">
+          <div className="w-full space-y-3 border-t border-slate-800 pb-3 pt-3 lg:hidden">
             <div className="grid grid-cols-2 gap-1">
               <Link
                 href="/"
