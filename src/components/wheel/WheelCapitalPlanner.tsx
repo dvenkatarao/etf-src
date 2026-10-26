@@ -20,7 +20,7 @@ export default function WheelCapitalPlanner({ rows }: { rows: WheelRow[] }) {
   const overTop = hasCash ? totalNeededTop > availableCash : false;
 
   const field =
-    "rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none dark:border-slate-700 dark:bg-[#111827] dark:text-white dark:placeholder:text-slate-500";
+    "rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none dark:border-slate-700 dark:bg-[#020617] dark:text-white dark:placeholder:text-slate-500";
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-[#0f172a]">
@@ -55,17 +55,17 @@ export default function WheelCapitalPlanner({ rows }: { rows: WheelRow[] }) {
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-transparent dark:bg-[#111827]">
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-transparent dark:bg-[#020617]">
           <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">If you sold top {top.length}</div>
           <div className="mt-1 font-mono text-lg font-semibold tabular-nums text-slate-900 dark:text-white">{money(totalNeededTop)}</div>
           <div className="text-[11px] text-slate-500">{top.length * contractsPerName} contract(s) cash set aside</div>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-transparent dark:bg-[#111827]">
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-transparent dark:bg-[#020617]">
           <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">If you sold all {rows.length} shown</div>
           <div className="mt-1 font-mono text-lg font-semibold tabular-nums text-slate-900 dark:text-white">{money(allNeeded)}</div>
           <div className="text-[11px] text-slate-500">worst-case simultaneous assignment</div>
         </div>
-        <div className={`rounded-xl border p-3 ${overTop ? "border-rose-200 bg-rose-50 dark:border-rose-500/30 dark:bg-rose-500/10" : hasCash ? "border-emerald-200 bg-emerald-50 dark:border-emerald-500/20 dark:bg-emerald-500/10" : "border-slate-200 bg-slate-50 dark:border-transparent dark:bg-[#111827]"}`}>
+        <div className={`rounded-xl border p-3 ${overTop ? "border-rose-200 bg-rose-50 dark:border-rose-500/30 dark:bg-rose-500/10" : hasCash ? "border-emerald-200 bg-emerald-50 dark:border-emerald-500/20 dark:bg-emerald-500/10" : "border-slate-200 bg-slate-50 dark:border-transparent dark:bg-[#020617]"}`}>
           <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Reserve after top {top.length}</div>
           <div className={`mt-1 font-mono text-lg font-semibold tabular-nums ${overTop ? "text-rose-700 dark:text-rose-300" : hasCash ? "text-emerald-700 dark:text-emerald-300" : "text-slate-400"}`}>
             {hasCash ? money(reserveAfterTop!) : "—"}
@@ -80,7 +80,7 @@ export default function WheelCapitalPlanner({ rows }: { rows: WheelRow[] }) {
         </p>
       )}
 
-      <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-[#0b1220]">
+      <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-[#020617]">
         <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Assignment preview (per put)</div>
         <p className="mt-1 text-xs text-slate-500">If assigned you own 100 shares at the breakeven. Table shows paper loss vs your breakeven and vs analyst target if you were assigned now.</p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">

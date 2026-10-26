@@ -485,7 +485,7 @@ export default function Screener({ rows }: { rows: ScreenRow[] }) {
           <p className="mb-2 hidden text-xs text-slate-500 md:block">Hover column headers for definitions.</p>
           <TableScroll density={density} className="shadow-sm">
             <table className="min-w-full text-sm">
-              <thead className="bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500 dark:bg-[#0b1220] dark:text-slate-400">
+              <thead className="bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500 dark:bg-[#020617] dark:text-slate-400">
                 <tr>
                   <th className="w-8 px-3 py-3" />
                   {COLUMNS.map((c) => (

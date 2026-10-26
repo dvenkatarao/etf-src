@@ -121,15 +121,15 @@ export default function WheelPositionsTracker() {
       </div>
 
       <div className="mt-3 grid grid-cols-3 gap-3">
-        <div className="rounded-lg bg-[#111827] p-3">
+        <div className="rounded-lg bg-[#020617] p-3">
           <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">Open positions</div>
           <div className="mt-1 text-lg font-semibold text-white">{summary.openCount}</div>
         </div>
-        <div className="rounded-lg bg-[#111827] p-3">
+        <div className="rounded-lg bg-[#020617] p-3">
           <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">Cash secured</div>
           <div className="mt-1 text-lg font-semibold text-white">{money(summary.cashSecured)}</div>
         </div>
-        <div className="rounded-lg bg-[#111827] p-3">
+        <div className="rounded-lg bg-[#020617] p-3">
           <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">Premium collected</div>
           <div className="mt-1 text-lg font-semibold text-emerald-300">{money(summary.collected)}</div>
         </div>
@@ -137,7 +137,7 @@ export default function WheelPositionsTracker() {
 
       {open && (
         <>
-          <div className="mt-4 grid gap-3 rounded-xl border border-slate-700/50 bg-[#111827] p-4 md:grid-cols-7">
+          <div className="mt-4 grid gap-3 rounded-xl border border-slate-700/50 bg-[#020617] p-4 md:grid-cols-7">
             <input value={ticker} onChange={(e) => setTicker(e.target.value.toUpperCase())} placeholder="Ticker" className="rounded-lg border border-slate-700 bg-[#0f172a] px-2 py-1.5 text-xs text-white placeholder:text-slate-500" />
             <select value={side} onChange={(e) => setSide(e.target.value as any)} className="rounded-lg border border-slate-700 bg-[#0f172a] px-2 py-1.5 text-xs text-white">
               <option value="put_sold">Put sold</option>

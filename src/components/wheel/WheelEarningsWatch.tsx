@@ -95,7 +95,7 @@ export default function WheelEarningsWatch({ earningsWatch, rows = [], q }: Prop
       </button>
 
       {!open && (
-        <div className="border-t border-amber-200 bg-white/80 px-3 py-2 dark:border-amber-500/15 dark:bg-[#0b1220]/60">
+        <div className="border-t border-amber-200 bg-white/80 px-3 py-2 dark:border-amber-500/15 dark:bg-[#020617]/60">
           <div className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:thin]">
             {earningsWatch.map((e) => {
               const r = rowByTicker.get(e.g.row.ticker);
@@ -137,7 +137,7 @@ export default function WheelEarningsWatch({ earningsWatch, rows = [], q }: Prop
       )}
 
       {open && (
-        <div id="earnings-watch-details" className="border-t border-amber-200 bg-white px-4 py-4 dark:border-amber-500/20 dark:bg-[#0b1220]">
+        <div id="earnings-watch-details" className="border-t border-amber-200 bg-white px-4 py-4 dark:border-amber-500/20 dark:bg-[#020617]">
           <p className="text-xs leading-relaxed text-amber-900/80 dark:text-amber-200/75">
             Premiums look rich because the market prices a large move. A report can gap the stock through your strike overnight, so options
             expiring after the report are hidden unless you tick{" "}
