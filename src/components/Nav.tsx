@@ -10,22 +10,20 @@ import { useTheme } from "@/components/ThemeProvider";
 import RegimeChip, { type RegimeChipData } from "@/components/RegimeChip";
 import {
   CompareIcon,
-  DashboardIcon,
   EtfLabIcon,
   InsightsIcon,
   NotificationsIcon,
   OptionsIcon,
   type IconProps,
-  PortfolioIcon,
   ResearchIcon,
   ScreenerIcon,
   CloseIcon,
   MenuIcon,
-  SearchIcon,
   SunIcon,
   ThemeIcon,
   WheelLabIcon,
 } from "@/components/icons/AppIcons";
+import { BookOpen, Compass, Layers, PieChart, RotateCw, Search } from "lucide-react";
 
 type NavLink = { href: string; label: string; desc: string; Icon: ComponentType<IconProps> };
 
@@ -131,8 +129,8 @@ function SmartTickerSearch({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <form ref={wrap} onSubmit={submit} className="relative" role="search" aria-label="Jump to ticker">
-      <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400">
-        <SearchIcon size={14} />
+      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+        <Search className="h-4 w-4" />
       </span>
       <input
         value={q}
@@ -152,8 +150,8 @@ function SmartTickerSearch({ onNavigate }: { onNavigate?: () => void }) {
             setOpen(false);
           }
         }}
-        placeholder="Ticker"
-        className="w-28 rounded-lg border border-slate-800 bg-slate-900/90 py-1.5 pl-8 pr-2 font-mono text-xs uppercase tracking-wide text-slate-200 placeholder:font-sans placeholder:normal-case placeholder:tracking-normal placeholder:text-slate-500 focus:border-emerald-500/60 focus:outline-none focus:ring-1 focus:ring-emerald-500/40"
+        placeholder="Search ETF / Wheel stock…"
+        className="w-44 rounded-lg border border-slate-800 bg-slate-900/90 py-1.5 pl-9 pr-3 text-xs text-slate-200 placeholder:text-slate-500 focus:border-emerald-500/60 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 xl:w-56"
         maxLength={10}
         aria-label="Jump to ETF or stock ticker"
         aria-autocomplete="list"
@@ -245,7 +243,7 @@ function LabDropdown({
   onClose,
 }: {
   label: string;
-  Icon?: ComponentType<IconProps>;
+  Icon?: ComponentType<{ size?: number; className?: string }>;
   links: readonly NavLink[];
   pathname: string | null;
   open: boolean;
@@ -266,7 +264,7 @@ function LabDropdown({
         aria-expanded={open}
         aria-haspopup="true"
       >
-        {Icon && <Icon size={14} />}
+        {Icon && <Icon size={14} className="h-4 w-4" />}
         {label}
         <span className={`ml-0.5 text-[10px] transition ${open ? "rotate-180" : ""}`}>▾</span>
       </button>
@@ -344,12 +342,12 @@ export default function Nav({ regime }: { regime?: RegimeChipData | null }) {
 
           <nav className="hidden items-center gap-1 rounded-xl border border-slate-800/80 bg-slate-900/80 p-1 lg:flex" onMouseLeave={() => setOpenLab(null)}>
             <Link href="/" className={navLink(isActive(pathname, "/") && pathname === "/")}>
-              <DashboardIcon size={14} />
+              <Compass className="h-4 w-4" />
               Mission Control
             </Link>
             <LabDropdown
               label="ETF Lab"
-              Icon={EtfLabIcon}
+              Icon={Layers}
               links={ETF_LAB}
               pathname={pathname}
               open={openLab === "etf"}
@@ -358,7 +356,7 @@ export default function Nav({ regime }: { regime?: RegimeChipData | null }) {
             />
             <LabDropdown
               label="Wheel Lab"
-              Icon={WheelLabIcon}
+              Icon={RotateCw}
               links={WHEEL_LAB}
               pathname={pathname}
               open={openLab === "wheel"}
@@ -366,12 +364,12 @@ export default function Nav({ regime }: { regime?: RegimeChipData | null }) {
               onClose={() => setOpenLab(null)}
             />
             <Link href="/portfolio" className={navLink(isActive(pathname, "/portfolio"))}>
-              <PortfolioIcon size={14} />
+              <PieChart className="h-4 w-4" />
               Portfolio
             </Link>
             <LabDropdown
               label="Insights"
-              Icon={InsightsIcon}
+              Icon={BookOpen}
               links={INSIGHTS}
               pathname={pathname}
               open={openLab === "insights"}
@@ -426,14 +424,14 @@ export default function Nav({ regime }: { regime?: RegimeChipData | null }) {
                 onClick={() => setMobileOpen(false)}
                 className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/") && pathname === "/" ? "bg-emerald-500/20 text-white" : "bg-white/5 text-slate-200"}`}
               >
-                <DashboardIcon size={14} /> Mission Control
+                <Compass className="h-4 w-4" /> Mission Control
               </Link>
               <Link
                 href="/portfolio"
                 onClick={() => setMobileOpen(false)}
                 className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${isActive(pathname, "/portfolio") ? "bg-emerald-500/20 text-white" : "bg-white/5 text-slate-200"}`}
               >
-                <PortfolioIcon size={14} /> Portfolio
+                <PieChart className="h-4 w-4" /> Portfolio
               </Link>
             </div>
 
@@ -481,7 +479,7 @@ export default function Nav({ regime }: { regime?: RegimeChipData | null }) {
 
             <div className="rounded-lg border border-white/10 bg-white/5 p-3">
               <div className="mb-2 inline-flex items-center gap-2 text-xs font-medium text-slate-300">
-                <SearchIcon size={14} />
+                <Search className="h-4 w-4" />
                 Jump to ticker
               </div>
               <SmartTickerSearch onNavigate={() => setMobileOpen(false)} />

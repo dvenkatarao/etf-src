@@ -408,20 +408,26 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
             {paged.map((r) => {
               const b = r.best;
               return (
-                <div key={r.g.row.ticker} className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-[#0f172a]">
-                  <div className="flex items-start justify-between">
+                <div key={r.g.row.ticker} className="rounded-xl border border-slate-200 bg-white p-4 shadow-lg dark:border-slate-800 dark:bg-slate-900">
+                  <div className="flex items-start justify-between gap-2">
                     <div>
-                      <Link href={`/wheel/${r.g.row.ticker}?${q}`} className="text-sm font-bold text-slate-900 hover:text-emerald-700 dark:text-white dark:hover:text-emerald-300">
+                      <Link href={`/wheel/${r.g.row.ticker}?${q}`} className="font-mono text-2xl font-extrabold tracking-tight text-slate-900 hover:text-emerald-700 dark:text-white dark:hover:text-emerald-300">
                         {r.g.row.ticker}
                       </Link>
                       <div className="max-w-[180px] truncate text-xs text-slate-500 dark:text-slate-400">{r.g.row.name}</div>
                     </div>
-                    <span
-                      className={gradeBadgeClasses(r.g.grade as any)}
-                      title={`${r.g.quality.summary} Score ${r.g.quality.score?.toFixed(0) ?? "N/A"}/100${r.g.quality.caps.length ? ` · Caps: ${r.g.quality.caps.join("; ")}` : ""}`}
-                    >
-                      {r.g.grade}
-                    </span>
+                    <div className="flex flex-col items-end gap-1">
+                      <div className={`inline-flex items-baseline gap-0.5 rounded-full px-2.5 py-1 text-sm font-extrabold ring-1 ${scoreTone(b.score)}`} title="Scan score 0–100: min(ann. ROC, 100%) × POP × liquidity × structure">
+                        {Math.round(Math.min(100, Math.max(0, b.score)))}
+                        <span className="text-[10px] font-semibold opacity-70">/100</span>
+                      </div>
+                      <span
+                        className={gradeBadgeClasses(r.g.grade as any)}
+                        title={`${r.g.quality.summary} Score ${r.g.quality.score?.toFixed(0) ?? "N/A"}/100${r.g.quality.caps.length ? ` · Caps: ${r.g.quality.caps.join("; ")}` : ""}`}
+                      >
+                        {r.g.grade}
+                      </span>
+                    </div>
                   </div>
                   <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
                     <div>
@@ -429,19 +435,19 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                       <div className="mt-1 font-semibold text-slate-900 dark:text-white">
                         {money(b.contract.strike)} P · {dateShort(b.contract.expiration)}
                       </div>
-                      <div className="text-slate-500">{b.dte}d</div>
+                      <div className="text-slate-500">{b.dte}d DTE</div>
                     </div>
                     <div className="text-right">
-                      <div className="text-[10px] font-semibold tracking-[0.12em] text-slate-500">SCORE</div>
-                      <div className={`mt-1 inline-flex rounded-md px-2 py-1 text-sm font-bold ring-1 ${scoreTone(b.score)}`}>{b.score.toFixed(1)}</div>
+                      <div className="text-[10px] font-semibold tracking-[0.12em] text-slate-500">CREDIT</div>
+                      <div className="mt-0.5 font-mono tabular-nums text-slate-900 dark:text-white">{money(b.credit)}</div>
                     </div>
                     <div>
                       <div className="text-[10px] font-semibold tracking-[0.12em] text-slate-500">RETURN /YR</div>
                       <div className="mt-0.5 font-mono font-semibold tabular-nums text-emerald-600 dark:text-emerald-400">{pct(b.annRoc, 1)}</div>
                     </div>
                     <div className="text-right">
-                      <div className="text-[10px] font-semibold tracking-[0.12em] text-slate-500">CREDIT</div>
-                      <div className="mt-0.5 font-mono tabular-nums text-slate-900 dark:text-white">{money(b.credit)}</div>
+                      <div className="text-[10px] font-semibold tracking-[0.12em] text-slate-500">CASH</div>
+                      <div className="mt-0.5 font-mono tabular-nums text-slate-900 dark:text-white">{money(b.cash, 0)}</div>
                     </div>
                     <div>
                       <div className="text-[10px] font-semibold tracking-[0.12em] text-slate-500">CUSHION</div>
@@ -451,6 +457,16 @@ export default function WheelTable({ res, q, events = [], today: _today, ivRanks
                       <div className="text-[10px] font-semibold tracking-[0.12em] text-slate-500">DELTA</div>
                       <div className="mt-0.5 font-mono tabular-nums">
                         {b.contract.delta != null ? Math.abs(b.contract.delta).toFixed(2) : "N/A"}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-semibold tracking-[0.12em] text-slate-500">POP</div>
+                      <div className="mt-0.5 font-mono tabular-nums">{pct(b.probOtm, 0)}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-[10px] font-semibold tracking-[0.12em] text-slate-500">IV RANK</div>
+                      <div className={`mt-0.5 font-mono tabular-nums ${ivRankLabel(ivRanks?.[r.g.row.ticker] ?? null).tone}`}>
+                        {ivRankLabel(ivRanks?.[r.g.row.ticker] ?? null).label}
                       </div>
                     </div>
                   </div>
